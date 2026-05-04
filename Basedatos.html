@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Listado de Inscritos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ui-theme.css">
+<style>
+.admin-toolbar{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  gap:14px;
+  align-items:end;
+}
+@media(max-width:760px){
+  .admin-toolbar{grid-template-columns:1fr;}
+  .admin-toolbar .ui-btn{width:100%;}
+}
+</style>
+</head>
+<body class="ui-body">
+<div class="ui-shell">
+<header class="ui-topbar">
+  <div class="ui-brand">
+    <div class="ui-brand-mark"><img src="img/logo.png" alt="Logo"></div>
+    <div class="ui-brand-copy">
+      <h1>Listado oficial de inscritos</h1>
+      <p>Panel de consulta y administración</p>
+    </div>
+  </div>
+  <nav class="ui-nav">
+    <a href="home.html">Inicio</a>
+    <a href="form.html">Inscripción</a>
+    <a href="pasarelapago.html">Pagos</a>
+    <a href="live.html">Live</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="Evento.html">Eventos</a>
+  </nav>
+</header>
+
+<section class="ui-hero">
+  <div class="ui-hero-grid">
+    <div class="ui-hero-copy">
+      <span class="ui-eyebrow">Base consolidada</span>
+      <h2>Consulta, filtra y exporta los inscritos del congreso.</h2>
+      <p>Esta vista reúne los registros disponibles en línea y los respaldos locales del equipo, con búsqueda rápida y modo administrador para eliminación puntual.</p>
+    </div>
+    <div class="ui-hero-panel">
+      <div class="ui-grid cols-2">
+        <div class="ui-stat"><span>Total visible</span><strong id="contador">Cargando...</strong></div>
+        <div class="ui-stat"><span>Estado</span><strong>Sincronización activa</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ui-section">
+  <article class="ui-card">
+    <div class="admin-toolbar">
+      <div>
+        <label for="busqueda" style="display:block;margin-bottom:8px;font-weight:600;color:#30404e;">Buscar inscrito</label>
+        <input class="ui-input" type="text" id="busqueda" placeholder="Nombre, documento, iglesia, municipio...">
+      </div>
+      <button class="ui-btn soft" id="descargar">Descargar Excel</button>
+      <button class="ui-btn primary" id="adminBtn">Modo Admin</button>
+    </div>
+
+    <div id="tabla" style="margin-top:20px;">Cargando inscritos...</div>
+  </article>
+</section>
+
+<footer class="ui-footer">© 2026 Unión Juvenil Evangélica del Caribe</footer>
+</div>
+
+<script src="api-config.js"></script>
+<script>
+function formatearFecha(fechaISO){
+  if(!fechaISO) return "";
+  const fecha = new Date(fechaISO);
+  if(Number.isNaN(fecha.getTime())) return fechaISO;
+  return fecha.toLocaleString("es-CO",{
+    day:"2-digit",
+    month:"2-digit",
+    year:"numeric",
+    hour:"2-digit",
+    minute:"2-digit",
+    hour12:true
+  });
+}
+
+const API=window.UJECA_API.listado;
+const API_LISTADO=crearUrlUJECA(API,{accion:"listado",hoja:window.UJECA_HOJA_INSCRIPCIONES});
+let datosGlobal=[];
+let adminActivo=false;
+const PASSWORD="admin2026";
+
+document.getElementById("adminBtn").addEventListener("click",()=>{
+  let clave=prompt("Ingrese contraseña de administrador:");
+  if(clave===PASSWORD){
+    adminActivo=true;
+    alert("Modo administrador activado");
+    renderTabla(datosGlobal);
+  }else{
+    alert("Contraseña incorrecta");
+  }
+});
+
+function renderTabla(data){
+  if(!data || data.length===0){
+    document.getElementById("tabla").innerHTML="No hay registros";
+    document.getElementById("contador").innerText="0 inscritos";
+    return;
+  }
+
+  let headers=obtenerColumnasInscritosUJECA(data);
+  let html='<div class="ui-table-wrap"><table class="ui-table"><thead><tr>';
+  headers.forEach(h=>html+=`<th>${escaparHtmlUJECA(obtenerEtiquetaInscritoUJECA(h))}</th>`);
+  if(adminActivo) html+="<th>Eliminar</th>";
+  html+="</tr></thead><tbody>";
+
+  for(let i=0;i<data.length;i++){
+    let row=data[i];
+    html+="<tr>";
+    headers.forEach(h=>{
+      let valor=row[h]??"";
+      if(h.toLowerCase().includes("fecha")){
+        valor=formatearFecha(valor);
+      }
+      html+=`<td>${escaparHtmlUJECA(valor)}</td>`;
+    });
+    if(adminActivo){
+      html+=`<td><button class="ui-btn primary" style="padding:10px 14px;" onclick="eliminarRegistro(${i})">Eliminar</button></td>`;
+    }
+    html+="</tr>";
+  }
+
+  html+="</tbody></table></div>";
+  document.getElementById("tabla").innerHTML=html;
+  document.getElementById("contador").innerText=data.length+" inscritos";
+}
+
+document.getElementById("busqueda").addEventListener("input",e=>{
+  const texto=e.target.value.toLowerCase();
+  const filtrados=datosGlobal.filter(row=>
+    Object.values(row).some(val=>String(val).toLowerCase().includes(texto))
+  );
+  renderTabla(filtrados);
+});
+
+document.getElementById("descargar").addEventListener("click",()=>{
+  if(datosGlobal.length===0) return alert("No hay datos");
+  let headers=obtenerColumnasInscritosUJECA(datosGlobal);
+  const separador=";";
+  const escapar=(valor)=>`"${String(valor ?? "").replace(/"/g,'""')}"`;
+  let csv=headers.map(h=>escapar(obtenerEtiquetaInscritoUJECA(h))).join(separador)+"\n";
+  datosGlobal.forEach(row=>{
+    let fila=headers.map(h=>escapar(row[h]));
+    csv+=fila.join(separador)+"\n";
+  });
+  let blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  let link=document.createElement("a");
+  link.href=URL.createObjectURL(blob);
+  link.download="inscritos_2026.csv";
+  link.click();
+});
+
+function eliminarRegistro(index){
+  if(!confirm("¿Eliminar este registro?")) return;
+  fetch(API,{
+    method:"POST",
+    body:JSON.stringify({accion:"eliminar",index:index,hoja:window.UJECA_HOJA_INSCRIPCIONES})
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.resultado==="ok"){
+      alert("Registro eliminado");
+      location.reload();
+    }else{
+      alert("Error al eliminar");
+    }
+  });
+}
+
+function cargarDatos(data){
+  datosGlobal=unificarRegistrosUJECA(Array.isArray(data)?[...data].reverse():[]);
+  renderTabla(datosGlobal);
+}
+
+async function cargarListado(){
+  document.getElementById("tabla").innerHTML="Sincronizando inscritos...";
+  const locales=obtenerRegistrosLocalesUJECA();
+  if(locales.length){
+    datosGlobal=locales;
+    renderTabla(datosGlobal);
+  }
+
+  try{
+    datosGlobal=await cargarRegistrosUJECA(API);
+    renderTabla(datosGlobal);
+  }catch(error){
+    if(!datosGlobal.length){
+      document.getElementById("tabla").innerHTML="No se pudo sincronizar el listado remoto.";
+      document.getElementById("contador").innerText="0 inscritos";
+    }
+  }
+}
+
+cargarListado();
+</script>
+</body>
+</html>

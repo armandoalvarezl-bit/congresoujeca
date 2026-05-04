@@ -1,0 +1,297 @@
+:root{
+ --rojo:#d62828;
+ --rojo-oscuro:#9d0208;
+ --gris:#f8f9fa;
+ --texto:#343a40;
+ --borde:#e9ecef;
+ --sombra:0 15px 40px rgba(0,0,0,.08);
+}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#f8f9fa,#eef1f4);
+color:var(--texto);
+min-height:100vh;
+padding:40px 20px;
+}
+
+.fondo{
+    position:relative;
+    min-height:100vh;
+    padding:40px 20px;
+    overflow:hidden;
+}
+
+/* IMAGEN DE FONDO DIFUMINADA */
+.fondo::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:url("img/fondo.jpg") center/cover no-repeat;
+    filter:blur(10px) brightness(0.75);
+    transform:scale(1.1); /* evita bordes blancos al difuminar */
+    z-index:-2;
+}
+
+/* CAPA BLANCA SUAVE (efecto glass) */
+.fondo::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#ffffffcc,#f1f5f9d9);
+    z-index:-1;
+}
+
+.panel{
+    width:95%;
+    max-width:1300px;
+    margin:50px auto;
+    background:white;
+    padding:30px;
+    border-radius:25px;
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+}
+
+/* CONTENEDOR REAL DEL SCROLL */
+.tabla-contenedor{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    border-radius:15px;
+}
+
+/* TABLA */
+#tabla table{
+    border-collapse:collapse;
+    min-width:1600px;
+    width:100%;
+    font-size:13px;
+}
+
+/* encabezado */
+#tabla th{
+    background:#d62828;
+    color:white;
+    padding:14px;
+    white-space:nowrap;
+}
+
+/* celdas */
+#tabla td{
+    padding:10px;
+    border-bottom:1px solid #041579;
+    white-space:nowrap;
+    max-width:180px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* zebra profesional */
+#tabla tr:nth-child(even){
+    background:#fafafa;
+}
+
+#tabla tr:hover{
+    background:#fff3f3;
+}
+
+/* encabezado */
+#tablaInscritos th{
+    background:#d62828;
+    color:white;
+    padding:14px 10px;
+    text-align:left;
+    white-space:nowrap;
+}
+
+/* celdas */
+#tablaInscritos td{
+    padding:10px;
+    border-bottom:1px solid #eee;
+
+    max-width:150px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* hover */
+#tablaInscritos tr:hover{
+    background:#fff5f5;
+}
+body{
+    overflow-x:hidden;
+}
+
+
+
+
+h1{
+color:var(--rojo);
+margin-bottom:30px;
+}
+
+.search{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+margin-bottom:25px;
+align-items:center;
+}
+
+.search input{
+padding:14px;
+border-radius:12px;
+border:1px solid #ccc;
+width:280px;
+}
+
+button{
+padding:11px 18px;
+border:none;
+border-radius:10px;
+font-weight:600;
+cursor:pointer;
+transition:.3s;
+}
+
+.btn-download{
+background:var(--rojo);
+color:white;
+}
+
+.btn-download:hover{
+background:var(--rojo-oscuro);
+}
+
+.admin-btn{
+background:#333;
+color:white;
+}
+
+.admin-btn:hover{
+background:#111;
+}
+
+.count{
+font-weight:600;
+color:var(--rojo);
+margin-left:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:13px;
+}
+
+th{
+background:var(--rojo);
+color:white;
+padding:12px;
+text-align:left;
+}
+
+td{
+padding:10px;
+border-bottom:1px solid #f1f1f1;
+}
+
+tr:hover{
+background:#fff5f5;
+}
+
+.btn-delete{
+background:#9d0208;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:6px;
+cursor:pointer;
+font-size:12px;
+}
+
+.btn-delete:hover{
+background:#6a040f;
+}
+
+.loading{
+text-align:center;
+padding:40px;
+font-weight:600;
+color:var(--rojo);
+}
+/* HEADER SUPERIOR */
+
+.topbar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:70px;
+    background:#b51d1d;
+    color:white;
+    display:flex;
+    align-items:center;
+    z-index:1000;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+.topbar-content{
+    width:100%;
+    max-width:1200px;
+    margin:auto;
+    padding:0 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo{
+    height:45px;
+}
+
+.titulo{
+    display:flex;
+    flex-direction:column;
+    line-height:1.1;
+}
+
+.titulo strong{
+    font-size:18px;
+}
+
+.titulo span{
+    font-size:13px;
+    opacity:.9;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    margin-left:25px;
+    font-weight:500;
+    transition:.2s;
+}
+
+.menu a:hover{
+    opacity:.7;
+}
+
+/* BAJAR CONTENIDO POR HEADER */
+body{
+    padding-top:90px;
+}
+

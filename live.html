@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Live | Congreso Trascendentales 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ui-theme.css">
+  <style>
+    .live-shell{
+      display:grid;
+      gap:24px;
+    }
+
+    .live-hero{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:minmax(0,1.45fr) minmax(310px,.55fr);
+      gap:24px;
+      align-items:stretch;
+    }
+
+    .live-stage,
+    .live-panel,
+    .live-card{
+      background:rgba(255,250,245,.94);
+      border:1px solid rgba(255,255,255,.64);
+      border-radius:16px;
+      box-shadow:var(--ui-shadow);
+      backdrop-filter:blur(14px);
+    }
+
+    .live-stage{
+      overflow:hidden;
+      min-width:0;
+    }
+
+    .live-player{
+      position:relative;
+      aspect-ratio:16/9;
+      min-height:260px;
+      background:
+        linear-gradient(90deg,rgba(25,0,0,.82),rgba(75,0,0,.46)),
+        url("img/banner.jpg") center/cover no-repeat;
+      display:grid;
+      place-items:center;
+      color:white;
+      isolation:isolate;
+    }
+
+    .live-player iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      z-index:2;
+      background:#050505;
+    }
+
+    .live-placeholder{
+      width:min(720px,92%);
+      padding:28px;
+      text-align:center;
+      position:relative;
+      z-index:1;
+    }
+
+    .live-dot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      background:#e22025;
+      box-shadow:0 0 0 8px rgba(226,32,37,.18);
+      display:inline-block;
+      margin-right:10px;
+      vertical-align:middle;
+    }
+
+    .live-placeholder h2{
+      margin:18px 0 10px;
+      font-size:clamp(2.2rem,6vw,4.8rem);
+      line-height:.95;
+      text-transform:uppercase;
+    }
+
+    .live-placeholder p{
+      margin:0 auto;
+      max-width:62ch;
+      color:rgba(255,255,255,.9);
+      line-height:1.65;
+      font-size:1rem;
+    }
+
+    .live-meta{
+      padding:18px 20px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .live-title h1{
+      margin:0;
+      color:var(--ui-wine);
+      font-size:1.55rem;
+      line-height:1.1;
+    }
+
+    .live-title p{
+      margin:5px 0 0;
+      color:var(--ui-muted);
+    }
+
+    .live-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .live-panel{
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .live-panel h2,
+    .live-card h2{
+      margin:0 0 8px;
+      color:var(--ui-wine);
+      line-height:1.1;
+    }
+
+    .live-panel p,
+    .live-card p{
+      margin:0;
+      color:var(--ui-muted);
+      line-height:1.55;
+    }
+
+    .status-list{
+      display:grid;
+      gap:12px;
+    }
+
+    .status-item{
+      padding:14px;
+      border:1px solid var(--ui-border);
+      border-radius:14px;
+      background:linear-gradient(180deg,#fff,#fff8f1);
+    }
+
+    .status-item span{
+      display:block;
+      color:var(--ui-muted);
+      font-size:.82rem;
+      margin-bottom:5px;
+    }
+
+    .status-item strong{
+      display:block;
+      color:var(--ui-ink);
+      line-height:1.25;
+    }
+
+    .live-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .live-card{
+      padding:22px;
+    }
+
+    .live-card strong{
+      color:var(--ui-wine);
+    }
+
+    .live-input-row{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:10px;
+    }
+
+    .live-note{
+      margin-top:12px;
+      font-size:.92rem;
+      color:var(--ui-muted);
+    }
+
+    @media(max-width:980px){
+      .live-hero,
+      .live-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:620px){
+      .live-meta,
+      .live-actions,
+      .live-input-row{
+        display:grid;
+        grid-template-columns:1fr;
+      }
+
+      .live-actions .ui-btn{
+        width:100%;
+      }
+
+      .live-placeholder{
+        padding:20px;
+      }
+    }
+  </style>
+</head>
+<body class="ui-body">
+  <div class="ui-shell">
+    <header class="ui-topbar">
+      <div class="ui-brand">
+        <div class="ui-brand-mark"><img src="img/logo.png" alt="Logo UJECA"></div>
+        <div class="ui-brand-copy">
+          <h1>Live del congreso</h1>
+          <p>Trascendentales 2026</p>
+        </div>
+      </div>
+      <nav class="ui-nav">
+        <a href="home.html">Inicio</a>
+        <a href="form.html">Inscripcion</a>
+        <a href="Basedatos.html">Inscritos</a>
+        <a href="pasarelapago.html">Pagos</a>
+        <a href="Evento.html">Eventos</a>
+        <a href="contacto.html">Contacto</a>
+      </nav>
+    </header>
+
+    <main class="live-shell">
+      <section class="live-hero">
+        <article class="live-stage">
+          <div class="live-player" id="livePlayer">
+            <div class="live-placeholder" id="livePlaceholder">
+              <span class="ui-eyebrow"><i class="live-dot"></i>Transmision oficial</span>
+              <h2>En vivo</h2>
+              <p>Cuando el enlace oficial este listo, la transmision aparecera aqui para que el congreso se pueda ver desde cualquier lugar.</p>
+            </div>
+          </div>
+          <div class="live-meta">
+            <div class="live-title">
+              <h1>Congreso Juvenil Trascendentales</h1>
+              <p>5 al 8 de diciembre de 2026 · Cerizim - Sincelejo</p>
+            </div>
+            <div class="live-actions">
+              <a class="ui-btn primary" id="openLiveBtn" href="#" target="_blank" rel="noopener">Abrir live</a>
+              <button class="ui-btn soft" type="button" id="shareBtn">Compartir pagina</button>
+            </div>
+          </div>
+        </article>
+
+        <aside class="live-panel">
+          <div>
+            <span class="ui-eyebrow">Centro de transmision</span>
+            <h2>Acceso publico al evento</h2>
+            <p>Comparte esta pagina con los asistentes, familias e iglesias para seguir la transmision desde el navegador.</p>
+          </div>
+
+          <div class="status-list">
+            <div class="status-item"><span>Estado</span><strong id="liveStatus">Esperando enlace oficial</strong></div>
+            <div class="status-item"><span>Canal</span><strong id="liveChannel">YouTube, Facebook o enlace embebible</strong></div>
+            <div class="status-item"><span>Disponibilidad</span><strong>Celular, tablet y computador</strong></div>
+          </div>
+
+          <a class="ui-btn success" href="Evento.html">Ver programacion</a>
+        </aside>
+      </section>
+
+      <section class="live-grid">
+        <article class="live-card">
+          <h2>Enlace del directo</h2>
+          <p>Para activar el reproductor, pega el enlace de YouTube Live o el enlace embebible en la configuracion de esta pagina.</p>
+          <div class="live-input-row">
+            <input class="ui-input" id="manualLiveUrl" placeholder="Pegar enlace del live para probar">
+            <button class="ui-btn primary" type="button" id="previewBtn">Probar</button>
+          </div>
+          <div class="live-note" id="previewNote">La prueba funciona en este navegador; para dejarlo fijo edita la constante LIVE_URL.</div>
+        </article>
+
+        <article class="live-card">
+          <h2>Recomendacion</h2>
+          <p>Usa YouTube Live si quieres que se vea mejor en celulares y sea facil de compartir. Copia el enlace publico del directo y ponlo como <strong>LIVE_URL</strong>.</p>
+        </article>
+
+        <article class="live-card">
+          <h2>Plan B</h2>
+          <p>Si la plataforma no permite incrustar el video, el boton <strong>Abrir live</strong> llevara a las personas directamente al enlace oficial.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="ui-footer">(c) 2026 Union Juvenil Evangelica del Caribe</footer>
+  </div>
+
+  <script>
+    const LIVE_URL = "";
+    const LIVE_TITULO = "Congreso Juvenil Trascendentales 2026";
+
+    const player = document.getElementById("livePlayer");
+    const openLiveBtn = document.getElementById("openLiveBtn");
+    const shareBtn = document.getElementById("shareBtn");
+    const previewBtn = document.getElementById("previewBtn");
+    const manualLiveUrl = document.getElementById("manualLiveUrl");
+    const previewNote = document.getElementById("previewNote");
+    const liveStatus = document.getElementById("liveStatus");
+    const liveChannel = document.getElementById("liveChannel");
+
+    function obtenerEmbedUrl(url) {
+      const texto = String(url || "").trim();
+      if (!texto) return "";
+
+      try {
+        const parsed = new URL(texto);
+        const host = parsed.hostname.replace(/^www\./, "");
+
+        if (host === "youtu.be") {
+          const id = parsed.pathname.split("/").filter(Boolean)[0];
+          return id ? "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0" : "";
+        }
+
+        if (host.includes("youtube.com")) {
+          const videoId = parsed.searchParams.get("v");
+          if (videoId) return "https://www.youtube.com/embed/" + videoId + "?autoplay=1&rel=0";
+
+          const partes = parsed.pathname.split("/").filter(Boolean);
+          const liveIndex = partes.indexOf("live");
+          if (liveIndex >= 0 && partes[liveIndex + 1]) {
+            return "https://www.youtube.com/embed/" + partes[liveIndex + 1] + "?autoplay=1&rel=0";
+          }
+
+          if (partes[0] === "embed" && partes[1]) {
+            return texto;
+          }
+        }
+
+        return texto;
+      } catch {
+        return "";
+      }
+    }
+
+    function activarLive(url) {
+      const embedUrl = obtenerEmbedUrl(url);
+      if (!embedUrl) {
+        openLiveBtn.href = "#";
+        openLiveBtn.setAttribute("aria-disabled", "true");
+        liveStatus.textContent = "Esperando enlace oficial";
+        return false;
+      }
+
+      player.innerHTML = '<iframe src="' + embedUrl + '" title="' + LIVE_TITULO + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+      openLiveBtn.href = url;
+      openLiveBtn.removeAttribute("aria-disabled");
+      liveStatus.textContent = "Transmision disponible";
+      try {
+        liveChannel.textContent = new URL(url).hostname.replace(/^www\./, "");
+      } catch {
+        liveChannel.textContent = "Enlace externo";
+      }
+      return true;
+    }
+
+    previewBtn.addEventListener("click", () => {
+      const ok = activarLive(manualLiveUrl.value);
+      previewNote.textContent = ok
+        ? "Vista previa cargada. Para publicarlo fijo, pon este enlace en LIVE_URL."
+        : "El enlace no parece valido. Revisa que empiece por https://";
+    });
+
+    shareBtn.addEventListener("click", async () => {
+      const data = {
+        title: LIVE_TITULO,
+        text: "Mira el live oficial del Congreso Trascendentales 2026.",
+        url: window.location.href
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(data);
+          return;
+        }
+
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(window.location.href);
+          shareBtn.textContent = "Enlace copiado";
+          setTimeout(() => shareBtn.textContent = "Compartir pagina", 1800);
+          return;
+        }
+      } catch {
+        shareBtn.textContent = "Copia el enlace arriba";
+        setTimeout(() => shareBtn.textContent = "Compartir pagina", 1800);
+      }
+    });
+
+    activarLive(LIVE_URL);
+  </script>
+</body>
+</html>

@@ -3,740 +3,224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Acceso | Congreso Trascendentales 2026</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Cargando Plataforma...</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
-:root{
-  --bg:#080304;
-  --panel:#ffffff;
-  --text:#111111;
-  --muted:#686868;
-  --red:#ff3b30;
-  --red-deep:#c20d0d;
-  --red-soft:rgba(255,59,48,.14);
-  --line:rgba(255,255,255,.14);
-  --shadow:0 28px 90px rgba(0,0,0,.32);
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{
-  min-height:100vh;
-  font-family:'Outfit',sans-serif;
-  background:
-    linear-gradient(135deg, rgba(255,59,48,.16), transparent 34%),
-    linear-gradient(135deg,rgba(10,3,4,.94),rgba(47,4,6,.92)),
-    url("img/afiche-oficial-congreso-2026.jpeg") center/cover no-repeat fixed;
-  color:white;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(-45deg,#6a040f,#9d0208,#d00000,#dc2f02,#e85d04);
+background-size:400% 400%;
+animation:bgAnim 16s ease infinite;
+color:white;
+overflow:hidden;
+opacity:1;
 }
 
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    linear-gradient(90deg, rgba(0,0,0,.18) 1px, transparent 1px),
-    linear-gradient(rgba(0,0,0,.12) 1px, transparent 1px);
-  background-size:34px 34px;
-  opacity:.18;
-  pointer-events:none;
+/* Fondo animado */
+@keyframes bgAnim{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
 }
 
-.shell{
-  min-height:100vh;
-  padding:18px;
+/* Canvas */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
+
+/* Loader contenedor */
+.loader{
+text-align:center;
+padding:50px;
+border-radius:24px;
+background:rgba(255,255,255,.06);
+backdrop-filter:blur(20px);
+box-shadow:0 25px 70px rgba(0,0,0,.5);
+animation:fadeIn 1s ease;
 }
 
-.layout{
-  width:min(1520px,100%);
-  margin:0 auto;
-  display:grid;
-  grid-template-columns:minmax(0,1.65fr) minmax(360px,.95fr);
-  gap:18px;
-}
-
-.hero{
-  position:relative;
-  min-height:calc(100vh - 36px);
-  border-radius:24px;
-  overflow:hidden;
-  padding:34px 34px 0;
-  background:
-    linear-gradient(180deg, rgba(20,5,6,.36), rgba(20,5,6,.74)),
-    url("img/afiche-oficial-congreso-2026.jpeg") center/cover no-repeat;
-  box-shadow:var(--shadow);
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-.hero::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(180deg, rgba(255,68,56,.18), transparent 32%),
-    linear-gradient(180deg, rgba(11,4,5,.16), rgba(11,4,5,.55) 60%, rgba(11,4,5,.92));
-  pointer-events:none;
-}
-
-.hero-top,
-.hero-main,
-.hero-bottom{
-  position:relative;
-  z-index:1;
-}
-
-.hero-top{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:18px;
-}
-
+/* Logo con glow */
 .logo{
-  width:130px;
-  object-fit:contain;
-  filter:drop-shadow(0 10px 24px rgba(0,0,0,.28));
+width:140px;
+margin-bottom:25px;
+animation:float 4s ease-in-out infinite, glow 2.8s ease-in-out infinite;
+}
+@keyframes glow{
+0%,100%{filter:drop-shadow(0 0 5px rgba(255,255,255,.3))}
+50%{filter:drop-shadow(0 0 28px rgba(255,255,255,.9))}
+}
+@keyframes float{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-16px)}
 }
 
-.zone-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:12px;
-  padding:14px 22px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(26,10,12,.46);
-  backdrop-filter:blur(8px);
-  font-weight:800;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  font-size:1.05rem;
+/* Loader circular 3D */
+.circle{
+width:100px;height:100px;margin:20px auto;
+border-radius:50%;
+border:4px solid rgba(255,255,255,.15);
+border-top:4px solid white;
+animation:spin 1.2s linear infinite;
+box-shadow:0 0 35px rgba(255,255,255,.6);
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Texto typewriter */
+h1{font-weight:600;font-size:22px;min-height:30px;letter-spacing:.5px;}
+#estado{opacity:.85;font-size:15px;margin-top:8px;}
+
+/* Barra de progreso */
+.bar{
+width:280px;height:8px;
+background:rgba(255,255,255,.18);
+border-radius:30px;
+overflow:hidden;
+margin:20px auto 0 auto;
+}
+.fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#fff,#ffdede,#fff);
+background-size:200% 100%;
+animation:shine 2s linear infinite;
+box-shadow:0 0 20px rgba(255,255,255,.5);
+}
+@keyframes shine{
+0%{background-position:200% 0}
+100%{background-position:-200% 0}
 }
 
-.zone-pill::before{
-  content:"";
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:var(--red);
-  box-shadow:0 0 20px rgba(255,59,48,.7);
-}
+/* fade out */
+.fade-out{animation:out 1s forwards;}
+@keyframes out{to{opacity:0;transform:scale(1.1)}}
 
-.hero-main{
-  padding:28px 0 32px;
-  text-align:center;
-}
-
-.hero-main .overline{
-  color:#ff5f51;
-  font-size:2.8rem;
-  font-weight:700;
-}
-
-.hero-main h1{
-  margin-top:8px;
-  font-size:6.4rem;
-  line-height:.92;
-  font-weight:900;
-  letter-spacing:0;
-  text-transform:uppercase;
-  text-shadow:0 14px 30px rgba(0,0,0,.38);
-}
-
-.hero-accent{
-  width:92px;
-  height:8px;
-  border-radius:999px;
-  background:linear-gradient(90deg,var(--red),#ff6053);
-  margin:22px auto 24px;
-  box-shadow:0 0 22px rgba(255,59,48,.45);
-}
-
-.hero-copy{
-  max-width:760px;
-  margin:0 auto;
-  font-size:1.18rem;
-  line-height:1.65;
-  color:rgba(255,244,241,.92);
-}
-
-.feature-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:16px;
-  max-width:740px;
-  margin:30px auto 0;
-}
-
-.feature-card{
-  text-align:left;
-  padding:20px 18px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(41,11,13,.34);
-  backdrop-filter:blur(6px);
-  min-height:156px;
-}
-
-.feature-icon{
-  font-size:2rem;
-  line-height:1;
-}
-
-.feature-card span{
-  display:block;
-  margin-top:12px;
-  color:#ffb3aa;
-  font-size:.94rem;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-}
-
-.feature-card strong{
-  display:block;
-  margin-top:8px;
-  font-size:1.15rem;
-  line-height:1.45;
-}
-
-.cta{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  margin-top:30px;
-}
-
-.cta-button{
-  min-width:min(460px,100%);
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:14px;
-  padding:24px 28px;
-  border-radius:16px;
-  text-decoration:none;
-  color:white;
-  font-size:1.2rem;
-  font-weight:900;
-  background:linear-gradient(180deg,#ff4034,#d90f0f);
-  box-shadow:0 22px 46px rgba(255,59,48,.28);
-}
-
-.cta-note{
-  margin-top:18px;
-  color:rgba(255,241,237,.9);
-  font-size:1.02rem;
-}
-
-.hero-bottom{
-  margin:34px -34px 0;
-  padding:26px 34px 30px;
-  border-top:1px solid rgba(255,90,80,.36);
-  background:linear-gradient(180deg,rgba(36,11,13,.72),rgba(20,8,9,.9));
-}
-
-.bottom-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:20px;
-}
-
-.bottom-item{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:16px;
-  align-items:start;
-}
-
-.bottom-icon{
-  color:#ff473a;
-  font-size:2rem;
-}
-
-.bottom-item span{
-  display:block;
-  color:#ffb9b1;
-  font-size:.95rem;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  margin-bottom:8px;
-}
-
-.bottom-item strong{
-  display:block;
-  font-size:1.08rem;
-  line-height:1.45;
-}
-
-.status-panel{
-  min-height:calc(100vh - 36px);
-  background:rgba(255,255,255,.96);
-  border-radius:24px;
-  box-shadow:var(--shadow);
-  padding:32px 32px 26px;
-  color:var(--text);
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-.status-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:18px;
-}
-
-.status-logo{
-  width:70px;
-  height:70px;
-  border-radius:20px;
-  background:linear-gradient(180deg,#fff,#fff7f4);
-  box-shadow:0 14px 30px rgba(0,0,0,.08);
-  padding:12px;
-}
-
-.status-logo img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-
-.access-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  padding:14px 18px;
-  border-radius:16px;
-  background:#fff;
-  box-shadow:0 10px 26px rgba(0,0,0,.08);
-  color:var(--red-deep);
-  font-weight:800;
-  text-transform:uppercase;
-}
-
-.status-copy h2{
-  margin:28px 0 12px;
-  font-size:3rem;
-  line-height:1.05;
-}
-
-.status-copy p{
-  color:var(--muted);
-  font-size:1.03rem;
-  line-height:1.7;
-}
-
-.system-box{
-  margin-top:28px;
-  padding:26px;
-  border-radius:24px;
-  background:linear-gradient(180deg,#fff,#fcfaf9);
-  box-shadow:0 12px 34px rgba(0,0,0,.08);
-}
-
-.system-box small{
-  display:block;
-  color:#8a8a8a;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  font-weight:700;
-}
-
-#texto{
-  margin-top:12px;
-  font-size:1.18rem;
-  line-height:1.22;
-  min-height:3.1rem;
-  font-weight:800;
-}
-
-#estado{
-  margin-top:8px;
-  color:#6f6f6f;
-  font-size:1rem;
-}
-
-.progress-line{
-  margin-top:18px;
-  height:12px;
-  background:#ededed;
-  border-radius:999px;
-  overflow:hidden;
-}
-
-.progress-fill{
-  width:0;
-  height:100%;
-  border-radius:999px;
-  background:linear-gradient(90deg,var(--red-deep),#ff5a4f);
-}
-
-.progress-meta{
-  margin-top:12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-}
-
-.sync-line{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  color:#575757;
-  font-size:1rem;
-}
-
-.sync-line::before{
-  content:"";
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:var(--red);
-}
-
-#porcentaje{
-  font-weight:800;
-  font-size:1.2rem;
-}
-
-.steps{
-  margin-top:28px;
-  display:grid;
-  gap:18px;
-}
-
-.step{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:16px;
-  align-items:start;
-  padding-bottom:18px;
-  border-bottom:1px solid #ece9e7;
-}
-
-.step:last-child{
-  padding-bottom:0;
-  border-bottom:none;
-}
-
-.step-num{
-  width:40px;
-  height:40px;
-  border-radius:14px;
-  background:#ffe7e4;
-  color:var(--red-deep);
-  display:grid;
-  place-items:center;
-  font-weight:900;
-}
-
-.step strong{
-  display:block;
-  font-size:1.06rem;
-  margin-bottom:6px;
-}
-
-.step span{
-  color:var(--muted);
-  line-height:1.6;
-}
-
-.help{
-  margin-top:28px;
-  padding-top:18px;
-  border-top:1px solid #ece9e7;
-  color:var(--muted);
-}
-
-.help strong{
-  display:block;
-  color:var(--text);
-  font-size:1.1rem;
-  margin-bottom:6px;
-}
-
-.fade-out{
-  animation:fadeOut .8s forwards;
-}
-
-@keyframes fadeOut{
-  to{
-    opacity:0;
-    transform:translateY(18px);
-  }
-}
-
-@media(max-width:1180px){
-  .layout{
-    grid-template-columns:1fr;
-  }
-  .hero,
-  .status-panel{
-    min-height:auto;
-  }
-}
-
-@media(max-width:760px){
-  .shell{padding:12px}
-  .hero,
-  .status-panel{
-    border-radius:26px;
-  }
-  .hero{
-    padding:22px 22px 0;
-  }
-  .hero-bottom{
-    margin:28px -22px 0;
-    padding:22px;
-  }
-  .hero-top{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-  .hero-main{
-    text-align:left;
-  }
-  .hero-accent{
-    margin:18px 0 22px;
-  }
-  .feature-grid,
-  .bottom-grid{
-    grid-template-columns:1fr;
-  }
-  .cta{
-    align-items:stretch;
-  }
-  .cta-button{
-    min-width:100%;
-  }
-  .status-panel{
-    padding:22px;
-  }
-  .status-copy h2{
-    font-size:2.3rem;
-  }
-  .hero-main .overline{
-    font-size:1.85rem;
-  }
-  .hero-main h1{
-    font-size:3.35rem;
-  }
-  .hero-copy{
-    font-size:1.05rem;
-  }
-}
+@keyframes fadeIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 </style>
 </head>
+
 <body>
-<main class="shell">
-  <section class="layout" id="loader">
-    <article class="hero">
-      <div class="hero-top">
-        <img src="img/logo.png" alt="Logo UJECA" class="logo">
-        <div class="zone-pill">Circuito 2 · Zona 6</div>
-      </div>
+<canvas id="particles"></canvas>
 
-      <div class="hero-main">
-        <div class="overline">Congreso Juvenil 2026</div>
-        <h1>Trascendentales</h1>
-        <div class="hero-accent"></div>
-        <p class="hero-copy">Una apertura visual pensada para marcar el tono del congreso desde el primer segundo: más carácter, más identidad y una experiencia mejor cuidada para recibir a cada inscrito.</p>
-
-        <div class="feature-grid">
-          <div class="feature-card">
-            <div class="feature-icon">🗓️</div>
-            <span>Fecha</span>
-            <strong>5 al 8 de diciembre de 2026</strong>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">📍</div>
-            <span>Lugar</span>
-            <strong>Cerizim - Sincelejo</strong>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">✝</div>
-            <span>Lema</span>
-            <strong>Fe + Acción</strong>
-          </div>
-        </div>
-
-        <div class="cta">
-          <a href="form.html" class="cta-button">INSCRIBETE HOY</a>
-          <div class="cta-note">Únete a cientos de jóvenes que vivirán esta experiencia única</div>
-        </div>
-      </div>
-
-      <div class="hero-bottom">
-  <div class="bottom-grid">
-
-    <div class="bottom-item">
-      <div class="bottom-icon">
-        <!-- Calendar -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-      </div>
-      <div>
-        <span>Fecha</span>
-        <strong>5 al 8 de diciembre de 2026</strong>
-      </div>
-    </div>
-
-    <div class="bottom-item">
-      <div class="bottom-icon">
-        <!-- Location -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg>
-      </div>
-      <div>
-        <span>Lugar</span>
-        <strong>Cerizim - Sincelejo, Unidad zonal Enea</strong>
-      </div>
-    </div>
-
-    <div class="bottom-item">
-      <div class="bottom-icon">
-        <!-- Users -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M9 21v-2a4 4 0 0 1 3-3.87"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-      </div>
-      <div>
-        <span>Invita</span>
-        <strong>Circuito 2 - Zona 6<br>Iglesia Cristiana Shekinah</strong>
-      </div>
-    </div>
-
-  </div>
+<div class="loader" id="loader">
+<img src="img/logo.png" class="logo">
+<h1 id="texto"></h1>
+<div class="circle"></div>
+<p id="estado">Iniciando...</p>
+<div class="bar"><div class="fill" id="fill"></div></div>
 </div>
-    </article>
 
-    <aside class="status-panel">
-      <div>
-        <div class="status-head">
-          <div class="status-logo"><img src="img/logo.png" alt="Logo"></div>
-          <div class="access-pill">🛡 Acceso oficial</div>
-        </div>
+<audio id="startupSound" src="audio/soundreality-hold-on-beat-408795.mp3" autoplay></audio>
 
-        <div class="status-copy">
-          <h2>Preparando la plataforma del congreso</h2>
-          <p>Estamos cargando la experiencia de registro, pagos, consulta y control general del evento. Todo se está organizando para que el ingreso sea rápido y claro.</p>
-        </div>
-
-        <div class="system-box">
-          <small>Estado del sistema</small>
-          <div id="texto"></div>
-          <div id="estado">Iniciando...</div>
-          <div class="progress-line"><div class="progress-fill" id="fill"></div></div>
-          <div class="progress-meta">
-            <span class="sync-line">Sincronizando módulos</span>
-            <strong id="porcentaje">0%</strong>
-          </div>
-        </div>
-
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">01</div>
-            <div>
-              <strong>Identidad del congreso</strong>
-              <span>Se carga el entorno visual oficial para conservar coherencia con el afiche y el lema del evento.</span>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">02</div>
-            <div>
-              <strong>Registro y consultas</strong>
-              <span>Se preparan los formularios, el listado de inscritos y la conexión con la base del congreso.</span>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">03</div>
-            <div>
-              <strong>Ingreso al panel principal</strong>
-              <span>Al finalizar la carga te llevamos automáticamente a la página inicial del sistema.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="help">
-        <strong>¿Necesitas ayuda?</strong>
-        <span>Escríbenos y te asistimos en el proceso.</span>
-      </div>
-    </aside>
-  </section>
-</main>
 
 <script>
+/* ================= TEXTO TYPEWRITER ================= */
 const mensajes=[
-  "Cargando identidad del congreso",
-  "Sincronizando pagos y participantes",
-  "Preparando consultas y registros",
-  "Verificando configuración general",
-  "Abriendo plataforma principal"
+"Iniciando plataforma",
+"Cargando módulos del sistema",
+"Conectando base de datos",
+"Verificando cupos disponibles",
+"Optimizando experiencia",
+"Todo listo"
 ];
 
-let i=0;
-let j=0;
+let i=0,j=0;
 const texto=document.getElementById("texto");
 const estado=document.getElementById("estado");
 const fill=document.getElementById("fill");
-const porcentaje=document.getElementById("porcentaje");
 const sound=document.getElementById("startupSound");
 
 function escribir(){
-  if(i<mensajes.length){
+if(i<mensajes.length){
     if(j<mensajes[i].length){
-      texto.innerHTML+=mensajes[i][j];
-      j++;
-      setTimeout(escribir,20);
+        texto.innerHTML+=mensajes[i][j];
+        j++;
+        setTimeout(escribir,30);
     }else{
-      estado.innerText="Paso "+(i+1)+" de "+mensajes.length;
-      i++;
-      j=0;
-      setTimeout(()=>{
+        estado.innerText="Paso "+(i+1)+" de "+mensajes.length;
+        i++; j=0;
         texto.innerHTML="";
-        escribir();
-      },420);
+        setTimeout(escribir,600);
     }
-  }else{
-    texto.innerHTML="Todo listo para ingresar";
-    estado.innerText="Redirigiendo al inicio";
-    finalizar();
-  }
+}else finalizar();
 }
 escribir();
 
+/* ================= PROGRESO REAL ================= */
 let progreso=0;
 const intervalo=setInterval(()=>{
-  progreso=Math.min(progreso+(100/(mensajes.length*12)),100);
-  fill.style.width=progreso+"%";
-  porcentaje.innerText=Math.round(progreso)+"%";
+progreso+=100/(mensajes.length*12);
+fill.style.width=progreso+"%";
 },70);
 
+/* ================= FINAL CINEMATIC ================= */
 function finalizar(){
-  clearInterval(intervalo);
-  fill.style.width="100%";
-  porcentaje.innerText="100%";
-  setTimeout(()=>{
-    if(sound) sound.play().catch(()=>{});
-    document.getElementById("loader").classList.add("fade-out");
-    setTimeout(()=>location.href="home.html",800);
-  },520);
+clearInterval(intervalo);
+setTimeout(()=>{
+// reproducir sonido
+if(sound) sound.play().catch(()=>{});
+// fade out
+document.getElementById("loader").classList.add("fade-out");
+document.body.style.transition="opacity .8s ease";
+document.body.style.opacity="0";
+// transición final épica
+setTimeout(()=>location.href="home.html",800);
+},500);
 }
+
+/* ================= PARTICULAS 3D CON LINEAS ================= */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+
+function resize(){canvas.width=innerWidth; canvas.height=innerHeight;}
+resize();
+addEventListener("resize",resize);
+
+let p=[];
+for(let k=0;k<100;k++){
+p.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+z:Math.random()*1.5+0.5,
+vx:(Math.random()-.5)*0.5,
+vy:(Math.random()-.5)*0.5
+});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+/* puntos 3D */
+p.forEach(pt=>{
+pt.x+=pt.vx; pt.y+=pt.vy;
+if(pt.x<0||pt.x>canvas.width)pt.vx*=-1;
+if(pt.y<0||pt.y>canvas.height)pt.vy*=-1;
+ctx.beginPath();
+ctx.arc(pt.x,pt.y,pt.z*2,0,Math.PI*2);
+ctx.fillStyle="rgba(255,255,255,"+pt.z/2+")";
+ctx.fill();
+});
+
+/* lineas conectadas */
+for(let a=0;a<p.length;a++){
+for(let b=a+1;b<p.length;b++){
+let dx=p[a].x-p[b].x, dy=p[a].y-p[b].y;
+let d=Math.sqrt(dx*dx+dy*dy);
+if(d<140){
+ctx.strokeStyle="rgba(255,255,255,"+(1-d/140)*0.25+")";
+ctx.lineWidth=.7;
+ctx.beginPath();
+ctx.moveTo(p[a].x,p[a].y);
+ctx.lineTo(p[b].x,p[b].y);
+ctx.stroke();
+}
+}
+}
+requestAnimationFrame(draw);
+}
+draw();
 </script>
 </body>
 </html>
