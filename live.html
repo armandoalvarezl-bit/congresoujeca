@@ -169,12 +169,19 @@
 
     .live-grid{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:1fr;
       gap:16px;
     }
 
     .live-card{
       padding:22px;
+    }
+
+    .intro-video-card{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:18px;
+      align-items:center;
     }
 
     .live-card strong{
@@ -188,6 +195,13 @@
       gap:10px;
     }
 
+    .video-upload{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+
     .live-note{
       margin-top:12px;
       font-size:.92rem;
@@ -196,8 +210,13 @@
 
     @media(max-width:980px){
       .live-hero,
-      .live-grid{
+      .live-grid,
+      .intro-video-card{
         grid-template-columns:1fr;
+      }
+
+      .video-upload{
+        justify-content:flex-start;
       }
     }
 
@@ -278,42 +297,24 @@
         </aside>
       </section>
 
-      <section class="live-grid">
-        <article class="live-card">
-          <h2>Enlace del directo</h2>
-          <p>Para activar el reproductor, pega el enlace de YouTube Live o el enlace embebible en la configuracion de esta pagina.</p>
-          <div class="live-input-row">
-            <input class="ui-input" id="manualLiveUrl" placeholder="Pegar enlace del live para probar">
-            <button class="ui-btn primary" type="button" id="previewBtn">Probar</button>
-          </div>
-          <div class="live-note" id="previewNote">La prueba funciona en este navegador; para dejarlo fijo edita la constante LIVE_URL.</div>
-        </article>
-
-        <article class="live-card">
-          <h2>Recomendacion</h2>
-          <p>Usa YouTube Live si quieres que se vea mejor en celulares y sea facil de compartir. Copia el enlace publico del directo y ponlo como <strong>LIVE_URL</strong>.</p>
-        </article>
-
-        <article class="live-card">
-          <h2>Plan B</h2>
-          <p>Si la plataforma no permite incrustar el video, el boton <strong>Abrir live</strong> llevara a las personas directamente al enlace oficial.</p>
-        </article>
-      </section>
+      
     </main>
 
     <footer class="ui-footer">(c) 2026 Union Juvenil Evangelica del Caribe</footer>
   </div>
 
   <script>
-    const LIVE_URL = "";
+    const LIVE_URL = "https://www.youtube.com/watch?v=FmAd3Ljn42A";
+    const INTRO_VIDEO_URL = "videos/intro-congreso.mp4";
+    const INTRO_VIDEO_LINK = "";
     const LIVE_TITULO = "Congreso Juvenil Trascendentales 2026";
 
     const player = document.getElementById("livePlayer");
     const openLiveBtn = document.getElementById("openLiveBtn");
     const shareBtn = document.getElementById("shareBtn");
-    const previewBtn = document.getElementById("previewBtn");
-    const manualLiveUrl = document.getElementById("manualLiveUrl");
-    const previewNote = document.getElementById("previewNote");
+    const playIntroVideoBtn = document.getElementById("playIntroVideoBtn");
+    const clearIntroVideoBtn = document.getElementById("clearIntroVideoBtn");
+    const introVideoNote = document.getElementById("introVideoNote");
     const liveStatus = document.getElementById("liveStatus");
     const liveChannel = document.getElementById("liveChannel");
 
@@ -372,12 +373,38 @@
       return true;
     }
 
-    previewBtn.addEventListener("click", () => {
-      const ok = activarLive(manualLiveUrl.value);
-      previewNote.textContent = ok
-        ? "Vista previa cargada. Para publicarlo fijo, pon este enlace en LIVE_URL."
-        : "El enlace no parece valido. Revisa que empiece por https://";
+    function activarVideoIntro(src, nombre = "Video introductorio") {
+      if (!src) return false;
+      player.innerHTML = '<video src="' + src + '" controls playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#050505;"></video>';
+      liveStatus.textContent = "Video introductorio disponible";
+      liveChannel.textContent = nombre;
+      if (INTRO_VIDEO_LINK) {
+        openLiveBtn.href = INTRO_VIDEO_LINK;
+        openLiveBtn.removeAttribute("aria-disabled");
+      } else {
+        openLiveBtn.href = "#";
+        openLiveBtn.setAttribute("aria-disabled", "true");
+      }
+      return true;
+    }
+
+    function limpiarVideoIntro() {
+      player.innerHTML = '<div class="live-placeholder" id="livePlaceholder"><span class="ui-eyebrow"><i class="live-dot"></i>Transmision oficial</span><h2>En vivo</h2><p>Cuando el enlace oficial este listo, la transmision aparecera aqui para que el congreso se pueda ver desde cualquier lugar.</p></div>';
+      liveStatus.textContent = "Esperando enlace oficial";
+      liveChannel.textContent = "YouTube, Facebook o enlace embebible";
+      openLiveBtn.href = "#";
+      openLiveBtn.setAttribute("aria-disabled", "true");
+      introVideoNote.textContent = "Video oculto. Para mostrarlo de nuevo usa Reproducir intro.";
+    }
+
+    playIntroVideoBtn.addEventListener("click", () => {
+      const ok = activarVideoIntro(INTRO_VIDEO_URL, "Video interno");
+      introVideoNote.textContent = ok
+        ? "Reproduciendo video interno. Ruta actual: " + INTRO_VIDEO_URL
+        : "Configura INTRO_VIDEO_URL con la ruta del archivo o INTRO_VIDEO_LINK con un enlace externo.";
     });
+
+    clearIntroVideoBtn.addEventListener("click", limpiarVideoIntro);
 
     shareBtn.addEventListener("click", async () => {
       const data = {
@@ -404,7 +431,10 @@
       }
     });
 
-    activarLive(LIVE_URL);
+    if (!activarLive(LIVE_URL)) {
+      const intro = INTRO_VIDEO_LINK || INTRO_VIDEO_URL;
+      if (intro) activarVideoIntro(intro, INTRO_VIDEO_LINK ? "Video externo" : "Video interno");
+    }
   </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 const SPREADSHEET_ID = "PEGA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET";
 const HOJA_INSCRIPCIONES = "Inscripciones2026";
-const HOJA_PAGOS = "Pagos2026";
+const HOJA_PAGOS = "PagosIndividuales2026";
 
 const COLUMNAS_INSCRIPCIONES = [
   "FechaRegistro",
@@ -47,6 +47,14 @@ const COLUMNAS_PAGOS = [
   "LiderAsignado",
   "Organizador",
   "MedioPago",
+  "ValorCongreso",
+  "DeseaCamisa",
+  "TipoCamiseta",
+  "TallaCamisa",
+  "ColorCamisa",
+  "ValorCamisa",
+  "DescuentoAplicado",
+  "ValorTotal",
   "ValorAbono",
   "FechaPago",
   "ReferenciaPago",

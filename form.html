@@ -125,7 +125,7 @@ padding-top:8px;
 .btn-cancelar{background:#6b7280;}
 .btn-cancelar:hover{background:#4b5563;}
 
-.ticket-descuento{
+.ticket-pago{
 margin-top:18px;
 padding:18px;
 border-radius:16px;
@@ -134,12 +134,12 @@ border:1px dashed #d60000;
 color:#7a1c1c;
 text-align:left;
 }
-.ticket-descuento strong{
+.ticket-pago strong{
 display:block;
 font-size:18px;
 margin-bottom:6px;
 }
-.ticket-descuento span{
+.ticket-pago span{
 display:block;
 font-size:14px;
 margin-top:3px;
@@ -366,7 +366,7 @@ flex-direction:column;
 <h2>Inscripción Confirmada</h2>
 <h2>Estimado campista, tu inscripción ha sido registrada exitosamente.</h2>
 <p id="modalMensaje"></p>
-<div id="ticketDescuento" class="ticket-descuento" style="display:none;"></div>
+<div id="ticketPago" class="ticket-pago" style="display:none;"></div>
 <button onclick="cerrarModal()">Cerrar</button>
 </div>
 </div>
@@ -378,21 +378,59 @@ let datosFormulario=null;
 let totalInscritosActual=0;
 let registrosExistentes=[];
 const STORAGE_ROTACION_LIDERES="ujeca_rotacion_lideres";
-const LIMITE_DESCUENTO=50;
-const PORCENTAJE_DESCUENTO=10;
-const MAX_DESCUENTOS_POR_IGLESIA=2;
-const MAX_DESCUENTOS_POR_TELEFONO=1;
+const LIDER_KATE="Katherine Bermudez - Coordinadora General - UJECA - +57 319 4480759";
+const LIDER_ANDRES="Andres Miranda";
+const LIDER_MELANIA="Melania Angulo - Area Tesoreria - +57 321 6818450";
+const LIDER_EDINSON="Edinson Banquet - Fiscalia Circuital - +57 311 4285949";
+const IGLESIAS_POR_LIDER=[
+    {
+        lider:LIDER_ANDRES,
+        iglesias:[
+            "bethel",
+            "la_bendicion_de_dios",
+            "bendicion_de_dios"
+        ]
+    },
+    {
+        lider:LIDER_KATE,
+        iglesias:[
+            "cristo_bine",
+            "cristo_bien",
+            "cristo_vive",
+            "cristo_viene",
+            "filadelfia",
+            "icacales"
+        ]
+    },
+    {
+        lider:LIDER_MELANIA,
+        iglesias:[
+            "cristo_el_rey",
+            "luz_y_vida"
+        ]
+    },
+    {
+        lider:LIDER_EDINSON,
+        iglesias:[
+            "jobo",
+            "escarralao",
+            "nuevo_belen",
+            "nuebo_belen"
+        ]
+    }
+];
 const LIDERES_POR_ZONA={
     el_bagre:[
-        "Katherine Bermudez - Coordinadora General - UJECA - +57 319 4480759",
-        "Melania Angulo - Area Tesoreria - +57 321 6818450",
+        LIDER_KATE,
+        LIDER_ANDRES,
+        LIDER_MELANIA,
         "Camila Urango - Secretaria - +57 312 6344615"
     ],
     zonas_rurales:[
-        "Edinson Banquet - Fiscalia Circuital - +57 311 4285949"
+        LIDER_EDINSON
     ],
     default:[
-        "Katherine Bermudez - Coordinadora General - UJECA - +57 319 4480759"
+        LIDER_KATE
     ]
 };
 
@@ -419,6 +457,16 @@ function mostrarNombreZona(claveZona){
     return claveZona
         .replace(/_/g," ")
         .replace(/\b\w/g,(letra)=>letra.toUpperCase());
+}
+
+function obtenerLiderPorIglesia(datos){
+    const iglesia=normalizarTexto(datos.Iglesia);
+    if(!iglesia) return "";
+
+    const asignacion=IGLESIAS_POR_LIDER.find((grupo)=>
+        grupo.iglesias.some((clave)=>iglesia.includes(clave))
+    );
+    return asignacion ? asignacion.lider : "";
 }
 
 function obtenerClaveZona(datos){
@@ -499,7 +547,7 @@ function actualizarZonaYLider(){
     const datos=Object.fromEntries(new FormData(form).entries());
     const claveZona=obtenerClaveZona(datos);
     const registrosZona=registrosExistentes.filter((item)=>obtenerClaveZona(item)===claveZona);
-    const lider=obtenerLiderMenosRepetido(claveZona, registrosZona);
+    const lider=obtenerLiderPorIglesia(datos) || obtenerLiderMenosRepetido(claveZona, registrosZona);
     document.getElementById("zonaAsignada").value=mostrarNombreZona(claveZona);
     document.getElementById("liderAsignado").value=lider;
 }
@@ -603,33 +651,6 @@ async function cargarCupos(){
 }
 cargarCupos();
 
-function definirDescuentoAleatorio(datos){
-    const puestoEstimado=totalInscritosActual+1;
-    if(puestoEstimado>LIMITE_DESCUENTO){
-        return {aplica:false, puesto:puestoEstimado};
-    }
-
-    const documentoActual=String(datos.Documento || "").trim();
-    const telefonoActual=String(datos.Telefono || "").trim();
-    const iglesiaActual=normalizarTexto(datos.Iglesia);
-    const descuentosPrevios=(registrosExistentes || []).filter((item)=>(item.AplicaDescuento || item.aplicaDescuento)==="Si");
-    const descuentosIglesia=descuentosPrevios.filter((item)=>normalizarTexto(item.Iglesia)===iglesiaActual).length;
-    const descuentosTelefono=descuentosPrevios.filter((item)=>String(item.Telefono || "").trim()===telefonoActual).length;
-    const personaYaInscrita=registrosExistentes.some((item)=>String(item.Documento || "").trim()===documentoActual);
-
-    if(personaYaInscrita || descuentosIglesia>=MAX_DESCUENTOS_POR_IGLESIA || descuentosTelefono>=MAX_DESCUENTOS_POR_TELEFONO){
-        return {aplica:false, puesto:puestoEstimado};
-    }
-
-    const cuposRestantes=Math.max(LIMITE_DESCUENTO-descuentosPrevios.length,0);
-    const personasRestantes=Math.max(LIMITE_DESCUENTO-totalInscritosActual,1);
-    const probabilidad=Math.min(cuposRestantes/personasRestantes,1);
-    return {
-        aplica:Math.random()<probabilidad,
-        puesto:puestoEstimado
-    };
-}
-
 function prepararEnvio(){
     let form=document.getElementById("formulario");
     if(!form.reportValidity()) return;
@@ -645,10 +666,9 @@ function prepararEnvio(){
     datos.hoja=window.UJECA_HOJA_INSCRIPCIONES;
     datos.HojaDestino=window.UJECA_HOJA_INSCRIPCIONES;
     datos.FechaRegistro=new Date().toISOString();
-    const resultadoDescuento=definirDescuentoAleatorio(datos);
-    datos.Puesto=resultadoDescuento.puesto;
-    datos.AplicaDescuento=resultadoDescuento.aplica ? "Si" : "No";
-    datos.DescuentoPorcentaje=resultadoDescuento.aplica ? PORCENTAJE_DESCUENTO : 0;
+    datos.Puesto=totalInscritosActual+1;
+    datos.AplicaDescuento="No";
+    datos.DescuentoPorcentaje=0;
     datos.ZonaAsignada=datos.ZonaAsignada || document.getElementById("zonaAsignada").value || "Zona general";
     datos.LiderAsignado=datos.LiderAsignado || document.getElementById("liderAsignado").value || "Coordinacion General Zona 6";
     mostrarConfirmacion(datos);
@@ -691,13 +711,6 @@ function mostrarConfirmacion(datos){
                 <span>${datos[k]}</span>
             </div>`;
         }
-    }
-    if(datos.AplicaDescuento==="Si"){
-        html+=`
-        <div class="dato-item">
-            <span class="dato-label">Beneficio</span>
-            <span>${datos.DescuentoPorcentaje}% de descuento asignado de forma aleatoria y equilibrada</span>
-        </div>`;
     }
     if(datos.LiderAsignado){
         html+=`
@@ -748,7 +761,7 @@ async function enviarInscripcion(){
 
         guardarRegistroLocalUJECA(datosFormulario);
         document.getElementById("modalMensaje").innerHTML="Codigo: "+(j.codigo || "Pendiente de asignacion");
-        mostrarTicketDescuento(datosFormulario, j.codigo || "");
+        mostrarResumenPago(datosFormulario, j.codigo || "");
         document.getElementById("modal").style.display="flex";
         document.getElementById("Estado").innerHTML="Inscripcion registrada correctamente.";
         limpiarFormulario();
@@ -759,24 +772,24 @@ async function enviarInscripcion(){
             EstadoRegistro:"Pendiente de sincronizacion"
         });
         document.getElementById("modalMensaje").innerHTML="Tu registro quedo guardado en este equipo. Error: "+error.message;
-        mostrarTicketDescuento(datosFormulario, "");
+        mostrarResumenPago(datosFormulario, "");
         document.getElementById("modal").style.display="flex";
         document.getElementById("Estado").innerHTML="Fallo el envio al Excel en linea; se guardo una copia local.";
         cargarCupos();
     }
 }
 
-function mostrarTicketDescuento(datos, codigo){
-    const ticket=document.getElementById("ticketDescuento");
-    if(datos && (datos.AplicaDescuento==="Si" || datos.LiderAsignado)){
+function mostrarResumenPago(datos, codigo){
+    const ticket=document.getElementById("ticketPago");
+    if(datos && datos.LiderAsignado){
         ticket.style.display="block";
         ticket.innerHTML=`
-            <strong>Ticket promocional de descuento</strong>
+            <strong>Resumen de pago</strong>
             <span>Campista: ${datos.Nombre || "Sin nombre"}</span>
             <span>Codigo: ${codigo || "Pendiente de asignacion"}</span>
             <span>Zona asignada: ${datos.ZonaAsignada || "Zona general"}</span>
             <span>Lider para pago: ${datos.LiderAsignado || "Coordinacion General Zona 6"}</span>
-            <span>${datos.AplicaDescuento==="Si" ? `Beneficio: ${datos.DescuentoPorcentaje || PORCENTAJE_DESCUENTO}% de descuento asignado de forma aleatoria y equilibrada.` : "Beneficio: sin descuento asignado en este registro."}</span>
+            <span>Valor congreso: $500.000${datos.DeseaCamisa==="Si" ? " + camiseta $35.000" : ""}</span>
         `;
     }else{
         ticket.style.display="none";
