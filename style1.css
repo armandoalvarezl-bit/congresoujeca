@@ -33,7 +33,7 @@ padding:40px 20px;
     content:"";
     position:fixed;
     inset:0;
-    background:url("img/fondo.jpg") center/cover no-repeat;
+    background:url("img/banner.jpg") center/cover no-repeat;
     filter:blur(10px) brightness(0.75);
     transform:scale(1.1); /* evita bordes blancos al difuminar */
     z-index:-2;

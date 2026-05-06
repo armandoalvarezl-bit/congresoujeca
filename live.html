@@ -7,47 +7,176 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="ui-theme.css">
+  <link rel="stylesheet" href="responsive-fixes.css">
   <style>
-    .live-shell{
-      display:grid;
+    :root{
+      --live-red:#f22b31;
+      --live-red-dark:#a8060d;
+      --live-green:#20c451;
+      --live-bg:#060606;
+      --live-panel:#141414;
+      --live-line:rgba(255,255,255,.14);
+      --live-text:#f7f7f7;
+      --live-muted:rgba(255,255,255,.72);
+      --live-soft:rgba(255,255,255,.06);
+      --live-shadow:0 28px 80px rgba(0,0,0,.42);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:'Outfit',sans-serif;
+      color:var(--live-text);
+      background:
+        radial-gradient(circle at 10% 10%,rgba(242,43,49,.16),transparent 28%),
+        radial-gradient(circle at 88% 22%,rgba(0,136,255,.08),transparent 28%),
+        linear-gradient(180deg,#120204 0,#070707 34%,#050505 100%);
+      overflow-x:hidden;
+    }
+
+    a{text-decoration:none;color:inherit}
+
+    .live-wrap{
+      width:min(1510px,100%);
+      margin:0 auto;
+      padding:0 42px 28px;
+    }
+
+    .live-topbar{
+      min-height:96px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       gap:24px;
+      border-bottom:1px solid rgba(255,255,255,.08);
     }
 
-    .live-hero{
-      margin-top:14px;
+    .live-brand{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      min-width:320px;
+    }
+
+    .live-brand img{
+      width:78px;
+      height:58px;
+      object-fit:contain;
+      filter:drop-shadow(0 12px 24px rgba(0,0,0,.45));
+      flex:none;
+    }
+
+    .brand-sep{
+      width:1px;
+      height:44px;
+      background:rgba(255,255,255,.18);
+    }
+
+    .live-brand span{
+      display:block;
+      color:var(--live-red);
+      font-size:.9rem;
+      font-weight:900;
+      text-transform:uppercase;
+      line-height:1.1;
+    }
+
+    .live-brand strong{
+      display:block;
+      margin-top:6px;
+      font-size:1.18rem;
+      line-height:1.05;
+      font-weight:900;
+    }
+
+    .live-nav{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .live-nav a{
+      min-width:92px;
+      min-height:48px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:13px 16px;
+      border-radius:15px;
+      color:white;
+      font-weight:800;
+      transition:.2s ease;
+    }
+
+    .live-nav a:hover,
+    .live-nav a.active{
+      color:var(--live-red);
+      background:rgba(242,43,49,.08);
+      box-shadow:0 0 32px rgba(242,43,49,.18);
+    }
+
+    .official-btn{
+      min-height:52px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding:14px 24px;
+      border-radius:12px;
+      color:white;
+      font-weight:900;
+      background:linear-gradient(180deg,#ff383d,#d9151b);
+      box-shadow:0 14px 34px rgba(242,43,49,.28);
+      white-space:nowrap;
+    }
+
+    .live-main{
       display:grid;
-      grid-template-columns:minmax(0,1.45fr) minmax(310px,.55fr);
-      gap:24px;
-      align-items:stretch;
+      grid-template-columns:minmax(0,1.9fr) minmax(360px,.95fr);
+      gap:20px;
+      margin-top:24px;
     }
 
-    .live-stage,
-    .live-panel,
-    .live-card{
-      background:rgba(255,250,245,.94);
-      border:1px solid rgba(255,255,255,.64);
-      border-radius:16px;
-      box-shadow:var(--ui-shadow);
-      backdrop-filter:blur(14px);
+    .player-card,
+    .event-card,
+    .feature-strip,
+    .side-panel{
+      border:1px solid var(--live-line);
+      background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
+      box-shadow:var(--live-shadow);
+      backdrop-filter:blur(12px);
     }
 
-    .live-stage{
+    .player-card{
+      border-radius:18px;
       overflow:hidden;
-      min-width:0;
     }
 
     .live-player{
       position:relative;
-      aspect-ratio:16/9;
-      min-height:260px;
+      aspect-ratio:16/8.8;
+      min-height:360px;
+      overflow:hidden;
       background:
-        linear-gradient(90deg,rgba(25,0,0,.82),rgba(75,0,0,.46)),
+        linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,.18)),
         url("img/banner.jpg") center/cover no-repeat;
-      display:grid;
-      place-items:center;
-      color:white;
       isolation:isolate;
+    }
+
+    .live-player::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.66)),
+        radial-gradient(circle at 28% 80%,rgba(242,43,49,.26),transparent 28%);
+      z-index:1;
+      pointer-events:none;
     }
 
     .live-player iframe{
@@ -56,292 +185,740 @@
       width:100%;
       height:100%;
       border:0;
-      z-index:2;
+      z-index:4;
       background:#050505;
     }
 
-    .live-placeholder{
-      width:min(720px,92%);
-      padding:28px;
-      text-align:center;
-      position:relative;
-      z-index:1;
+    .player-overlay{
+      position:absolute;
+      inset:0;
+      z-index:2;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:24px 28px 20px;
+      pointer-events:none;
     }
 
-    .live-dot{
-      width:12px;
-      height:12px;
+    .player-head,
+    .player-controls,
+    .fake-controls{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .live-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:max-content;
+      padding:10px 14px;
+      border-radius:12px;
+      background:linear-gradient(180deg,#ff373c,#d90f16);
+      color:white;
+      font-weight:900;
+      text-transform:uppercase;
+      box-shadow:0 12px 24px rgba(242,43,49,.28);
+    }
+
+    .live-badge::before{
+      content:"";
+      width:10px;
+      height:10px;
       border-radius:50%;
-      background:#e22025;
-      box-shadow:0 0 0 8px rgba(226,32,37,.18);
-      display:inline-block;
-      margin-right:10px;
-      vertical-align:middle;
+      background:white;
     }
 
-    .live-placeholder h2{
-      margin:18px 0 10px;
-      font-size:clamp(2.2rem,6vw,4.8rem);
-      line-height:.95;
+    .video-caption h1{
+      margin:0 0 4px;
+      font-size:1.12rem;
+      line-height:1.1;
+      font-weight:900;
       text-transform:uppercase;
     }
 
-    .live-placeholder p{
-      margin:0 auto;
-      max-width:62ch;
-      color:rgba(255,255,255,.9);
-      line-height:1.65;
-      font-size:1rem;
+    .video-caption span{
+      color:rgba(255,255,255,.82);
+      font-size:.94rem;
     }
 
-    .live-meta{
-      padding:18px 20px;
+    .player-icons{
       display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      justify-content:space-between;
+      gap:18px;
+      color:white;
+    }
+
+    .center-title{
+      margin:auto;
+      text-align:center;
+      transform:translateY(16px);
+    }
+
+    .center-title strong{
+      display:flex;
       align-items:center;
+      justify-content:center;
+      gap:14px;
+      font-size:clamp(3.5rem,8vw,5.9rem);
+      line-height:.85;
+      font-weight:900;
+      letter-spacing:.01em;
+      text-transform:uppercase;
+      text-shadow:0 18px 34px rgba(0,0,0,.42);
     }
 
-    .live-title h1{
-      margin:0;
-      color:var(--ui-wine);
-      font-size:1.55rem;
-      line-height:1.1;
+    .play-mark{
+      width:.82em;
+      height:.82em;
+      border-radius:50%;
+      display:inline-grid;
+      place-items:center;
+      background:#fff;
+      color:var(--live-red);
+      box-shadow:0 10px 28px rgba(0,0,0,.28);
+      flex:none;
     }
 
-    .live-title p{
-      margin:5px 0 0;
-      color:var(--ui-muted);
+    .play-mark svg{
+      width:52%;
+      height:52%;
+      transform:translateX(3px);
     }
 
-    .live-actions{
+    .center-title span{
+      display:block;
+      margin-top:18px;
+      font-size:1.05rem;
+      letter-spacing:.26em;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .center-title span b{
+      color:var(--live-red);
+    }
+
+    .time-line{
+      width:100%;
+      height:4px;
+      border-radius:999px;
+      background:rgba(255,255,255,.74);
+      position:relative;
+    }
+
+    .time-line::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:23%;
+      border-radius:inherit;
+      background:var(--live-red);
+    }
+
+    .time-line::after{
+      content:"";
+      position:absolute;
+      left:22.5%;
+      top:50%;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      transform:translateY(-50%);
+      background:var(--live-red);
+    }
+
+    .fake-controls{
+      margin-top:14px;
+      font-weight:800;
+      color:white;
+    }
+
+    .fake-left,
+    .fake-right{
       display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-
-    .live-panel{
-      padding:22px;
-      display:flex;
-      flex-direction:column;
+      align-items:center;
       gap:18px;
     }
 
-    .live-panel h2,
-    .live-card h2{
-      margin:0 0 8px;
-      color:var(--ui-wine);
-      line-height:1.1;
+    .live-dot-small{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--live-red);
+      display:inline-block;
     }
 
-    .live-panel p,
-    .live-card p{
+    .event-card{
+      margin-top:8px;
+      border-radius:18px;
+      display:grid;
+      grid-template-columns:minmax(250px,.58fr) 1fr;
+      overflow:hidden;
+    }
+
+    .event-art{
+      min-height:188px;
+      background:
+        linear-gradient(90deg,rgba(0,0,0,.12),rgba(0,0,0,.05)),
+        url("img/afiche-oficial-congreso-2026.jpeg") center/cover no-repeat;
+    }
+
+    .event-copy{
+      padding:26px 28px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:18px;
+    }
+
+    .event-copy h2{
       margin:0;
-      color:var(--ui-muted);
-      line-height:1.55;
+      font-size:2rem;
+      line-height:1.08;
+      font-weight:900;
+    }
+
+    .event-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:22px;
+      color:var(--live-muted);
+      font-size:1.04rem;
+    }
+
+    .event-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+    }
+
+    .live-btn{
+      min-height:54px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      border:none;
+      border-radius:12px;
+      padding:14px 26px;
+      font:inherit;
+      font-weight:900;
+      cursor:pointer;
+      color:white;
+      background:linear-gradient(180deg,#ff383d,#d9151b);
+      box-shadow:0 14px 28px rgba(242,43,49,.2);
+    }
+
+    .live-btn.outline{
+      background:transparent;
+      border:1px solid rgba(255,255,255,.42);
+      box-shadow:none;
+    }
+
+    .feature-strip{
+      margin-top:12px;
+      border-radius:18px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      overflow:hidden;
+    }
+
+    .feature-item{
+      min-height:86px;
+      display:grid;
+      grid-template-columns:48px 1fr;
+      gap:14px;
+      align-items:center;
+      padding:18px 22px;
+      border-right:1px solid var(--live-line);
+    }
+
+    .feature-item:last-child{border-right:0}
+
+    .round-icon{
+      width:46px;
+      height:46px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      color:var(--live-red);
+      border:1px solid rgba(242,43,49,.75);
+      background:rgba(242,43,49,.08);
+    }
+
+    .feature-item strong{
+      display:block;
+      font-size:.98rem;
+      margin-bottom:5px;
+    }
+
+    .feature-item span{
+      color:var(--live-muted);
+      font-size:.86rem;
+    }
+
+    .side-panel{
+      border-radius:18px;
+      padding:30px;
+      align-self:start;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      width:max-content;
+      max-width:100%;
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid rgba(242,43,49,.45);
+      background:rgba(242,43,49,.12);
+      color:var(--live-red);
+      font-weight:900;
+      text-transform:uppercase;
+      font-size:.86rem;
+    }
+
+    .side-panel h2{
+      margin:22px 0 12px;
+      font-size:2.1rem;
+      line-height:1.08;
+      font-weight:900;
+    }
+
+    .side-panel h2 span{
+      color:var(--live-red);
+    }
+
+    .side-panel p{
+      margin:0;
+      color:var(--live-muted);
+      font-size:1.08rem;
+      line-height:1.58;
     }
 
     .status-list{
       display:grid;
-      gap:12px;
+      gap:18px;
+      margin-top:28px;
     }
 
     .status-item{
+      min-height:72px;
+      display:grid;
+      grid-template-columns:54px 1fr;
+      gap:14px;
+      align-items:center;
       padding:14px;
-      border:1px solid var(--ui-border);
       border-radius:14px;
-      background:linear-gradient(180deg,#fff,#fff8f1);
+      border:1px solid var(--live-line);
+      background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.035));
+    }
+
+    .status-icon{
+      width:46px;
+      height:46px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      color:#60f073;
+      background:rgba(32,196,81,.14);
     }
 
     .status-item span{
       display:block;
-      color:var(--ui-muted);
-      font-size:.82rem;
-      margin-bottom:5px;
+      color:rgba(255,255,255,.82);
+      font-size:.88rem;
+      margin-bottom:4px;
     }
 
     .status-item strong{
-      display:block;
-      color:var(--ui-ink);
+      color:white;
       line-height:1.25;
+      overflow-wrap:anywhere;
     }
 
-    .live-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:16px;
+    .status-item strong.available{
+      color:#60f073;
     }
 
-    .live-card{
-      padding:22px;
+    .schedule-btn{
+      width:100%;
+      margin-top:26px;
+      background:linear-gradient(180deg,#20b447,#138a35);
+      box-shadow:0 14px 28px rgba(32,196,81,.18);
     }
 
-    .intro-video-card{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      gap:18px;
-      align-items:center;
+    .count-card{
+      margin-top:24px;
+      border:1px solid var(--live-line);
+      border-radius:16px;
+      overflow:hidden;
+      background:rgba(0,0,0,.16);
     }
 
-    .live-card strong{
-      color:var(--ui-wine);
-    }
-
-    .live-input-row{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      gap:10px;
-    }
-
-    .video-upload{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      justify-content:flex-end;
-    }
-
-    .live-note{
-      margin-top:12px;
+    .count-card h3{
+      margin:0;
+      padding:18px 22px 8px;
       font-size:.92rem;
-      color:var(--ui-muted);
+      text-transform:uppercase;
     }
 
-    @media(max-width:980px){
-      .live-hero,
-      .live-grid,
-      .intro-video-card{
-        grid-template-columns:1fr;
-      }
-
-      .video-upload{
-        justify-content:flex-start;
-      }
+    .countdown{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      text-align:center;
+      padding:8px 20px 18px;
     }
 
-    @media(max-width:620px){
-      .live-meta,
-      .live-actions,
-      .live-input-row{
-        display:grid;
-        grid-template-columns:1fr;
-      }
+    .time{
+      border-right:1px solid rgba(255,255,255,.14);
+    }
 
-      .live-actions .ui-btn{
-        width:100%;
-      }
+    .time:last-child{border-right:0}
 
-      .live-placeholder{
-        padding:20px;
-      }
+    .time strong{
+      display:block;
+      color:var(--live-red);
+      font-size:2rem;
+      line-height:1;
+      font-weight:900;
+    }
+
+    .time span{
+      display:block;
+      margin-top:6px;
+      color:var(--live-muted);
+      font-size:.8rem;
+      text-transform:uppercase;
+    }
+
+    .full-schedule{
+      min-height:54px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid var(--live-line);
+      padding:0 22px;
+      font-weight:900;
+    }
+
+    .live-footer{
+      margin-top:10px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.55);
+      text-align:center;
+    }
+
+    .socials{
+      display:flex;
+      justify-content:center;
+      gap:16px;
+      margin-top:10px;
+    }
+
+    .socials a{
+      width:36px;
+      height:36px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.22);
+      color:rgba(255,255,255,.72);
+    }
+
+    @media(max-width:1180px){
+      .live-wrap{padding-inline:22px}
+      .live-topbar{align-items:flex-start;flex-direction:column;padding-block:14px}
+      .live-brand{min-width:0}
+      .live-nav{width:100%;justify-content:flex-start}
+      .official-btn{align-self:stretch}
+      .live-main{grid-template-columns:1fr}
+      .feature-strip{grid-template-columns:repeat(2,1fr)}
+    }
+
+    @media(max-width:760px){
+      .live-wrap{padding-inline:14px}
+      .live-brand{width:100%}
+      .live-brand img{width:62px;height:48px}
+      .brand-sep{height:38px}
+      .live-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+      .live-nav a{min-width:0}
+      .live-player{min-height:300px;aspect-ratio:16/11}
+      .player-overlay{padding:16px}
+      .player-head{align-items:flex-start}
+      .player-icons{display:none}
+      .center-title strong{font-size:clamp(2.55rem,15vw,4.2rem)}
+      .center-title span{font-size:.82rem;letter-spacing:.18em}
+      .event-card{grid-template-columns:1fr}
+      .event-art{min-height:180px}
+      .event-copy{padding:20px 18px}
+      .event-copy h2{font-size:1.65rem}
+      .event-actions,.fake-controls{display:grid;grid-template-columns:1fr}
+      .live-btn{width:100%}
+      .feature-strip{grid-template-columns:1fr}
+      .feature-item{border-right:0;border-bottom:1px solid var(--live-line)}
+      .feature-item:last-child{border-bottom:0}
+      .side-panel{padding:22px 18px}
+      .side-panel h2{font-size:1.8rem}
+    }
+
+    @media(max-width:480px){
+      .live-nav{grid-template-columns:1fr}
+      .official-btn{width:100%}
+      .live-player{min-height:260px}
+      .video-caption h1{font-size:.92rem}
+      .live-badge{padding:8px 11px;font-size:.84rem}
+      .center-title strong{font-size:2.5rem}
+      .player-controls{gap:10px}
+      .fake-left,.fake-right{gap:12px;font-size:.86rem}
+      .countdown{padding-inline:10px}
+      .time strong{font-size:1.5rem}
     }
   </style>
 </head>
-<body class="ui-body">
-  <div class="ui-shell">
-    <header class="ui-topbar">
-      <div class="ui-brand">
-        <div class="ui-brand-mark"><img src="img/logo.png" alt="Logo UJECA"></div>
-        <div class="ui-brand-copy">
-          <h1>Live del congreso</h1>
-          <p>Trascendentales 2026</p>
+<body>
+  <div class="live-wrap">
+    <header class="live-topbar">
+      <a class="live-brand" href="home.html">
+        <img src="img/logo.png" alt="Logo UJECA">
+        <div class="brand-sep"></div>
+        <div>
+          <span>Live del congreso</span>
+          <strong>Trascendentales 2026</strong>
         </div>
-      </div>
-      <nav class="ui-nav">
-        <a href="home.html">Inicio</a>
+      </a>
+
+      <nav class="live-nav" aria-label="Navegacion principal">
+        <a class="active" href="home.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V21h-6v-6H9v6H3v-9.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          Inicio
+        </a>
         <a href="form.html">Inscripcion</a>
         <a href="Basedatos.html">Inscritos</a>
         <a href="pasarelapago.html">Pagos</a>
         <a href="Evento.html">Eventos</a>
         <a href="contacto.html">Contacto</a>
       </nav>
+
+      <a class="official-btn" href="pasarelapago.html">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2"/><path d="M12 14v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Acceso oficial
+      </a>
     </header>
 
-    <main class="live-shell">
-      <section class="live-hero">
-        <article class="live-stage">
+    <main class="live-main">
+      <section>
+        <article class="player-card">
           <div class="live-player" id="livePlayer">
-            <div class="live-placeholder" id="livePlaceholder">
-              <span class="ui-eyebrow"><i class="live-dot"></i>Transmision oficial</span>
-              <h2>En vivo</h2>
-              <p>Cuando el enlace oficial este listo, la transmision aparecera aqui para que el congreso se pueda ver desde cualquier lugar.</p>
-            </div>
-          </div>
-          <div class="live-meta">
-            <div class="live-title">
-              <h1>Congreso Juvenil Trascendentales</h1>
-              <p>5 al 8 de diciembre de 2026 · Cerizim - Sincelejo</p>
-            </div>
-            <div class="live-actions">
-              <a class="ui-btn primary" id="openLiveBtn" href="#" target="_blank" rel="noopener">Abrir live</a>
-              <button class="ui-btn soft" type="button" id="shareBtn">Compartir pagina</button>
+            <div class="player-overlay" id="playerOverlay">
+              <div class="player-head">
+                <div class="player-controls">
+                  <span class="live-badge">Live</span>
+                  <div class="video-caption">
+                    <h1 id="playerTitle">Intro para iglesias - bienvenidos 4K</h1>
+                    <span id="playerAuthor">Art Creatix MC</span>
+                  </div>
+                </div>
+                <div class="player-icons">
+                  <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor"/><path d="M16 9c1.2 1.5 1.2 4.5 0 6M18.7 6.5c2.4 3 2.4 8 0 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 10h3M7 14h4M13 14h4M14 10h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  <svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 1 1 4.2 17l.1-.1A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.6-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7A2 2 0 1 1 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 1 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1a2 2 0 0 1 0 4H21a1.7 1.7 0 0 0-1.6 1Z" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+              </div>
+
+              <div class="center-title">
+                <strong>Dorem<span class="play-mark"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7L8 5Z"/></svg></span>s</strong>
+                <span>Juntos como <b>uno</b></span>
+              </div>
+
+              <div>
+                <div class="time-line"></div>
+                <div class="fake-controls">
+                  <div class="fake-left">
+                    <span>0:03 / 0:24</span>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5h3v14H8V5Zm5 0h3v14h-3V5Z"/></svg>
+                    <span><span class="live-dot-small"></span> EN VIVO</span>
+                  </div>
+                  <div class="fake-right">
+                    <span>Mas videos</span>
+                    <span>YouTube</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </article>
 
-        <aside class="live-panel">
-          <div>
-            <span class="ui-eyebrow">Centro de transmision</span>
-            <h2>Acceso publico al evento</h2>
-            <p>Comparte esta pagina con los asistentes, familias e iglesias para seguir la transmision desde el navegador.</p>
+        <article class="event-card">
+          <div class="event-art" aria-hidden="true"></div>
+          <div class="event-copy">
+            <div>
+              <h2>Congreso Juvenil Trascendentales</h2>
+              <div class="event-meta">
+                <span>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="2"/></svg>
+                  5 al 8 de diciembre de 2026
+                </span>
+                <span>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/></svg>
+                  Gerizim - Sincelejo
+                </span>
+              </div>
+            </div>
+            <div class="event-actions">
+              <a class="live-btn" id="openLiveBtn" href="#" target="_blank" rel="noopener">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 16.5a7 7 0 0 1 0-9M17.5 7.5a7 7 0 0 1 0 9M9.5 13.5a3 3 0 0 1 0-3M14.5 10.5a3 3 0 0 1 0 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>
+                Abrir live
+              </a>
+              <button class="live-btn outline" type="button" id="shareBtn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 5 21 10l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 10H11a8 8 0 0 0-8 8v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Compartir pagina
+              </button>
+            </div>
           </div>
+        </article>
 
-          <div class="status-list">
-            <div class="status-item"><span>Estado</span><strong id="liveStatus">Esperando enlace oficial</strong></div>
-            <div class="status-item"><span>Canal</span><strong id="liveChannel">YouTube, Facebook o enlace embebible</strong></div>
-            <div class="status-item"><span>Disponibilidad</span><strong>Celular, tablet y computador</strong></div>
+        <section class="feature-strip" aria-label="Detalles del live">
+          <div class="feature-item">
+            <span class="round-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 7v10l7-5-7-5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M16 8a5 5 0 0 1 0 8M19 5a9 9 0 0 1 0 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <div><strong>Transmision en vivo</strong><span>Senal estable y en alta calidad</span></div>
           </div>
-
-          <a class="ui-btn success" href="Evento.html">Ver programacion</a>
-        </aside>
+          <div class="feature-item">
+            <span class="round-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h16v11H4V8Z" stroke="currentColor" stroke-width="2"/><path d="m4 9 8 6 8-6" stroke="currentColor" stroke-width="2"/></svg></span>
+            <div><strong>Para todos</strong><span>Totalmente gratis</span></div>
+          </div>
+          <div class="feature-item">
+            <span class="round-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="2"/><path d="M3 20a6 6 0 0 1 12 0" stroke="currentColor" stroke-width="2"/><path d="M16 11a3 3 0 1 0-1-5.8M17 20a5 5 0 0 0-3-4.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <div><strong>Comparte</strong><span>Invita a mas personas</span></div>
+          </div>
+          <div class="feature-item">
+            <span class="round-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12v7l16-7L4 5v7Zm0 0h8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+            <div><strong>Conectate</strong><span>Vive este momento juntos</span></div>
+          </div>
+        </section>
       </section>
 
-      
+      <aside class="side-panel">
+        <span class="eyebrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 16.5a7 7 0 0 1 0-9M17.5 7.5a7 7 0 0 1 0 9M9.5 13.5a3 3 0 0 1 0-3M14.5 10.5a3 3 0 0 1 0 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>
+          Centro de transmision
+        </span>
+        <h2>Acceso <span>publico</span> al evento</h2>
+        <p>Comparte esta pagina con los asistentes, familias e iglesias para seguir la transmision desde el navegador.</p>
+
+        <div class="status-list">
+          <div class="status-item">
+            <span class="status-icon"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 16.5a7 7 0 0 1 0-9M17.5 7.5a7 7 0 0 1 0 9M9.5 13.5a3 3 0 0 1 0-3M14.5 10.5a3 3 0 0 1 0 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg></span>
+            <div><span>Estado</span><strong class="available" id="liveStatus">Esperando enlace oficial</strong></div>
+          </div>
+          <div class="status-item">
+            <span class="status-icon"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c2.2 2.4 3.3 5.4 3.3 9S14.2 18.6 12 21M12 3C9.8 5.4 8.7 8.4 8.7 12S9.8 18.6 12 21" stroke="currentColor" stroke-width="2"/></svg></span>
+            <div><span>Canal</span><strong id="liveChannel">YouTube</strong></div>
+          </div>
+          <div class="status-item">
+            <span class="status-icon"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 20h8M10 16v4M14 16v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <div><span>Disponibilidad</span><strong>Celular, tablet y computador</strong></div>
+          </div>
+        </div>
+
+        <a class="live-btn schedule-btn" href="Evento.html">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="2"/></svg>
+          Ver programacion
+        </a>
+
+        <div class="count-card">
+          <h3>Proxima transmision</h3>
+          <div class="countdown">
+            <div class="time"><strong>03</strong><span>Dias</span></div>
+            <div class="time"><strong>14</strong><span>Horas</span></div>
+            <div class="time"><strong>27</strong><span>Min</span></div>
+            <div class="time"><strong>59</strong><span>Seg</span></div>
+          </div>
+          <a class="full-schedule" href="Evento.html"><span>Ver horarios completos</span><span>&rsaquo;</span></a>
+        </div>
+      </aside>
     </main>
 
-    <footer class="ui-footer">(c) 2026 Union Juvenil Evangelica del Caribe</footer>
+    <footer class="live-footer">
+      <div>&copy; 2026 Union Juvenil Evangelica del Caribe</div>
+      <div class="socials">
+        <a href="#" aria-label="Facebook">f</a>
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="YouTube">YT</a>
+        <a href="#" aria-label="TikTok">TK</a>
+      </div>
+    </footer>
   </div>
 
   <script>
     const LIVE_URL = "https://www.youtube.com/watch?v=FmAd3Ljn42A";
-    const INTRO_VIDEO_URL = "videos/intro-congreso.mp4";
-    const INTRO_VIDEO_LINK = "";
+    const LIVE_URL_PUBLICADA = new URLSearchParams(window.location.search).get("live") || LIVE_URL;
     const LIVE_TITULO = "Congreso Juvenil Trascendentales 2026";
 
     const player = document.getElementById("livePlayer");
+    const playerOverlay = document.getElementById("playerOverlay");
     const openLiveBtn = document.getElementById("openLiveBtn");
     const shareBtn = document.getElementById("shareBtn");
-    const playIntroVideoBtn = document.getElementById("playIntroVideoBtn");
-    const clearIntroVideoBtn = document.getElementById("clearIntroVideoBtn");
-    const introVideoNote = document.getElementById("introVideoNote");
     const liveStatus = document.getElementById("liveStatus");
     const liveChannel = document.getElementById("liveChannel");
+    const playerTitle = document.getElementById("playerTitle");
+    const playerAuthor = document.getElementById("playerAuthor");
+
+    function extraerUrl(texto) {
+      const raw = String(texto || "").trim();
+      if (!raw) return "";
+
+      const iframeSrc = raw.match(/src=["']([^"']+)["']/i);
+      if (iframeSrc && iframeSrc[1]) return iframeSrc[1].trim();
+
+      const urlMatch = raw.match(/https?:\/\/[^\s"'<>]+/i);
+      return urlMatch ? urlMatch[0].trim() : raw;
+    }
 
     function obtenerEmbedUrl(url) {
-      const texto = String(url || "").trim();
+      const texto = extraerUrl(url);
       if (!texto) return "";
 
       try {
         const parsed = new URL(texto);
-        const host = parsed.hostname.replace(/^www\./, "");
+        const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
+        const partes = parsed.pathname.split("/").filter(Boolean);
+        const params = new URLSearchParams(parsed.search);
 
         if (host === "youtu.be") {
-          const id = parsed.pathname.split("/").filter(Boolean)[0];
-          return id ? "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0" : "";
+          const id = partes[0];
+          return id ? "https://www.youtube.com/embed/" + id + "?autoplay=0&rel=0" : "";
+        }
+
+        if (host.includes("youtube-nocookie.com")) {
+          return texto;
         }
 
         if (host.includes("youtube.com")) {
-          const videoId = parsed.searchParams.get("v");
-          if (videoId) return "https://www.youtube.com/embed/" + videoId + "?autoplay=1&rel=0";
-
-          const partes = parsed.pathname.split("/").filter(Boolean);
-          const liveIndex = partes.indexOf("live");
-          if (liveIndex >= 0 && partes[liveIndex + 1]) {
-            return "https://www.youtube.com/embed/" + partes[liveIndex + 1] + "?autoplay=1&rel=0";
-          }
+          const videoId = params.get("v");
+          if (videoId) return "https://www.youtube.com/embed/" + videoId + "?autoplay=0&rel=0";
 
           if (partes[0] === "embed" && partes[1]) {
+            if (partes[1] === "live_stream") return texto;
+            return "https://www.youtube.com/embed/" + partes[1] + "?autoplay=0&rel=0";
+          }
+
+          if ((partes[0] === "live" || partes[0] === "shorts") && partes[1]) {
+            return "https://www.youtube.com/embed/" + partes[1] + "?autoplay=0&rel=0";
+          }
+
+          if (partes[0] === "watch") {
+            const id = params.get("v");
+            return id ? "https://www.youtube.com/embed/" + id + "?autoplay=0&rel=0" : "";
+          }
+
+          if (partes[0] === "embed" && parsed.search.includes("channel=")) {
             return texto;
           }
         }
@@ -352,59 +929,43 @@
       }
     }
 
+    function obtenerCanal(url) {
+      try {
+        return new URL(extraerUrl(url)).hostname.replace(/^www\./, "");
+      } catch {
+        return "Enlace externo";
+      }
+    }
+
     function activarLive(url) {
       const embedUrl = obtenerEmbedUrl(url);
       if (!embedUrl) {
         openLiveBtn.href = "#";
         openLiveBtn.setAttribute("aria-disabled", "true");
         liveStatus.textContent = "Esperando enlace oficial";
+        liveChannel.textContent = "YouTube";
         return false;
       }
 
-      player.innerHTML = '<iframe src="' + embedUrl + '" title="' + LIVE_TITULO + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
-      openLiveBtn.href = url;
+      const iframe = document.createElement("iframe");
+      iframe.src = embedUrl;
+      iframe.title = LIVE_TITULO;
+      iframe.loading = "eager";
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.allowFullscreen = true;
+
+      player.appendChild(iframe);
+      if (playerOverlay) playerOverlay.style.display = "none";
+
+      openLiveBtn.href = extraerUrl(url);
       openLiveBtn.removeAttribute("aria-disabled");
       liveStatus.textContent = "Transmision disponible";
-      try {
-        liveChannel.textContent = new URL(url).hostname.replace(/^www\./, "");
-      } catch {
-        liveChannel.textContent = "Enlace externo";
-      }
+      liveChannel.textContent = obtenerCanal(url);
+      playerTitle.textContent = "Transmision oficial del congreso";
+      playerAuthor.textContent = "UJECA";
       return true;
     }
-
-    function activarVideoIntro(src, nombre = "Video introductorio") {
-      if (!src) return false;
-      player.innerHTML = '<video src="' + src + '" controls playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#050505;"></video>';
-      liveStatus.textContent = "Video introductorio disponible";
-      liveChannel.textContent = nombre;
-      if (INTRO_VIDEO_LINK) {
-        openLiveBtn.href = INTRO_VIDEO_LINK;
-        openLiveBtn.removeAttribute("aria-disabled");
-      } else {
-        openLiveBtn.href = "#";
-        openLiveBtn.setAttribute("aria-disabled", "true");
-      }
-      return true;
-    }
-
-    function limpiarVideoIntro() {
-      player.innerHTML = '<div class="live-placeholder" id="livePlaceholder"><span class="ui-eyebrow"><i class="live-dot"></i>Transmision oficial</span><h2>En vivo</h2><p>Cuando el enlace oficial este listo, la transmision aparecera aqui para que el congreso se pueda ver desde cualquier lugar.</p></div>';
-      liveStatus.textContent = "Esperando enlace oficial";
-      liveChannel.textContent = "YouTube, Facebook o enlace embebible";
-      openLiveBtn.href = "#";
-      openLiveBtn.setAttribute("aria-disabled", "true");
-      introVideoNote.textContent = "Video oculto. Para mostrarlo de nuevo usa Reproducir intro.";
-    }
-
-    playIntroVideoBtn.addEventListener("click", () => {
-      const ok = activarVideoIntro(INTRO_VIDEO_URL, "Video interno");
-      introVideoNote.textContent = ok
-        ? "Reproduciendo video interno. Ruta actual: " + INTRO_VIDEO_URL
-        : "Configura INTRO_VIDEO_URL con la ruta del archivo o INTRO_VIDEO_LINK con un enlace externo.";
-    });
-
-    clearIntroVideoBtn.addEventListener("click", limpiarVideoIntro);
 
     shareBtn.addEventListener("click", async () => {
       const data = {
@@ -423,7 +984,6 @@
           await navigator.clipboard.writeText(window.location.href);
           shareBtn.textContent = "Enlace copiado";
           setTimeout(() => shareBtn.textContent = "Compartir pagina", 1800);
-          return;
         }
       } catch {
         shareBtn.textContent = "Copia el enlace arriba";
@@ -431,10 +991,7 @@
       }
     });
 
-    if (!activarLive(LIVE_URL)) {
-      const intro = INTRO_VIDEO_LINK || INTRO_VIDEO_URL;
-      if (intro) activarVideoIntro(intro, INTRO_VIDEO_LINK ? "Video externo" : "Video interno");
-    }
+    activarLive(LIVE_URL_PUBLICADA);
   </script>
 </body>
 </html>

@@ -57,6 +57,16 @@ font-size:16px;margin-top:20px;cursor:pointer;transition:0.25s;font-weight:700;
 }
 button:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(143,29,44,.18);}
 
+button.btn-secundario{
+background:linear-gradient(180deg,#f3f5f6,#e4e9ee);
+color:#34414d;
+margin-top:10px;
+}
+
+button.btn-secundario:hover{
+box-shadow:0 12px 24px rgba(52,65,77,.12);
+}
+
 #estado{margin-top:20px;text-align:center;font-weight:600;font-size:16px;color:#111827;}
 
 .topbar{
@@ -91,6 +101,12 @@ flex-direction:column;
 }
 
 .modal-bienvenida-content{text-align:center;}
+.modal-bienvenida-content .icono{
+width:96px;
+height:72px;
+object-fit:contain;
+margin-bottom:14px;
+}
 .modal-bienvenida-content h1{font-size:32px;margin-bottom:10px;}
 .modal-bienvenida-content button{width:auto;padding:14px 40px;}
 
@@ -212,6 +228,7 @@ flex-direction:column;
 }
 }
 </style>
+<link rel="stylesheet" href="responsive-fixes.css">
 </head>
 
 <body class="ui-body">
@@ -228,9 +245,9 @@ flex-direction:column;
 <nav class="menu">
 <a href="home.html">Inicio</a>
 <a href="Basedatos.html">Ver Inscritos</a>
+<a href="pasarelapago.html">Pagos</a>
 <a href="contacto.html">Contacto</a>
 <a href="live.html">Live</a>
-<a href="index.html">Recargar..</a>
 <a href="Evento.html">Eventos</a>
 </nav>
 </div>
@@ -332,7 +349,7 @@ flex-direction:column;
 <textarea name="Observaciones" rows="3"></textarea>
 
 <button type="button" onclick="prepararEnvio()">Enviar inscripción</button>
-<button type="button" onclick="limpiarFormulario()">Limpiar formulario</button>
+<button class="btn-secundario" type="button" onclick="limpiarFormulario()">Limpiar formulario</button>
 
 </form>
 <p id="Estado"></p>
@@ -343,7 +360,7 @@ flex-direction:column;
 <img src="img/logo.png" class="icono">
 
 <h1>Bienvenido</h1>
-<p>Estimado campista, por favor completa el formulario para confirmar tu inscripción. Recuerda que el evento se llevará a cabo del 5 al 8 de diciembre de 2026 en Cerizim - Sincelejo, bajo el lema Fe + Acción.</p>
+<p>Estimado campista, por favor completa el formulario para confirmar tu inscripción. Recuerda que el evento se llevará a cabo del 5 al 8 de diciembre de 2026 en Gerizim - Sincelejo, bajo el lema Fe + Acción.</p>
 <p>Si tienes alguna pregunta, no dudes en contactarnos a través de nuestras redes sociales o correo electrónico.</p>
 <p>infocircuito@gmail.com</p>
 <button onclick="cerrarBienvenida()">Continuar</button>

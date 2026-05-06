@@ -152,59 +152,93 @@ body::before,body::after{display:none}
  display:flex;
  flex-direction:column;
  justify-content:space-between;
- padding:34px 72px 24px;
+ padding:42px 72px 34px;
  overflow:hidden;
  color:white;
+ background:#030101;
+ position:relative;
+}
+
+.auth-screen::before{
+ content:"";
+ position:absolute;
+ inset:0;
  background:
-  linear-gradient(90deg,rgba(1,10,22,.94),rgba(4,18,34,.82) 52%,rgba(2,9,18,.94)),
-  url("img/banner.jpg") center/cover no-repeat;
+  radial-gradient(circle at 72% 52%,rgba(236,29,32,.22),transparent 24%),
+  linear-gradient(90deg,rgba(0,0,0,.08),rgba(0,0,0,.2) 48%,#030101 74%),
+  url("img/afiche-oficial-congreso-2026.jpeg") left center/auto 112% no-repeat;
+ filter:saturate(1.08) contrast(1.08);
+}
+
+.auth-screen::after{
+ content:"";
+ position:absolute;
+ inset:0;
+ background:
+  linear-gradient(90deg,transparent 0 43%,rgba(0,0,0,.76) 59%,#030101 100%),
+  radial-gradient(circle at 16% 42%,rgba(236,29,32,.2),transparent 28%);
+ pointer-events:none;
 }
 
 .auth-layout{
- width:min(1320px,100%);
+ width:min(1500px,100%);
  margin:0 auto;
  display:grid;
- grid-template-columns:minmax(0,1fr) minmax(420px,540px);
- gap:64px;
+ grid-template-columns:minmax(460px,1fr) minmax(460px,600px);
+ gap:78px;
  align-items:center;
  flex:0 1 auto;
  min-height:0;
+ position:relative;
+ z-index:1;
 }
 
 .auth-brand{
- width:min(1320px,100%);
+ width:min(1500px,100%);
  margin:0 auto;
  padding-top:6px;
  display:flex;
  align-items:center;
- gap:22px;
+ gap:18px;
+ position:relative;
+ z-index:1;
 }
 
 .auth-brand img{
- width:140px;
- height:70px;
+ width:120px;
+ height:58px;
  object-fit:contain;
+ filter:drop-shadow(0 12px 24px rgba(0,0,0,.55));
 }
 
 .auth-brand h2{
  margin:0;
  color:white;
- font-size:1.42rem;
- letter-spacing:.03em;
+ font-size:1.32rem;
+ letter-spacing:.02em;
  text-transform:uppercase;
+ font-weight:900;
+ text-shadow:0 8px 18px rgba(0,0,0,.45);
 }
 
 .auth-brand span{
  display:block;
  margin-top:4px;
- color:rgba(255,255,255,.7);
- letter-spacing:.42em;
+ color:rgba(255,255,255,.78);
+ letter-spacing:.48em;
  text-transform:uppercase;
- font-size:.92rem;
+ font-size:.82rem;
 }
 
 .auth-copy{
- max-width:560px;
+ min-height:640px;
+ align-self:stretch;
+ border-radius:0;
+ position:relative;
+}
+
+.auth-copy > *{
+ display:none;
 }
 
 .auth-copy .welcome{
@@ -236,11 +270,22 @@ body::before,body::after{display:none}
  line-height:1.55;
 }
 
+.auth-copy .welcome,
+.auth-copy h1,
+.auth-copy .auth-line,
+.auth-copy > p{
+ display:none;
+}
+
 .auth-secure{
- margin-top:46px;
+ position:absolute;
+ left:calc(100% + 78px);
+ bottom:22px;
+ width:min(440px,100vw - 96px);
+ margin:0 0 0 54px;
  display:grid;
  grid-template-columns:auto 1fr;
- gap:18px;
+ gap:16px;
  align-items:center;
  max-width:440px;
 }
@@ -250,79 +295,96 @@ body::before,body::after{display:none}
  display:grid;
  place-items:center;
  border-radius:50%;
- background:rgba(255,255,255,.1);
- color:#f1c45f;
+ background:rgba(236,29,32,.12);
+ color:#ff3237;
 }
 
 .secure-icon{
- width:72px;
- height:72px;
+ width:58px;
+ height:58px;
+ border:1px solid #ef292d;
+ box-shadow:0 0 34px rgba(236,29,32,.22);
 }
 
 .auth-secure strong{
  display:block;
- font-size:1.2rem;
+ font-size:1.05rem;
  color:white;
 }
 
 .auth-secure span{
  display:block;
  margin-top:6px;
- color:rgba(255,255,255,.78);
- font-size:1.05rem;
+ color:rgba(255,255,255,.82);
+ font-size:.95rem;
  line-height:1.45;
 }
 
+.auth-panel{
+ display:flex;
+ flex-direction:column;
+ align-items:stretch;
+}
+
 .auth-card{
- padding:42px 48px 38px;
+ padding:50px 54px 44px;
  border-radius:18px;
- background:linear-gradient(145deg,rgba(7,28,54,.95),rgba(3,15,31,.95));
- border:1px solid rgba(129,178,224,.18);
- box-shadow:0 28px 90px rgba(0,0,0,.42);
+ background:linear-gradient(145deg,rgba(31,13,14,.94),rgba(8,5,5,.96));
+ border:1px solid rgba(239,41,45,.82);
+ box-shadow:
+  0 0 70px rgba(236,29,32,.32),
+  0 30px 90px rgba(0,0,0,.72);
  backdrop-filter:blur(18px);
 }
 
 .auth-lock{
- width:92px;
- height:92px;
- margin:0 auto 22px;
+ width:108px;
+ height:108px;
+ margin:4px auto 26px;
+ background:rgba(236,29,32,.14);
+ box-shadow:0 0 42px rgba(236,29,32,.12);
 }
 
 .auth-card h3{
  margin:0;
  text-align:center;
  color:white;
- font-size:2rem;
+ font-size:2.35rem;
+ line-height:1.05;
+ font-weight:900;
+ text-shadow:0 8px 18px rgba(0,0,0,.45);
 }
 
 .auth-card .auth-subtitle{
- margin:10px 0 28px;
+ margin:16px 0 32px;
  text-align:center;
- color:rgba(255,255,255,.72);
+ color:rgba(255,255,255,.86);
+ font-size:1.05rem;
 }
 
 .auth-card label{
  color:white;
  font-weight:800;
+ font-size:1rem;
 }
 
 .password-box{
- margin-top:10px;
+ margin-top:14px;
  display:grid;
  grid-template-columns:auto 1fr auto;
  align-items:center;
- gap:12px;
- min-height:58px;
- padding:0 18px;
+ gap:16px;
+ min-height:68px;
+ padding:0 22px;
  border-radius:14px;
- border:1px solid rgba(154,190,225,.28);
- background:rgba(3,14,29,.48);
- color:rgba(255,255,255,.68);
+ border:1px solid rgba(239,41,45,.72);
+ background:rgba(50,13,14,.5);
+ color:rgba(255,255,255,.78);
 }
 
 .password-box input{
  width:100%;
- min-height:56px;
+ min-height:66px;
  padding:0;
  border:0;
  border-radius:0;
@@ -345,19 +407,19 @@ body::before,body::after{display:none}
  place-items:center;
  border-radius:8px;
  background:transparent;
- color:rgba(255,255,255,.76);
+ color:rgba(255,255,255,.82);
  box-shadow:none;
 }
 
 .auth-actions{
  display:grid;
- gap:18px;
- margin-top:28px;
+ gap:22px;
+ margin-top:34px;
 }
 
 .auth-actions button,
 .auth-actions a{
- min-height:58px;
+ min-height:68px;
  display:grid;
  place-items:center;
  border-radius:14px;
@@ -369,35 +431,36 @@ body::before,body::after{display:none}
 .auth-actions button{
  width:100%;
  margin:0;
- color:#061324;
- background:linear-gradient(180deg,#f4cb62,#dda437);
- box-shadow:0 16px 28px rgba(221,164,55,.22);
+ color:white;
+ background:linear-gradient(180deg,#ff3338,#d91418);
+ box-shadow:0 18px 32px rgba(236,29,32,.28);
 }
 
 .home-link{
  color:white;
  background:transparent;
- border:1px solid rgba(154,190,225,.28);
+ border:1px solid rgba(239,41,45,.88);
 }
 
 .auth-error{
  margin-top:14px;
  padding:12px 14px;
  border-radius:12px;
- background:rgba(255,240,219,.12);
- color:#f1c45f;
+ background:rgba(236,29,32,.12);
+ color:#ff7478;
  font-weight:800;
  display:none;
 }
 
 .auth-note{
- margin:28px 0 0;
- font-size:.9rem;
- color:rgba(255,255,255,.58);
+ margin:30px 0 0;
+ font-size:.96rem;
+ color:rgba(255,255,255,.78);
  text-align:center;
 }
 
 .auth-footer{
+ display:none;
  width:min(1320px,100%);
  margin:18px auto 0;
  padding-top:18px;
@@ -822,20 +885,59 @@ tr:hover td{
   align-items:flex-start;
  }
  table{min-width:680px}
- .auth-screen{padding:24px 16px}
+ .auth-screen{
+  height:auto;
+  min-height:100vh;
+  padding:24px 16px 30px;
+  overflow:auto;
+ }
+ .auth-screen::before{
+  background:
+   linear-gradient(180deg,rgba(0,0,0,.34),rgba(0,0,0,.84) 58%,#030101),
+   url("img/afiche-oficial-congreso-2026.jpeg") top center/cover no-repeat;
+ }
+ .auth-screen::after{
+  background:linear-gradient(180deg,rgba(0,0,0,.08),#030101 62%);
+ }
  .auth-brand{align-items:flex-start}
  .auth-brand img{width:98px;height:54px}
  .auth-brand h2{font-size:1.05rem}
  .auth-brand span{letter-spacing:.22em;font-size:.72rem}
- .auth-layout{grid-template-columns:1fr;gap:28px}
+ .auth-layout{grid-template-columns:1fr;gap:24px}
+ .auth-copy{
+  min-height:430px;
+ }
  .auth-copy .welcome{font-size:2rem}
  .auth-copy h1{font-size:2.55rem}
  .auth-copy p{font-size:1.08rem}
- .auth-secure{margin-top:28px}
- .auth-card{padding:28px 20px}
+ .auth-secure{
+  position:static;
+  width:auto;
+  margin:24px 4px 0;
+ }
+ .auth-card{
+  padding:30px 20px;
+  border-radius:18px;
+ }
+ .auth-lock{
+  width:88px;
+  height:88px;
+ }
+ .auth-card h3{
+  font-size:2rem;
+ }
+ .auth-actions button,
+ .auth-actions a,
+ .password-box{
+  min-height:60px;
+ }
+ .password-box input{
+  min-height:58px;
+ }
  .auth-footer{flex-direction:column;align-items:flex-start}
 }
 </style>
+<link rel="stylesheet" href="responsive-fixes.css">
 </head>
 
 <body class="locked">
