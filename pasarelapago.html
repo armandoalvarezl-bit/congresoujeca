@@ -807,6 +807,163 @@ button:hover{
  display:none;
 }
 
+.payment-loader{
+ position:fixed;
+ inset:0;
+ z-index:5000;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:18px;
+ background:rgba(2,0,0,.72);
+ backdrop-filter:blur(10px);
+}
+
+.payment-loader.show{
+ display:flex;
+}
+
+.payment-loader-card{
+ width:min(560px,100%);
+ border-radius:22px;
+ padding:28px;
+ color:white;
+ background:
+  linear-gradient(145deg,rgba(30,8,10,.96),rgba(5,3,3,.98)),
+  radial-gradient(circle at 20% 0,rgba(239,41,45,.22),transparent 34%);
+ border:1px solid rgba(239,41,45,.62);
+ box-shadow:0 0 70px rgba(236,29,32,.24),0 28px 80px rgba(0,0,0,.65);
+}
+
+.payment-loader-head{
+ display:flex;
+ align-items:center;
+ gap:16px;
+ margin-bottom:22px;
+}
+
+.payment-loader-icon{
+ width:62px;
+ height:62px;
+ border-radius:18px;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(180deg,#ff3338,#b80911);
+ box-shadow:0 14px 32px rgba(236,29,32,.28);
+ flex:none;
+}
+
+.payment-loader h3{
+ margin:0;
+ font-size:1.5rem;
+ line-height:1.08;
+}
+
+.payment-loader p{
+ margin:6px 0 0;
+ color:rgba(255,255,255,.76);
+ line-height:1.35;
+}
+
+.payment-progress{
+ height:8px;
+ border-radius:999px;
+ overflow:hidden;
+ background:rgba(255,255,255,.12);
+ margin:18px 0 22px;
+}
+
+.payment-progress span{
+ display:block;
+ width:0;
+ height:100%;
+ border-radius:999px;
+ background:linear-gradient(90deg,#ff383d,#25c460);
+ transition:width .35s ease;
+}
+
+.payment-steps{
+ display:grid;
+ gap:12px;
+}
+
+.payment-step{
+ display:grid;
+ grid-template-columns:42px 1fr;
+ gap:12px;
+ align-items:center;
+ padding:12px;
+ border-radius:16px;
+ background:rgba(255,255,255,.055);
+ border:1px solid rgba(255,255,255,.08);
+ opacity:.62;
+ transition:.25s ease;
+}
+
+.payment-step-dot{
+ width:42px;
+ height:42px;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ color:rgba(255,255,255,.7);
+ background:rgba(255,255,255,.08);
+ border:1px solid rgba(255,255,255,.1);
+}
+
+.payment-step strong{
+ display:block;
+ font-size:1rem;
+}
+
+.payment-step span{
+ display:block;
+ margin-top:3px;
+ color:rgba(255,255,255,.7);
+ font-size:.9rem;
+ line-height:1.3;
+}
+
+.payment-step.active{
+ opacity:1;
+ border-color:rgba(239,41,45,.52);
+ background:rgba(239,41,45,.12);
+}
+
+.payment-step.done{
+ opacity:1;
+ border-color:rgba(37,196,96,.36);
+ background:rgba(37,196,96,.1);
+}
+
+.payment-step.active .payment-step-dot{
+ color:white;
+ background:rgba(239,41,45,.28);
+ border-color:rgba(239,41,45,.7);
+ animation:pulsePago 1s infinite;
+}
+
+.payment-step.done .payment-step-dot{
+ color:white;
+ background:#159447;
+ border-color:#25c460;
+ animation:none;
+}
+
+.payment-loader-foot{
+ margin-top:18px;
+ padding-top:14px;
+ border-top:1px solid rgba(255,255,255,.1);
+ color:rgba(255,255,255,.7);
+ font-size:.9rem;
+ text-align:center;
+}
+
+@keyframes pulsePago{
+ 0%,100%{box-shadow:0 0 0 0 rgba(239,41,45,.3)}
+ 50%{box-shadow:0 0 0 8px rgba(239,41,45,0)}
+}
+
 .table-wrap{
  overflow:auto;
  border-radius:18px;
@@ -861,6 +1018,25 @@ tr:hover td{
 
 .comprobante-link:hover{
  text-decoration:underline;
+}
+
+.receipt-link{
+ min-height:34px;
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ padding:8px 11px;
+ border-radius:10px;
+ color:white;
+ background:linear-gradient(180deg,#df1f23,#b60912);
+ font-size:.82rem;
+ font-weight:800;
+ text-decoration:none;
+ box-shadow:0 8px 18px rgba(183,9,18,.18);
+}
+
+.receipt-link:hover{
+ transform:translateY(-1px);
 }
 
 @media print{
@@ -1032,6 +1208,47 @@ tr:hover td{
   </footer>
 </div>
 
+<div id="paymentLoader" class="payment-loader" aria-live="polite" aria-hidden="true">
+  <div class="payment-loader-card">
+    <div class="payment-loader-head">
+      <div class="payment-loader-icon">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7h16v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 7l2-3h12l2 3" stroke="currentColor" stroke-width="2"/>
+          <path d="m8 13 2.5 2.5L16 10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <h3 id="paymentLoaderTitle">Procesando pago</h3>
+        <p id="paymentLoaderText">Estamos registrando la informacion del participante.</p>
+      </div>
+    </div>
+
+    <div class="payment-progress"><span id="paymentLoaderBar"></span></div>
+
+    <div class="payment-steps">
+      <div class="payment-step" data-step="registro">
+        <div class="payment-step-dot">1</div>
+        <div><strong>Registro</strong><span>Validando participante y datos del abono.</span></div>
+      </div>
+      <div class="payment-step" data-step="asignado">
+        <div class="payment-step-dot">2</div>
+        <div><strong>Asignado</strong><span>Relacionando el pago con su lider y zona.</span></div>
+      </div>
+      <div class="payment-step" data-step="pagado">
+        <div class="payment-step-dot">3</div>
+        <div><strong>Pagado</strong><span>Guardando el movimiento en la base de pagos.</span></div>
+      </div>
+      <div class="payment-step" data-step="descarga">
+        <div class="payment-step-dot">4</div>
+        <div><strong>Comprobante</strong><span>Preparando la descarga del comprobante.</span></div>
+      </div>
+    </div>
+
+    <div class="payment-loader-foot" id="paymentLoaderFoot">No cierres esta ventana hasta finalizar.</div>
+  </div>
+</div>
+
 <div class="shell">
   <header class="topbar">
     <div class="brand">
@@ -1180,11 +1397,12 @@ tr:hover td{
               <th>Referencia</th>
               <th>Organizador</th>
               <th>Comprobante</th>
+              <th>Comprobante pago</th>
               <th>Observaciones</th>
             </tr>
           </thead>
           <tbody id="tablaPagos">
-            <tr><td colspan="7" class="empty">Busca un participante para consultar su historial.</td></tr>
+            <tr><td colspan="8" class="empty">Busca un participante para consultar su historial.</td></tr>
           </tbody>
         </table>
       </div>
@@ -1253,7 +1471,9 @@ if(sessionStorage.getItem(AUTH_PAGOS_SESSION)==="1"){
 const API=window.UJECA_API.pagos;
 const API_LISTADO=API+"?accion=listado";
 const HOJA_PAGOS="PagosIndividuales2026";
+const HOJA_COMPROBANTES="ComprobantesPago2026";
 const API_PAGOS=crearUrlUJECA(API,{accion:"pagos",hoja:HOJA_PAGOS});
+const API_COMPROBANTES=crearUrlUJECA(API,{accion:"comprobantes",hoja:HOJA_COMPROBANTES});
 const STORAGE_PAGOS_ANTERIORES="ujeca_pagos_locales";
 const STORAGE_PAGOS="ujeca_pagos_individuales_2026";
 
@@ -1305,6 +1525,7 @@ const IGLESIAS_POR_LIDER=[
 let participanteActual=null;
 let comprobanteTemporal=null;
 let pagosRemotos=[];
+let pagosHistorialActual=[];
 
 function borrarPagosAnterioresLocales(){
   localStorage.removeItem(STORAGE_PAGOS_ANTERIORES);
@@ -1312,6 +1533,453 @@ function borrarPagosAnterioresLocales(){
 
 function money(n){
   return "$"+Number(n || 0).toLocaleString("es-CO");
+}
+
+function crearCodigoComprobantePago(){
+  const numero=String(Date.now()).slice(-5);
+  return `CP-2026-${numero}`;
+}
+
+function codigoVisibleComprobante(idPago){
+  const texto=String(idPago || crearCodigoComprobantePago()).trim();
+  if(/^CP-2026-\d{5}$/.test(texto)) return texto;
+  const limpio=texto.replace(/[^a-zA-Z0-9]/g,"").toUpperCase();
+  return `CP-2026-${limpio.slice(-5) || String(Date.now()).slice(-5)}`;
+}
+
+function fechaComprobante(valor){
+  const fecha=valor ? new Date(valor) : new Date();
+  if(Number.isNaN(fecha.getTime())) return new Date().toLocaleString("es-CO");
+  return fecha.toLocaleString("es-CO",{
+    year:"numeric",
+    month:"long",
+    day:"numeric",
+    hour:"2-digit",
+    minute:"2-digit"
+  });
+}
+
+function cargarImagenComprobante(src){
+  return new Promise((resolve)=>{
+    const img=new Image();
+    img.onload=()=>resolve(img);
+    img.onerror=()=>resolve(null);
+    img.src=src;
+  });
+}
+
+function rectRedondo(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+function textoMultilinea(ctx,texto,x,y,maxWidth,lineHeight,maxLines=3){
+  const palabras=String(texto || "").split(/\s+/);
+  let linea="";
+  let lineas=0;
+  palabras.forEach((palabra)=>{
+    const prueba=linea ? `${linea} ${palabra}` : palabra;
+    if(ctx.measureText(prueba).width > maxWidth && linea){
+      if(lineas < maxLines){
+        ctx.fillText(linea,x,y);
+        y+=lineHeight;
+        lineas++;
+      }
+      linea=palabra;
+    }else{
+      linea=prueba;
+    }
+  });
+  if(linea && lineas < maxLines){
+    ctx.fillText(linea,x,y);
+  }
+}
+
+function textoCentradoMultilinea(ctx,texto,centroX,y,maxWidth,lineHeight,maxLines=3){
+  const palabras=String(texto || "").split(/\s+/);
+  let linea="";
+  let lineas=0;
+  palabras.forEach((palabra)=>{
+    const prueba=linea ? `${linea} ${palabra}` : palabra;
+    if(ctx.measureText(prueba).width > maxWidth && linea){
+      if(lineas < maxLines){
+        ctx.fillText(linea,centroX,y);
+        y+=lineHeight;
+        lineas++;
+      }
+      linea=palabra;
+    }else{
+      linea=prueba;
+    }
+  });
+  if(linea && lineas < maxLines){
+    ctx.fillText(linea,centroX,y);
+  }
+}
+
+function etiquetaValorComprobante(ctx,etiqueta,valor,x,y,w){
+  ctx.fillStyle="#777";
+  ctx.font="700 18px Outfit, Arial";
+  ctx.fillText(etiqueta,x,y);
+  ctx.fillStyle="#111";
+  ctx.font="800 25px Outfit, Arial";
+  textoMultilinea(ctx,valor || "-",x,y+34,w,30,2);
+}
+
+function descargarCanvasComprobante(canvas,nombre){
+  const link=document.createElement("a");
+  link.download=nombre;
+  link.href=canvas.toDataURL("image/png");
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+function setLoaderPago(paso,titulo,texto,progreso,final=false){
+  const loader=document.getElementById("paymentLoader");
+  const barra=document.getElementById("paymentLoaderBar");
+  const tituloEl=document.getElementById("paymentLoaderTitle");
+  const textoEl=document.getElementById("paymentLoaderText");
+  const foot=document.getElementById("paymentLoaderFoot");
+  if(!loader) return;
+
+  loader.classList.add("show");
+  loader.setAttribute("aria-hidden","false");
+  tituloEl.innerText=titulo || "Procesando pago";
+  textoEl.innerText=texto || "";
+  barra.style.width=`${Math.max(0,Math.min(progreso || 0,100))}%`;
+
+  const orden=["registro","asignado","pagado","descarga"];
+  const actual=orden.indexOf(paso);
+  document.querySelectorAll(".payment-step").forEach((item)=>{
+    const index=orden.indexOf(item.dataset.step);
+    item.classList.remove("active","done");
+    if(index < actual || final) item.classList.add("done");
+    if(index === actual && !final) item.classList.add("active");
+    const dot=item.querySelector(".payment-step-dot");
+    if(dot){
+      dot.innerHTML=(index < actual || final)
+        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        : String(index + 1);
+    }
+  });
+  foot.innerText=final ? "Proceso terminado. Puedes continuar." : "No cierres esta ventana hasta finalizar.";
+}
+
+function ocultarLoaderPago(delay=900){
+  setTimeout(()=>{
+    const loader=document.getElementById("paymentLoader");
+    if(!loader) return;
+    loader.classList.remove("show");
+    loader.setAttribute("aria-hidden","true");
+  },delay);
+}
+
+async function generarDescargarComprobantePago(pago){
+  const canvas=document.createElement("canvas");
+  canvas.width=1200;
+  canvas.height=1640;
+  const ctx=canvas.getContext("2d");
+  const logo=await cargarImagenComprobante("img/logo.png");
+  const banner=await cargarImagenComprobante("img/afiche-oficial-congreso-2026.jpeg");
+  const idPago=codigoVisibleComprobante(pago.IdPago || pago.idPago || crearCodigoComprobantePago());
+  const totalPagado=numeroPago(pago.ValorAbono);
+  const saldo=numeroPago(pago.SaldoPosterior);
+  const estado=saldo === 0 ? "PAGO COMPLETO" : "ABONO REGISTRADO";
+
+  ctx.fillStyle="#f7f3ef";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  ctx.save();
+  rectRedondo(ctx,0,0,canvas.width,300,0);
+  ctx.clip();
+  if(banner){
+    ctx.drawImage(banner,0,-120,canvas.width,520);
+  }
+  const grad=ctx.createLinearGradient(0,0,canvas.width,0);
+  grad.addColorStop(0,"rgba(35,0,2,.86)");
+  grad.addColorStop(.48,"rgba(100,0,0,.38)");
+  grad.addColorStop(1,"rgba(0,0,0,.88)");
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,0,canvas.width,300);
+  ctx.restore();
+
+  if(logo) ctx.drawImage(logo,58,40,118,82);
+  ctx.fillStyle="#ff3036";
+  ctx.font="900 24px Outfit, Arial";
+  ctx.fillText("CONGRESO JUVENIL 2026",200,72);
+  ctx.fillStyle="#fff";
+  ctx.font="900 56px Outfit, Arial";
+  ctx.fillText("TRASCENDENTALES",58,168);
+  ctx.font="500 34px Outfit, Arial";
+  ctx.fillText("Fe + Accion",62,218);
+  ctx.font="800 22px Outfit, Arial";
+  ctx.fillText("5 AL 8 DICIEMBRE 2026",895,86);
+  ctx.fillText("Gerizim - Sincelejo",895,142);
+
+  ctx.save();
+  ctx.shadowColor="rgba(0,0,0,.14)";
+  ctx.shadowBlur=22;
+  ctx.shadowOffsetY=12;
+  rectRedondo(ctx,28,258,1144,1320,38);
+  ctx.fillStyle="#fff";
+  ctx.fill();
+  ctx.restore();
+
+  const iconGrad=ctx.createLinearGradient(58,315,142,405);
+  iconGrad.addColorStop(0,"#ff3036");
+  iconGrad.addColorStop(1,"#9d0208");
+  rectRedondo(ctx,58,318,84,84,20);
+  ctx.fillStyle=iconGrad;
+  ctx.fill();
+  ctx.strokeStyle="#fff";
+  ctx.lineWidth=5;
+  ctx.strokeRect(82,340,28,36);
+  ctx.beginPath();
+  ctx.arc(116,372,17,0,Math.PI*2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(108,371);
+  ctx.lineTo(115,378);
+  ctx.lineTo(126,364);
+  ctx.stroke();
+
+  ctx.fillStyle="#151515";
+  ctx.font="900 50px Outfit, Arial";
+  ctx.fillText("COMPROBANTE DE PAGO",168,360);
+  ctx.fillStyle="#777";
+  ctx.font="600 25px Outfit, Arial";
+  ctx.fillText("Pago registrado correctamente",170,398);
+  ctx.fillStyle="#d5161d";
+  ctx.fillRect(170,420,72,3);
+
+  rectRedondo(ctx,795,292,320,170,16);
+  ctx.strokeStyle="#ddd";
+  ctx.lineWidth=2;
+  ctx.stroke();
+  ctx.textAlign="center";
+  ctx.fillStyle="#777";
+  ctx.font="700 18px Outfit, Arial";
+  ctx.fillText("N DE COMPROBANTE",955,330);
+  ctx.fillStyle="#9d0208";
+  ctx.font="900 30px Outfit, Arial";
+  ctx.fillText(idPago,955,372);
+  ctx.fillStyle="#777";
+  ctx.font="700 17px Outfit, Arial";
+  ctx.fillText("FECHA DE EMISION",955,420);
+  ctx.fillStyle="#111";
+  ctx.font="700 18px Outfit, Arial";
+  ctx.fillText(fechaComprobante(pago.FechaRegistro),955,448);
+  ctx.textAlign="left";
+
+  ctx.fillStyle="#b30b13";
+  ctx.font="900 24px Outfit, Arial";
+  ctx.fillText("DATOS DEL PARTICIPANTE",58,515);
+  etiquetaValorComprobante(ctx,"NOMBRE COMPLETO",pago.Nombre,82,565,360);
+  etiquetaValorComprobante(ctx,"IDENTIFICACION",pago.Documento,82,660,280);
+  etiquetaValorComprobante(ctx,"IGLESIA",pago.Iglesia,470,565,300);
+  etiquetaValorComprobante(ctx,"MUNICIPIO",pago.Municipio,470,660,260);
+
+  ctx.strokeStyle="#ddd";
+  ctx.setLineDash([4,4]);
+  ctx.beginPath();
+  ctx.moveTo(430,540);
+  ctx.lineTo(430,715);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle="#b30b13";
+  ctx.font="900 24px Outfit, Arial";
+  ctx.fillText("DETALLE DEL PAGO",58,790);
+  rectRedondo(ctx,58,820,700,230,12);
+  ctx.strokeStyle="#ddd";
+  ctx.stroke();
+  ctx.fillStyle="#0b0b0b";
+  rectRedondo(ctx,58,820,700,48,12);
+  ctx.fill();
+  ctx.fillStyle="#fff";
+  ctx.font="800 16px Outfit, Arial";
+  ctx.fillText("DESCRIPCION",78,852);
+  ctx.fillText("VALOR",570,852);
+  ctx.fillStyle="#111";
+  ctx.font="800 21px Outfit, Arial";
+  ctx.fillText("Abono Congreso Juvenil 2026",78,908);
+  ctx.fillStyle="#777";
+  ctx.font="600 17px Outfit, Arial";
+  ctx.fillText("TRASCENDENTALES: Fe + Accion",78,936);
+  ctx.fillStyle="#111";
+  ctx.font="900 23px Outfit, Arial";
+  ctx.fillText(money(totalPagado),570,916);
+  ctx.strokeStyle="#eee";
+  ctx.beginPath();
+  ctx.moveTo(58,972);
+  ctx.lineTo(758,972);
+  ctx.stroke();
+  ctx.fillStyle="#111";
+  ctx.font="800 19px Outfit, Arial";
+  ctx.fillText("SALDO POSTERIOR",430,1016);
+  ctx.fillStyle="#b30b13";
+  ctx.font="900 26px Outfit, Arial";
+  ctx.fillText(money(saldo),610,1016);
+
+  ctx.fillStyle="#b30b13";
+  ctx.font="900 24px Outfit, Arial";
+  ctx.fillText("METODO DE PAGO",58,1110);
+  rectRedondo(ctx,58,1135,700,78,12);
+  ctx.strokeStyle="#ddd";
+  ctx.stroke();
+  etiquetaValorComprobante(ctx,"MEDIO DE PAGO",pago.MedioPago,82,1172,230);
+  etiquetaValorComprobante(ctx,"REFERENCIA",pago.ReferenciaPago || "Sin referencia",330,1172,250);
+  ctx.fillStyle="#e9f8ed";
+  rectRedondo(ctx,596,1160,130,34,17);
+  ctx.fill();
+  ctx.fillStyle="#14883a";
+  ctx.font="900 17px Outfit, Arial";
+  ctx.fillText("APROBADO",616,1183);
+
+  rectRedondo(ctx,795,500,320,548,16);
+  ctx.strokeStyle="#ddd";
+  ctx.stroke();
+  ctx.fillStyle="#b30b13";
+  ctx.font="900 24px Outfit, Arial";
+  ctx.fillText("TIKET_ PAGO",824,545);
+  ctx.fillStyle="#333";
+  ctx.font="500 20px Outfit, Arial";
+  textoMultilinea(ctx,"Gracias por confirmar tu participacion. Conserva este comprobante para cualquier consulta.",825,590,250,30,4);
+  ctx.fillStyle="#d5161d";
+  ctx.fillRect(825,715,230,2);
+  ctx.fillStyle=iconGrad;
+  ctx.beginPath();
+  ctx.arc(955,810,58,0,Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle="#fff";
+  ctx.lineWidth=10;
+  ctx.beginPath();
+  ctx.moveTo(925,810);
+  ctx.lineTo(948,835);
+  ctx.lineTo(990,775);
+  ctx.stroke();
+  ctx.fillStyle="#a4060d";
+  ctx.font="900 28px Outfit, Arial";
+  ctx.textAlign="center";
+  ctx.fillText(estado,955,905);
+  ctx.fillStyle="#333";
+  ctx.font="600 16px Outfit, Arial";
+  ctx.textAlign="center";
+  textoCentradoMultilinea(ctx,"Tu pago ha sido registrado en la pasarela autorizada.",955,940,230,24,3);
+  ctx.textAlign="left";
+
+  rectRedondo(ctx,795,1080,320,162,16);
+  ctx.strokeStyle="#ddd";
+  ctx.stroke();
+  ctx.fillStyle="#b30b13";
+  ctx.font="900 23px Outfit, Arial";
+  ctx.fillText("RESPONSABLE",825,1126);
+  ctx.fillStyle="#111";
+  ctx.font="800 20px Outfit, Arial";
+  textoMultilinea(ctx,pago.Organizador || "Equipo autorizado",825,1164,250,27,3);
+
+  ctx.fillStyle="#b30b13";
+  ctx.font="900 24px Outfit, Arial";
+  ctx.fillText("NOTAS IMPORTANTES",58,1280);
+  ctx.fillStyle="#333";
+  ctx.font="500 19px Outfit, Arial";
+  ctx.fillText("Este comprobante acredita el pago registrado para el Congreso Juvenil 2026.",84,1322);
+  ctx.fillText("Conserve este comprobante para cualquier consulta con el equipo organizador.",84,1358);
+  ctx.fillText("Si el pago es parcial, el saldo queda pendiente hasta completar el total.",84,1394);
+  ctx.fillStyle="#d5161d";
+  [1316,1352,1388].forEach((y)=>{
+    ctx.beginPath();
+    ctx.arc(64,y,8,0,Math.PI*2);
+    ctx.strokeStyle="#d5161d";
+    ctx.lineWidth=2;
+    ctx.stroke();
+  });
+
+  const footer=ctx.createLinearGradient(28,1450,1172,1580);
+  footer.addColorStop(0,"#470002");
+  footer.addColorStop(1,"#080000");
+  rectRedondo(ctx,28,1450,1144,128,28);
+  ctx.fillStyle=footer;
+  ctx.fill();
+  if(logo) ctx.drawImage(logo,68,1484,82,58);
+  ctx.fillStyle="#fff";
+  ctx.font="900 21px Outfit, Arial";
+  ctx.fillText("UNION JUVENIL EVANGELICA DEL CARIBE",170,1500);
+  ctx.fillStyle="rgba(255,255,255,.78)";
+  ctx.font="500 18px Outfit, Arial";
+  ctx.fillText("Creciendo juntos para impactar nuestra generacion.",170,1532);
+  ctx.fillStyle="#ff3036";
+  ctx.font="800 18px Outfit, Arial";
+  ctx.fillText("1 Timoteo 4:12",895,1532);
+
+  descargarCanvasComprobante(canvas,`comprobante-${idPago}-${pago.Documento || "pago"}.png`);
+}
+
+function esMedioPago(valor){
+  return ["transferencia","efectivo","consignacion","nequi","daviplata","otro"]
+    .includes(normalizarTextoPago(valor));
+}
+
+function esFechaPago(valor){
+  const texto=String(valor || "").trim();
+  return /^\d{4}-\d{2}-\d{2}/.test(texto) || /^\d{1,2}\/\d{1,2}\/\d{4}/.test(texto);
+}
+
+function numeroPago(valor){
+  if(typeof valor === "number") return valor;
+  const limpio=String(valor || "").replace(/[^\d.-]/g,"");
+  return Number(limpio || 0);
+}
+
+function repararPagoDesplazado(pago){
+  const copia={...pago};
+  const fechaPago=copia.FechaPago || copia.fechaPago || "";
+  const valorAbono=numeroPago(copia.ValorAbono ?? copia.abono ?? copia.valor);
+  const medioPago=copia.MedioPago || copia.medioPago || "";
+
+  const observacionOriginal=copia.ObservacionPago || copia.ObservacionPag || "";
+
+  if(esMedioPago(fechaPago) && esFechaPago(observacionOriginal) && medioPago && !esMedioPago(medioPago)){
+    return {
+      ...copia,
+      Organizador:copia.MedioPago || copia.Organizador || "",
+      MedioPago:copia.FechaPago || "",
+      ValorAbono:numeroPago(copia.ReferenciaPago),
+      FechaPago:String(observacionOriginal || "").slice(0,10),
+      ReferenciaPago:copia.ComprobanteNombre || "",
+      ObservacionPago:copia.ComprobanteURL || copia.ComprobanteData || "",
+      ComprobanteNombre:"",
+      ComprobanteData:"",
+      ComprobanteURL:""
+    };
+  }
+
+  if(esMedioPago(copia.ValorAbono) || esFechaPago(observacionOriginal)){
+    return {
+      ...copia,
+      Organizador:copia.MedioPago || copia.Organizador || "",
+      MedioPago:copia.ValorAbono || copia.MedioPago || "",
+      ValorAbono:numeroPago(copia.FechaPago),
+      FechaPago:String(observacionOriginal || copia.FechaPago || "").slice(0,10),
+      ReferenciaPago:copia.ReferenciaPago || "",
+      ObservacionPago:copia.ComprobanteNombre || "",
+      ComprobanteNombre:"",
+      ComprobanteData:copia.ComprobanteURL || copia.ComprobanteData || "",
+      ComprobanteURL:copia.ComprobanteURL || ""
+    };
+  }
+
+  return copia;
 }
 
 function normalizarTextoPago(valor){
@@ -1349,6 +2017,7 @@ function guardarPagosLocales(pagos){
 
 function normalizarPago(pago){
   if(!pago || typeof pago !== "object") return null;
+  pago=repararPagoDesplazado(pago);
   const tieneMarcaPago =
     pago.ValorAbono || pago.abono || pago.valor ||
     pago.MedioPago || pago.medioPago ||
@@ -1366,24 +2035,24 @@ function normalizarPago(pago){
     Municipio:pago.Municipio || pago.Ciudad || pago.ciudad || "",
     Organizador:pago.Organizador || pago.organizador || "",
     MedioPago:pago.MedioPago || pago.medioPago || "",
-    ValorCongreso:Number(pago.ValorCongreso || pago.valorCongreso || PRECIO_CONGRESO),
+    ValorCongreso:numeroPago(pago.ValorCongreso || pago.valorCongreso || PRECIO_CONGRESO),
     DeseaCamisa:pago.DeseaCamisa || pago.deseaCamisa || "No",
     TipoCamiseta:pago.TipoCamiseta || pago.tipoCamiseta || "",
     TallaCamisa:pago.TallaCamisa || pago.tallaCamisa || "",
     ColorCamisa:pago.ColorCamisa || pago.colorCamisa || "",
-    ValorCamisa:Number(pago.ValorCamisa || pago.valorCamisa || 0),
-    DescuentoAplicado:Number(pago.DescuentoAplicado || pago.descuentoAplicado || 0),
-    ValorTotal:Number(pago.ValorTotal || pago.valorTotal || 0),
-    ValorAbono:Number(pago.ValorAbono || pago.abono || pago.valor || 0),
+    ValorCamisa:numeroPago(pago.ValorCamisa || pago.valorCamisa || 0),
+    DescuentoAplicado:numeroPago(pago.DescuentoAplicado || pago.descuentoAplicado || 0),
+    ValorTotal:numeroPago(pago.ValorTotal || pago.valorTotal || 0),
+    ValorAbono:numeroPago(pago.ValorAbono || pago.abono || pago.valor || 0),
     FechaPago:pago.FechaPago || pago.fechaPago || "",
     ReferenciaPago:pago.ReferenciaPago || pago.referenciaPago || "",
-    ObservacionPago:pago.ObservacionPago || pago.observacionPago || "",
+    ObservacionPago:pago.ObservacionPago || pago.ObservacionPag || pago.observacionPago || "",
     ComprobanteNombre:pago.ComprobanteNombre || pago.comprobanteNombre || "",
     ComprobanteTipo:pago.ComprobanteTipo || pago.comprobanteTipo || "",
-    ComprobanteData:pago.ComprobanteData || pago.comprobanteData || "",
+    ComprobanteData:pago.ComprobanteData || pago.ComprobanteURL || pago.comprobanteData || pago.comprobanteURL || "",
     Fuente:pago.Fuente || pago.fuente || "local",
     FechaRegistro:pago.FechaRegistro || pago.fechaRegistro || new Date().toISOString(),
-    SaldoPosterior:Number(pago.SaldoPosterior || pago.saldoPosterior || 0)
+    SaldoPosterior:numeroPago(pago.SaldoPosterior || pago.saldoPosterior || 0)
   };
 }
 
@@ -1480,18 +2149,20 @@ function actualizarResumenPago(){
 function renderHistorialPagos(){
   const tabla=document.getElementById("tablaPagos");
   if(!participanteActual){
-    tabla.innerHTML='<tr><td colspan="7" class="empty">Busca un participante para consultar solo sus pagos.</td></tr>';
+    pagosHistorialActual=[];
+    tabla.innerHTML='<tr><td colspan="8" class="empty">Busca un participante para consultar solo sus pagos.</td></tr>';
     return;
   }
 
   const pagos=pagosDeDocumento(participanteActual.Documento);
+  pagosHistorialActual=pagos;
   if(!pagos.length){
-    tabla.innerHTML='<tr><td colspan="7" class="empty">Este participante aun no tiene pagos registrados.</td></tr>';
+    tabla.innerHTML='<tr><td colspan="8" class="empty">Este participante aun no tiene pagos registrados.</td></tr>';
     return;
   }
 
   let html="";
-  pagos.forEach((pago)=>{
+  pagos.forEach((pago,index)=>{
     const link = pago.ComprobanteNombre
       ? `<a class="comprobante-link" href="${pago.ComprobanteData || "#"}" target="_blank" rel="noopener">${pago.ComprobanteNombre}</a>`
       : "Sin archivo";
@@ -1504,11 +2175,28 @@ function renderHistorialPagos(){
       <td>${pago.ReferenciaPago || ""}<br><span class="small">${fuente}</span></td>
       <td>${pago.Organizador || ""}</td>
       <td>${link}</td>
+      <td><button class="receipt-link" type="button" onclick="descargarComprobanteHistorial(${index})">Descargar</button></td>
       <td>${pago.ObservacionPago || ""}</td>
     </tr>`;
   });
 
   tabla.innerHTML=html;
+}
+
+async function descargarComprobanteHistorial(index){
+  const pago=pagosHistorialActual[index];
+  if(!pago){
+    alert("No se encontro el comprobante de este pago.");
+    return;
+  }
+  await generarDescargarComprobantePago({
+    ...pago,
+    Nombre:pago.Nombre || participanteActual?.Nombre || "",
+    Documento:pago.Documento || participanteActual?.Documento || "",
+    Iglesia:pago.Iglesia || participanteActual?.Iglesia || "",
+    Municipio:pago.Municipio || participanteActual?.Municipio || "",
+    Codigo:pago.Codigo || participanteActual?.Codigo || ""
+  });
 }
 
 function calcularVistaPrevia(){
@@ -1607,6 +2295,11 @@ async function cargar(){
     pagosRemotos = Array.isArray(jsonPagos)
       ? jsonPagos.map(item=>normalizarPago({...item,Fuente:"remoto"})).filter(Boolean)
       : [];
+    try{
+      await fetch(API_COMPROBANTES,{cache:"no-store"});
+    }catch{
+      // La hoja de comprobantes se sincroniza cuando el Apps Script actualizado este publicado.
+    }
     cargada=true;
     renderHistorialPagos();
   }catch(e){
@@ -1693,9 +2386,18 @@ async function registrarPago(){
     return;
   }
 
+  setLoaderPago(
+    "registro",
+    "Validando registro",
+    `Confirmando datos de ${participanteActual.Nombre || "participante"} y el valor del abono.`,
+    18
+  );
+
+  const idPagoLocal=crearCodigoComprobantePago();
   const pagoPayload = {
     accion:"registrarPago",
     hoja:HOJA_PAGOS,
+    IdPago:idPagoLocal,
     CampistaKey:obtenerCampistaKey(participanteActual),
     Documento:participanteActual.Documento,
     Codigo:participanteActual.Codigo,
@@ -1721,6 +2423,7 @@ async function registrarPago(){
     ComprobanteNombre:comprobanteTemporal ? comprobanteTemporal.nombre : "",
     ComprobanteTipo:comprobanteTemporal ? comprobanteTemporal.tipo : "",
     ComprobanteData:comprobanteTemporal ? comprobanteTemporal.data : "",
+    ComprobanteURL:comprobanteTemporal ? comprobanteTemporal.data : "",
     FechaRegistro:new Date().toISOString(),
     SaldoPosterior:saldo
   };
@@ -1728,8 +2431,20 @@ async function registrarPago(){
   let guardadoRemoto=false;
   let respuestaRemota={};
   document.getElementById("mensajePago").innerHTML="Guardando pago en linea...";
+  setLoaderPago(
+    "asignado",
+    "Pago asignado",
+    `Asignado a ${organizador}. Preparando registro en la base de pagos.`,
+    42
+  );
 
   try{
+    setLoaderPago(
+      "pagado",
+      "Guardando pago",
+      "Enviando la informacion a Excel y esperando confirmacion.",
+      66
+    );
     const r=await fetch(API,{
       method:"POST",
       headers:{
@@ -1762,19 +2477,53 @@ async function registrarPago(){
     guardarPagosLocales(pagos);
     renderHistorialPagos();
     actualizarResumenPago();
+    setLoaderPago(
+      "descarga",
+      "Respaldo local creado",
+      "No se pudo guardar en linea, pero se genero el respaldo local y el comprobante.",
+      88
+    );
+    await generarDescargarComprobantePago({
+      ...pagoPayload,
+      Fuente:"local"
+    });
+    setLoaderPago(
+      "descarga",
+      "Comprobante descargado",
+      "El comprobante de pago fue generado. Revisa la carpeta de descargas.",
+      100,
+      true
+    );
+    ocultarLoaderPago(1500);
     limpiarFormularioPago();
     document.getElementById("mensajePago").innerHTML=`No se pudo guardar en Excel en linea. Se dejo respaldo local asociado al campista. Error: <strong>${error.message}</strong>`;
     return;
   }
 
-  pagosRemotos.unshift(normalizarPago({
+  const pagoConfirmado={
     ...respuestaRemota,
     ...pagoPayload,
     IdPago:respuestaRemota.IdPago || respuestaRemota.idPago || respuestaRemota.codigoPago || pagoPayload.IdPago,
     Fuente:"remoto"
-  }));
+  };
+  pagosRemotos.unshift(normalizarPago(pagoConfirmado));
   renderHistorialPagos();
   actualizarResumenPago();
+  setLoaderPago(
+    "descarga",
+    "Pago confirmado",
+    "El registro quedo guardado. Generando comprobante para descarga.",
+    88
+  );
+  await generarDescargarComprobantePago(pagoConfirmado);
+  setLoaderPago(
+    "descarga",
+    "Comprobante descargado",
+    "Pago registrado y comprobante descargado correctamente.",
+    100,
+    true
+  );
+  ocultarLoaderPago(1500);
   limpiarFormularioPago();
   document.getElementById("mensajePago").innerHTML=`Pago registrado en Excel en linea y asociado al campista. Saldo restante: <strong>${money(saldo)}</strong>`;
 }

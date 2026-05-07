@@ -1,6 +1,7 @@
 const SPREADSHEET_ID = "PEGA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET";
 const HOJA_INSCRIPCIONES = "Inscripciones2026";
 const HOJA_PAGOS = "PagosIndividuales2026";
+const HOJA_COMPROBANTES = "ComprobantesPago2026";
 
 const COLUMNAS_INSCRIPCIONES = [
   "FechaRegistro",
@@ -35,8 +36,8 @@ const COLUMNAS_INSCRIPCIONES = [
 ];
 
 const COLUMNAS_PAGOS = [
-  "FechaRegistro",
   "IdPago",
+  "FechaRegistro",
   "CampistaKey",
   "Documento",
   "Codigo",
@@ -62,7 +63,30 @@ const COLUMNAS_PAGOS = [
   "ComprobanteNombre",
   "ComprobanteTipo",
   "ComprobanteData",
+  "ComprobanteURL",
   "SaldoPosterior"
+];
+
+const COLUMNAS_COMPROBANTES = [
+  "IdComprobante",
+  "IdPago",
+  "FechaEmision",
+  "FechaPago",
+  "Documento",
+  "Codigo",
+  "Nombre",
+  "Iglesia",
+  "Municipio",
+  "ZonaAsignada",
+  "LiderAsignado",
+  "Organizador",
+  "MedioPago",
+  "ValorTotal",
+  "ValorAbono",
+  "SaldoPosterior",
+  "ReferenciaPago",
+  "EstadoComprobante",
+  "ArchivoSugerido"
 ];
 
 function doGet(e) {
@@ -75,6 +99,10 @@ function doGet(e) {
 
   if (accion === "pagos") {
     return responderJson_(listarPagos_(params.hoja), params.callback);
+  }
+
+  if (accion === "comprobantes") {
+    return responderJson_(listarComprobantesPago_(params.hoja), params.callback);
   }
 
   return responderJson_({ resultado: "error", error: "Accion no soportada" }, params.callback);
@@ -139,14 +167,90 @@ function listarInscripciones_(nombreHoja) {
 function registrarPago_(datos) {
   const hoja = obtenerHojaPagos_(datos.hoja || HOJA_PAGOS);
   const idPago = datos.IdPago || crearIdPago_();
-  const fila = COLUMNAS_PAGOS.map((columna) => {
-    if (columna === "IdPago") return idPago;
-    if (columna === "FechaRegistro") return datos.FechaRegistro || new Date().toISOString();
-    return datos[columna] || "";
-  });
+  const encabezados = obtenerEncabezadosActuales_(hoja, COLUMNAS_PAGOS);
+  const datosPago = normalizarDatosPago_(datos, idPago);
+  const fila = encabezados.map((columna) => datosPago[columna] || "");
 
   hoja.appendRow(fila);
+  registrarComprobantePago_(datosPago);
   return { resultado: "ok", IdPago: idPago };
+}
+
+function registrarComprobantePago_(datosPago) {
+  const hoja = obtenerHojaComprobantes_(HOJA_COMPROBANTES);
+  const comprobante = normalizarDatosComprobantePago_(datosPago);
+  const encabezados = obtenerEncabezadosActuales_(hoja, COLUMNAS_COMPROBANTES);
+  const fila = encabezados.map((columna) => comprobante[columna] || "");
+  hoja.appendRow(fila);
+}
+
+function listarComprobantesPago_(nombreHoja) {
+  const hoja = obtenerHojaComprobantes_(nombreHoja || HOJA_COMPROBANTES);
+  sincronizarComprobantesDesdePagos_();
+  const ultimaFila = hoja.getLastRow();
+  const ultimaColumna = hoja.getLastColumn();
+
+  if (ultimaFila < 2 || ultimaColumna < 1) {
+    return [];
+  }
+
+  const valores = hoja.getRange(1, 1, ultimaFila, ultimaColumna).getValues();
+  const encabezados = valores.shift();
+
+  return valores
+    .filter((fila) => fila.some((valor) => String(valor).trim() !== ""))
+    .map((fila) => {
+      const comprobante = {};
+      encabezados.forEach((encabezado, index) => {
+        comprobante[encabezado] = fila[index] instanceof Date
+          ? fila[index].toISOString()
+          : fila[index];
+      });
+      return comprobante;
+    });
+}
+
+function sincronizarComprobantesDesdePagos_() {
+  const hojaComprobantes = obtenerHojaComprobantes_(HOJA_COMPROBANTES);
+  const comprobantes = leerFilasComoObjetos_(hojaComprobantes);
+  const idsExistentes = new Set(comprobantes.map((item) => String(item.IdPago || item.IdComprobante || "").trim()).filter(Boolean));
+  const pagos = listarPagos_(HOJA_PAGOS);
+  const encabezados = obtenerEncabezadosActuales_(hojaComprobantes, COLUMNAS_COMPROBANTES);
+  const filasNuevas = [];
+
+  pagos.forEach((pago) => {
+    const idPago = String(pago.IdPago || "").trim();
+    if (!idPago || idsExistentes.has(idPago)) return;
+    const comprobante = normalizarDatosComprobantePago_(normalizarDatosPago_(pago, idPago));
+    filasNuevas.push(encabezados.map((columna) => comprobante[columna] || ""));
+    idsExistentes.add(idPago);
+  });
+
+  if (filasNuevas.length) {
+    hojaComprobantes
+      .getRange(hojaComprobantes.getLastRow() + 1, 1, filasNuevas.length, encabezados.length)
+      .setValues(filasNuevas);
+  }
+}
+
+function leerFilasComoObjetos_(hoja) {
+  const ultimaFila = hoja.getLastRow();
+  const ultimaColumna = hoja.getLastColumn();
+  if (ultimaFila < 2 || ultimaColumna < 1) return [];
+
+  const valores = hoja.getRange(1, 1, ultimaFila, ultimaColumna).getValues();
+  const encabezados = valores.shift();
+  return valores
+    .filter((fila) => fila.some((valor) => String(valor).trim() !== ""))
+    .map((fila) => {
+      const item = {};
+      encabezados.forEach((encabezado, index) => {
+        item[encabezado] = fila[index] instanceof Date
+          ? fila[index].toISOString()
+          : fila[index];
+      });
+      return item;
+    });
 }
 
 function listarPagos_(nombreHoja) {
@@ -211,6 +315,18 @@ function obtenerHojaPagos_(nombreHoja) {
   return hoja;
 }
 
+function obtenerHojaComprobantes_(nombreHoja) {
+  const libro = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let hoja = libro.getSheetByName(nombreHoja);
+
+  if (!hoja) {
+    hoja = libro.insertSheet(nombreHoja);
+  }
+
+  asegurarEncabezadosPersonalizados_(hoja, COLUMNAS_COMPROBANTES);
+  return hoja;
+}
+
 function asegurarEncabezados_(hoja) {
   asegurarEncabezadosPersonalizados_(hoja, COLUMNAS_INSCRIPCIONES);
 }
@@ -230,6 +346,77 @@ function asegurarEncabezadosPersonalizados_(hoja, columnas) {
   if (faltantes.length) {
     hoja.getRange(1, hoja.getLastColumn() + 1, 1, faltantes.length).setValues([faltantes]);
   }
+}
+
+function obtenerEncabezadosActuales_(hoja, columnasBase) {
+  asegurarEncabezadosPersonalizados_(hoja, columnasBase);
+  const ultimaColumna = Math.max(hoja.getLastColumn(), columnasBase.length);
+  return hoja.getRange(1, 1, 1, ultimaColumna).getValues()[0]
+    .map((valor) => String(valor || "").trim())
+    .filter((valor) => valor !== "");
+}
+
+function normalizarDatosPago_(datos, idPago) {
+  const comprobanteData = datos.ComprobanteData || datos.ComprobanteURL || "";
+  return {
+    IdPago: idPago,
+    FechaRegistro: datos.FechaRegistro || new Date().toISOString(),
+    CampistaKey: datos.CampistaKey || datos.Documento || datos.Codigo || "",
+    Documento: datos.Documento || "",
+    Codigo: datos.Codigo || "",
+    Nombre: datos.Nombre || "",
+    Iglesia: datos.Iglesia || "",
+    Municipio: datos.Municipio || datos.Ciudad || "",
+    ZonaAsignada: datos.ZonaAsignada || "",
+    LiderAsignado: datos.LiderAsignado || "",
+    Organizador: datos.Organizador || "",
+    MedioPago: datos.MedioPago || "",
+    ValorCongreso: datos.ValorCongreso || "",
+    DeseaCamisa: datos.DeseaCamisa || "",
+    TipoCamiseta: datos.TipoCamiseta || "",
+    TallaCamisa: datos.TallaCamisa || "",
+    ColorCamisa: datos.ColorCamisa || "",
+    ValorCamisa: datos.ValorCamisa || "",
+    DescuentoAplicado: datos.DescuentoAplicado || "",
+    ValorTotal: datos.ValorTotal || "",
+    ValorAbono: datos.ValorAbono || "",
+    FechaPago: datos.FechaPago || "",
+    ReferenciaPago: datos.ReferenciaPago || "",
+    ObservacionPago: datos.ObservacionPago || "",
+    ObservacionPag: datos.ObservacionPago || datos.ObservacionPag || "",
+    ComprobanteNombre: datos.ComprobanteNombre || "",
+    ComprobanteTipo: datos.ComprobanteTipo || "",
+    ComprobanteData: comprobanteData,
+    ComprobanteURL: comprobanteData,
+    SaldoPosterior: datos.SaldoPosterior || ""
+  };
+}
+
+function normalizarDatosComprobantePago_(datosPago) {
+  const idComprobante = datosPago.IdPago || crearIdPago_();
+  const saldo = Number(datosPago.SaldoPosterior || 0);
+  const estado = saldo === 0 ? "Pago completo" : "Abono registrado";
+  return {
+    IdComprobante: idComprobante,
+    IdPago: datosPago.IdPago || "",
+    FechaEmision: new Date().toISOString(),
+    FechaPago: datosPago.FechaPago || "",
+    Documento: datosPago.Documento || "",
+    Codigo: datosPago.Codigo || "",
+    Nombre: datosPago.Nombre || "",
+    Iglesia: datosPago.Iglesia || "",
+    Municipio: datosPago.Municipio || "",
+    ZonaAsignada: datosPago.ZonaAsignada || "",
+    LiderAsignado: datosPago.LiderAsignado || "",
+    Organizador: datosPago.Organizador || "",
+    MedioPago: datosPago.MedioPago || "",
+    ValorTotal: datosPago.ValorTotal || "",
+    ValorAbono: datosPago.ValorAbono || "",
+    SaldoPosterior: datosPago.SaldoPosterior || "",
+    ReferenciaPago: datosPago.ReferenciaPago || "",
+    EstadoComprobante: estado,
+    ArchivoSugerido: "comprobante-" + idComprobante + "-" + (datosPago.Documento || "pago") + ".png"
+  };
 }
 
 function leerBody_(e) {
