@@ -17,32 +17,255 @@ body{
 min-height:100vh;
 padding-top:0;
 font-style:normal;
-background:#f6f1ee;
+background:
+radial-gradient(circle at 12% 0%,rgba(199,57,47,.16),transparent 30rem),
+radial-gradient(circle at 90% 14%,rgba(35,79,94,.10),transparent 28rem),
+linear-gradient(135deg,#fff9f5 0%,#f6efe9 44%,#eef4f6 100%);
+color:var(--ui-ink);
 }
 
-.container{width:min(1080px,100%);margin:0 auto;padding:24px;}
+.container{
+width:min(1120px,100%);
+margin:0 auto;
+padding:42px 24px 58px;
+}
+
+.form-hero{
+display:grid;
+grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);
+gap:22px;
+align-items:stretch;
+margin-bottom:22px;
+}
+
+.form-hero-main,
+.form-hero-side{
+background:rgba(255,255,255,.80);
+border:1px solid rgba(124,36,36,.10);
+box-shadow:0 18px 52px rgba(61,32,24,.10);
+backdrop-filter:blur(14px);
+}
+
+.form-hero-main{
+position:relative;
+overflow:hidden;
+border-radius:24px;
+padding:30px;
+}
+
+.form-hero-main:after{
+content:"";
+position:absolute;
+right:-70px;
+top:-90px;
+width:230px;
+height:230px;
+border-radius:50%;
+background:radial-gradient(circle,rgba(199,57,47,.18),transparent 68%);
+}
+
+.eyebrow{
+display:inline-flex;
+align-items:center;
+gap:9px;
+color:#8f1d2c;
+font-size:.78rem;
+font-weight:900;
+letter-spacing:.12em;
+text-transform:uppercase;
+margin-bottom:12px;
+}
+
+.eyebrow:before{
+content:"";
+width:24px;
+height:2px;
+border-radius:999px;
+background:#c7392f;
+}
+
+.page-title{
+position:relative;
+max-width:760px;
+margin:0;
+font-weight:900;
+color:var(--ui-wine);
+font-size:clamp(2.25rem,5vw,4rem);
+letter-spacing:0;
+line-height:.96;
+}
+
+.form-hero-main p{
+position:relative;
+max-width:720px;
+margin:16px 0 0;
+color:#5f504b;
+font-size:1.05rem;
+line-height:1.62;
+font-weight:500;
+}
+
+.hero-meta{
+position:relative;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:22px;
+}
+
+.hero-meta span{
+display:inline-flex;
+align-items:center;
+min-height:38px;
+padding:9px 13px;
+border-radius:999px;
+background:#fff;
+border:1px solid rgba(24,32,40,.10);
+color:#3f3936;
+font-weight:800;
+box-shadow:0 8px 22px rgba(31,24,20,.06);
+}
+
+.form-hero-side{
+border-radius:20px;
+padding:22px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+gap:18px;
+}
+
+.side-label{
+color:#8a7772;
+font-size:.82rem;
+font-weight:900;
+text-transform:uppercase;
+letter-spacing:.08em;
+}
+
+.side-value{
+color:var(--ui-wine);
+font-size:1.9rem;
+font-weight:900;
+line-height:1;
+}
+
+.side-note{
+color:#5f504b;
+font-size:.95rem;
+line-height:1.5;
+font-weight:600;
+}
 
 form{
-background:rgba(255,250,245,.92);
+position:relative;
+overflow:hidden;
+background:rgba(255,252,248,.96);
 padding:34px;
-border-radius:24px;
-box-shadow:var(--ui-shadow);
-border:1px solid rgba(255,255,255,.5);
+border-radius:22px;
+box-shadow:0 24px 70px rgba(61,32,24,.13);
+border:1px solid rgba(124,36,36,.10);
 backdrop-filter:blur(14px);
 display:grid;
 grid-template-columns:repeat(2,minmax(0,1fr));
-gap:12px 16px;
+gap:16px 18px;
+}
+form:before{
+content:"";
+position:absolute;
+inset:0 0 auto;
+height:7px;
+background:linear-gradient(90deg,var(--ui-wine),var(--ui-red),#f3b23f);
 }
 
-h2{text-align:center;margin-bottom:10px;font-weight:800;color:var(--ui-wine);font-size:2.2rem;}
-#cupos{text-align:center;font-size:1.05rem;margin-bottom:25px;color:var(--ui-red);font-weight:700;}
-h3{grid-column:1/-1;margin-top:18px;margin-bottom:2px;color:var(--ui-wine);font-weight:800;}
+#cupos{
+width:fit-content;
+max-width:100%;
+text-align:center;
+font-size:1rem;
+margin:0;
+color:#8f1d2c;
+font-weight:800;
+background:rgba(255,255,255,.86);
+border:1px solid rgba(143,29,44,.12);
+border-radius:999px;
+padding:10px 16px;
+box-shadow:0 10px 26px rgba(54,35,27,.07);
+}
+h3{
+grid-column:1/-1;
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:26px;
+margin-bottom:0;
+color:var(--ui-wine);
+font-weight:900;
+font-size:1.05rem;
+letter-spacing:.02em;
+padding-top:8px;
+border-top:1px solid rgba(124,36,36,.08);
+}
+form h3:first-child{
+margin-top:2px;
+padding-top:0;
+border-top:0;
+}
+h3:before{
+content:"";
+width:9px;
+height:22px;
+border-radius:999px;
+background:linear-gradient(180deg,var(--ui-red),#f3b23f);
+box-shadow:0 8px 18px rgba(199,57,47,.24);
+}
 
 input,select,textarea{
-width:100%;padding:14px 15px;margin:0;border-radius:14px;border:1px solid rgba(24,32,40,.12);background:rgba(255,255,255,.94);transition:0.25s;color:var(--ui-ink);font:inherit;min-height:48px;
+width:100%;
+padding:15px 16px;
+margin:0;
+border-radius:12px;
+border:1px solid rgba(24,32,40,.12);
+background:#fff;
+transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease,background .2s ease;
+color:var(--ui-ink);
+font:inherit;
+font-weight:600;
+min-height:52px;
+box-shadow:0 8px 20px rgba(31,24,20,.045);
+}
+input::placeholder,
+textarea::placeholder{
+color:#8a7772;
+font-weight:500;
+}
+select{
+appearance:auto;
+color:#534640;
 }
 input:focus,select:focus,textarea:focus{
-outline:none;border:1px solid rgba(199,57,47,.55);box-shadow:0 0 0 4px rgba(199,57,47,.12);background:white;
+outline:none;
+border-color:rgba(199,57,47,.62);
+box-shadow:0 0 0 4px rgba(199,57,47,.12),0 12px 25px rgba(31,24,20,.08);
+background:white;
+transform:translateY(-1px);
+}
+input[readonly]{
+background:#f7f1ed;
+border-style:dashed;
+color:#70524b;
+box-shadow:none;
+cursor:not-allowed;
+}
+select:disabled{
+background:#f3f4f6;
+color:#9aa0a6;
+box-shadow:none;
+cursor:not-allowed;
+}
+textarea{
+min-height:110px;
+resize:vertical;
 }
 
 textarea,
@@ -52,36 +275,70 @@ grid-column:1/-1;
 }
 
 button{
-background:linear-gradient(135deg,var(--ui-wine),var(--ui-red));color:white;padding:14px;border:none;border-radius:16px;width:100%;
-font-size:16px;margin-top:20px;cursor:pointer;transition:0.25s;font-weight:700;
+background:linear-gradient(135deg,var(--ui-wine),var(--ui-red));
+color:white;
+padding:16px 18px;
+border:none;
+border-radius:14px;
+width:100%;
+font-size:16px;
+margin-top:18px;
+cursor:pointer;
+transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+font-weight:900;
+box-shadow:0 16px 30px rgba(143,29,44,.22);
 }
-button:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(143,29,44,.18);}
+button:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(143,29,44,.28);filter:saturate(1.04);}
+
+.form-actions{
+grid-column:1/-1;
+display:grid;
+grid-template-columns:minmax(0,1.2fr) minmax(220px,.8fr);
+gap:12px;
+align-items:center;
+margin-top:6px;
+}
+
+.form-actions button{
+margin-top:0;
+min-height:56px;
+}
 
 button.btn-secundario{
-background:linear-gradient(180deg,#f3f5f6,#e4e9ee);
+background:#fff;
 color:#34414d;
-margin-top:10px;
+border:1px solid rgba(52,65,77,.14);
+box-shadow:0 10px 22px rgba(52,65,77,.08);
 }
 
 button.btn-secundario:hover{
 box-shadow:0 12px 24px rgba(52,65,77,.12);
 }
 
-#estado{margin-top:20px;text-align:center;font-weight:600;font-size:16px;color:#111827;}
+#Estado{margin-top:20px;text-align:center;font-weight:700;font-size:16px;color:#111827;}
 
 .topbar{
 position:sticky;top:0;left:0;width:100%;color:white;
-display:flex;align-items:center;z-index:1000;box-shadow:0 8px 28px rgba(50,0,0,.25);padding:0;background:linear-gradient(90deg,#4b0003,#220000);
+display:flex;align-items:center;z-index:1000;box-shadow:0 10px 34px rgba(50,0,0,.22);padding:0;background:rgba(40,0,2,.92);backdrop-filter:blur(18px);
 }
-.topbar-content{width:min(1510px,100%);min-height:86px;margin:auto;padding:12px 40px;display:flex;align-items:center;justify-content:space-between;gap:28px;border:0;background:transparent;border-radius:0;box-shadow:none;}
+.topbar-content{width:min(1510px,100%);min-height:82px;margin:auto;padding:12px 40px;display:flex;align-items:center;justify-content:space-between;gap:28px;border:0;background:transparent;border-radius:0;box-shadow:none;}
 .logo-area{display:flex;align-items:center;gap:12px;}
-.logo{height:60px;width:72px;object-fit:contain;background:transparent;padding:0;border-radius:0;box-shadow:none;}
+.logo{height:58px;width:70px;object-fit:contain;background:rgba(255,255,255,.08);padding:5px;border-radius:14px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
 .titulo{display:flex;flex-direction:column;line-height:1.1;}
 .titulo strong{font-size:1.35rem;color:white;font-weight:900;}
 .titulo span{font-size:1rem;color:rgba(255,255,255,.88);margin-top:5px;}
 .menu{display:flex;flex-wrap:wrap;gap:10px;}
-.menu a{min-width:86px;color:white;text-decoration:none;font-weight:800;transition:.2s;background:transparent;border:0;padding:12px 16px;border-radius:10px;margin-left:0;text-align:center;}
-.menu a:hover{background:linear-gradient(180deg,#e22025,#b80710);color:white;box-shadow:0 12px 24px rgba(200,20,29,.25);}
+.menu a{min-width:86px;color:white;text-decoration:none;font-weight:800;transition:.2s;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);padding:11px 15px;border-radius:999px;margin-left:0;text-align:center;}
+.menu a:hover{background:#fff;color:#7a1019;box-shadow:0 12px 24px rgba(0,0,0,.18);}
+
+.modal-content h2,
+.modal-confirmacion-content h2{
+font-size:1.7rem;
+line-height:1.1;
+margin:0 0 14px;
+color:var(--ui-wine);
+text-align:left;
+}
 
 .modal,.modal-confirmacion,.modal-bienvenida{
 display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
@@ -89,8 +346,14 @@ backdrop-filter:blur(5px);align-items:center;justify-content:center;z-index:2000
 padding:20px;
 }
 .modal-content,.modal-confirmacion-content,.modal-bienvenida-content{
-background:white;padding:35px;border-radius:18px;width:90%;max-width:500px;
-box-shadow:0 20px 50px rgba(0,0,0,0.3);animation:zoomIn .3s ease;border-top:6px solid #d60000;
+background:#fffdfb;
+padding:35px;
+border-radius:18px;
+width:90%;
+max-width:500px;
+box-shadow:0 24px 70px rgba(0,0,0,0.28);
+animation:zoomIn .3s ease;
+border-top:6px solid #d60000;
 }
 .modal-content{max-width:640px;}
 .modal-confirmacion-content{
@@ -111,7 +374,7 @@ margin-bottom:14px;
 .modal-bienvenida-content button{width:auto;padding:14px 40px;}
 
 .datos-confirmacion{
-background:#f9fafb;
+background:#faf7f4;
 padding:15px;
 border-radius:10px;
 margin-bottom:20px;
@@ -145,7 +408,7 @@ padding-top:8px;
 margin-top:18px;
 padding:18px;
 border-radius:16px;
-background:linear-gradient(135deg,#fff4d6,#ffe8a3);
+background:linear-gradient(135deg,#fff7df,#ffe8a3);
 border:1px dashed #d60000;
 color:#7a1c1c;
 text-align:left;
@@ -165,26 +428,33 @@ margin-top:3px;
 grid-column:1/-1;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:16px;
+gap:18px;
 margin-top:14px;
 }
 .camiseta-card{
 background:#fff;
-border:1px solid #e5e7eb;
+border:1px solid rgba(24,32,40,.10);
 border-radius:16px;
 padding:14px;
-box-shadow:0 10px 24px rgba(0,0,0,0.06);
+box-shadow:0 14px 34px rgba(31,24,20,.08);
+transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.camiseta-card:hover{
+transform:translateY(-3px);
+box-shadow:0 20px 42px rgba(31,24,20,.12);
+border-color:rgba(199,57,47,.22);
 }
 .camiseta-card h4{
 margin:0 0 10px;
-color:#111827;
+color:var(--ui-wine);
 font-size:16px;
+font-weight:900;
 }
 .camiseta-card img{
 width:100%;
 height:260px;
 object-fit:contain;
-background:#f9fafb;
+background:linear-gradient(180deg,#f9fafb,#f1f3f5);
 border-radius:12px;
 display:block;
 margin-bottom:10px;
@@ -200,14 +470,25 @@ display:grid;
 grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
 gap:12px;
 margin-top:12px;
+padding:14px;
+border-radius:16px;
+background:#fbf7f3;
+border:1px solid rgba(143,29,44,.09);
 }
 
 @keyframes zoomIn{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
 
 @media(max-width:768px){
-.container{padding:16px;}
-form{grid-template-columns:1fr;padding:22px;border-radius:20px;}
-h2{font-size:1.85rem;}
+.container{padding:22px 14px 40px;}
+.form-hero{grid-template-columns:1fr;gap:14px;margin-bottom:16px;}
+.form-hero-main{padding:22px;border-radius:20px;}
+.form-hero-main p{font-size:.98rem;}
+.page-title{font-size:clamp(2.1rem,13vw,3rem);}
+.hero-meta span{width:100%;justify-content:center;border-radius:14px;}
+.form-hero-side{padding:18px;}
+form{grid-template-columns:1fr;padding:24px 18px;border-radius:20px;gap:14px;}
+#cupos{border-radius:16px;}
+.form-actions{grid-template-columns:1fr;}
 .modal,.modal-confirmacion,.modal-bienvenida{padding:12px;}
 .modal-content,.modal-confirmacion-content,.modal-bienvenida-content{
 width:100%;
@@ -226,6 +507,7 @@ gap:4px;
 .botones-confirmacion{
 flex-direction:column;
 }
+.camiseta-card img{height:220px;}
 }
 </style>
 <link rel="stylesheet" href="responsive-fixes.css">
@@ -253,9 +535,27 @@ flex-direction:column;
 </div>
 </header>
 
-<div class="container">
-<h2>Formulario Oficial de Inscripción</h2>
-<h3 id="cupos"></h3>
+<main class="container">
+<section class="form-hero" aria-label="Resumen de inscripcion">
+<div class="form-hero-main">
+<span class="eyebrow">Registro oficial</span>
+<h1 class="page-title">Formulario Oficial de Inscripción</h1>
+<p>Completa la informacion del participante para confirmar su lugar en el Congreso Juvenil 2026. Los datos se revisan antes del envio para evitar errores.</p>
+<div class="hero-meta">
+<span>5 al 8 de diciembre</span>
+<span>Gerizim - Sincelejo</span>
+<span>Fe + Accion</span>
+</div>
+</div>
+<aside class="form-hero-side">
+<div>
+<div class="side-label">Disponibilidad</div>
+<div class="side-value">Cupos</div>
+</div>
+<p id="cupos"></p>
+<div class="side-note">Ten a mano documento, contacto de emergencia y datos de iglesia antes de enviar.</div>
+</aside>
+</section>
 
 <form id="formulario">
 
@@ -274,22 +574,22 @@ flex-direction:column;
 <input name="Correo" type="email" placeholder="Correo electrónico" required>
 
 <h3>Ubicación</h3>
-<input name="Pais" value="Colombia">
-<input name="Departamento" placeholder="Departamento">
-<input name="Municipio" placeholder="Municipio">
-<select name="TipoZona" id="tipoZona">
+<input name="Pais" value="Colombia" required>
+<input name="Departamento" placeholder="Departamento" required>
+<input name="Municipio" placeholder="Municipio" required>
+<select name="TipoZona" id="tipoZona" required>
 <option value="">Tipo de zona</option>
 <option value="Urbana">Urbana</option>
 <option value="Rural">Rural</option>
 </select>
-<input name="ZonaAsignada" id="zonaAsignada" placeholder="Zona asignada" readonly>
-<input name="LiderAsignado" id="liderAsignado" placeholder="Lider asignado para el pago" readonly>
+<input name="ZonaAsignada" id="zonaAsignada" placeholder="Zona asignada" readonly required>
+<input name="LiderAsignado" id="liderAsignado" placeholder="Lider asignado para el pago" readonly required>
 
 <h3>Iglesia</h3>
-<input name="Iglesia" placeholder="Nombre de la iglesia">
-<input name="Pastor" placeholder="Nombre del pastor">
+<input name="Iglesia" placeholder="Nombre de la iglesia" required>
+<input name="Pastor" placeholder="Nombre del pastor" required>
 
-<select name="tipo">
+<select name="tipo" required>
 <option>Joven</option>
 <option>Lider</option>
 <option>Pastor</option>
@@ -297,24 +597,24 @@ flex-direction:column;
 </select>
 
 <h3>Emergencia</h3>
-<input name="Emergencia_nombre" placeholder="Nombre contacto de emergencia">
-<input name="Emergencia_telefono" placeholder="Teléfono de emergencia">
+<input name="Emergencia_nombre" placeholder="Nombre contacto de emergencia" required>
+<input name="Emergencia_telefono" placeholder="Teléfono de emergencia" required>
 
 <h3>Salud</h3>
-<input name="Alergias" placeholder="Alergias o condiciones médicas">
+<input name="Alergias" placeholder="Alergias o condiciones médicas" required>
 
 <h3>Camiseta</h3>
-<select name="DeseaCamisa" id="deseaCamisa">
+<select name="DeseaCamisa" id="deseaCamisa" required>
 <option value="No">No desea camiseta</option>
 <option value="Si">Si desea camiseta</option>
 </select>
 <div id="camisetaOpciones" class="camiseta-opciones">
-<select name="TipoCamiseta" id="tipoCamiseta" disabled>
+<select name="TipoCamiseta" id="tipoCamiseta" disabled required>
 <option value="">Corte de camiseta</option>
 <option value="Mujer">Mujer</option>
 <option value="Hombre">Hombre</option>
 </select>
-<select name="TallaCamisa" id="tallaCamisa" disabled>
+<select name="TallaCamisa" id="tallaCamisa" disabled required>
 <option value="">Talla de camiseta</option>
 <option>XS</option>
 <option>S</option>
@@ -323,7 +623,7 @@ flex-direction:column;
 <option>XL</option>
 <option>XXL</option>
 </select>
-<select name="ColorCamisa" id="colorCamisa" disabled>
+<select name="ColorCamisa" id="colorCamisa" disabled required>
 <option value="">Color de camiseta</option>
 <option>Rojo</option>
 <option>Blanco</option>
@@ -348,12 +648,14 @@ flex-direction:column;
 <h3>Observaciones</h3>
 <textarea name="Observaciones" rows="3"></textarea>
 
+<div class="form-actions">
 <button type="button" onclick="prepararEnvio()">Enviar inscripción</button>
 <button class="btn-secundario" type="button" onclick="limpiarFormulario()">Limpiar formulario</button>
+</div>
 
 </form>
 <p id="Estado"></p>
-</div>
+</main>
 
 <div id="modalBienvenida" class="modal-bienvenida">
 <div class="modal-bienvenida-content">
