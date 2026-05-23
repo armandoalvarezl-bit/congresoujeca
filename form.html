@@ -780,7 +780,9 @@ async function enviarInscripcion(){
         document.getElementById("modalMensaje").innerHTML="Codigo: "+(j.codigo || "Pendiente de asignacion");
         mostrarResumenPago(datosFormulario, j.codigo || "");
         document.getElementById("modal").style.display="flex";
-        document.getElementById("Estado").innerHTML="Inscripcion registrada correctamente.";
+        document.getElementById("Estado").innerHTML=j.correoEnviado
+            ? "Inscripcion registrada correctamente. Enviamos la confirmacion al correo indicado."
+            : "Inscripcion registrada correctamente. No se pudo confirmar el envio del correo.";
         limpiarFormulario();
         cargarCupos();
     }catch(error){

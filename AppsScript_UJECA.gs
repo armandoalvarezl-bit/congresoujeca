@@ -1,7 +1,7 @@
-const SPREADSHEET_ID = "PEGA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET";
+const SPREADSHEET_ID = "1cyrexQcgmskJm6RFCzWfsRcjrBVPj3RCjoU-cAkGTjM";
 const HOJA_INSCRIPCIONES = "Inscripciones2026";
-const HOJA_PAGOS = "PagosIndividuales2026";
-const HOJA_COMPROBANTES = "ComprobantesPago2026";
+const HOJA_PAGOS = "PagosIndividuales2026_CORRECTO";
+const HOJA_COMPROBANTES = "ComprobantesPago2026_CORRECTO";
 
 const COLUMNAS_INSCRIPCIONES = [
   "FechaRegistro",
@@ -90,6 +90,7 @@ const COLUMNAS_COMPROBANTES = [
 ];
 
 function doGet(e) {
+  e = e || {};
   const params = e.parameter || {};
   const accion = params.accion || "listado";
 
@@ -98,17 +99,18 @@ function doGet(e) {
   }
 
   if (accion === "pagos") {
-    return responderJson_(listarPagos_(params.hoja), params.callback);
+    return responderJson_(listarPagos_(HOJA_PAGOS), params.callback);
   }
 
   if (accion === "comprobantes") {
-    return responderJson_(listarComprobantesPago_(params.hoja), params.callback);
+    return responderJson_(listarComprobantesPago_(HOJA_COMPROBANTES), params.callback);
   }
 
   return responderJson_({ resultado: "error", error: "Accion no soportada" }, params.callback);
 }
 
 function doPost(e) {
+  e = e || {};
   const datos = leerBody_(e);
   const accion = datos.accion || "registrar";
 
@@ -136,7 +138,101 @@ function registrarInscripcion_(datos) {
   });
 
   hoja.appendRow(fila);
-  return { resultado: "ok", codigo: codigo };
+  const correoEnviado = enviarCorreoInscripcion_(datos, codigo);
+  return { resultado: "ok", codigo: codigo, correoEnviado: correoEnviado };
+}
+
+function enviarCorreoInscripcion_(datos, codigo) {
+  const correo = String(datos.Correo || datos.correo || "").trim();
+  if (!correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) return false;
+
+  const nombre = datos.Nombre || "campista";
+  const lider = datos.LiderAsignado || "Coordinacion General Zona 6";
+  const zona = datos.ZonaAsignada || "Zona general";
+  const valorCamisa = String(datos.DeseaCamisa || "").toLowerCase() === "si" ? 35000 : 0;
+  const valorTotal = 500000 + valorCamisa;
+  const asunto = "Inscripcion confirmada - Congreso Trascendentales 2026";
+  const resumenPago = "$" + valorTotal.toLocaleString("es-CO");
+  const camisetaTexto = valorCamisa ? "Incluye camiseta seleccionada" : "No incluye camiseta";
+  const html = `
+    <div style="margin:0;padding:0;background:#f6f1ee;color:#201516;font-family:Arial,Helvetica,sans-serif">
+      <div style="padding:34px 14px">
+        <div style="max-width:680px;margin:0 auto;background:#ffffff;border-radius:24px;overflow:hidden;border:1px solid #eaded9;box-shadow:0 18px 46px rgba(70,0,0,.14)">
+          <div style="background:linear-gradient(135deg,#4b0003 0%,#220000 64%,#090000 100%);padding:34px 34px 30px;color:#ffffff">
+            <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#ffb6b9">Congreso Juvenil 2026</div>
+            <h1 style="margin:12px 0 0;font-size:34px;line-height:1.05;font-weight:900">Inscripcion confirmada</h1>
+            <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:rgba(255,255,255,.84)">Tu registro para Trascendentales fue recibido correctamente.</p>
+          </div>
+
+          <div style="padding:30px 34px 8px">
+            <p style="margin:0;font-size:17px;line-height:1.62">Hola <strong>${escaparHtmlCorreo_(nombre)}</strong>, nos alegra confirmar tu inscripcion. Conserva este mensaje como soporte y ten a mano tu codigo al momento de realizar seguimiento.</p>
+          </div>
+
+          <div style="padding:20px 34px">
+            <div style="background:#fff8f5;border:1px solid #f0dfd8;border-radius:18px;padding:22px">
+              <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8d3539;font-weight:800">Codigo de registro</div>
+              <div style="margin-top:8px;font-size:30px;line-height:1;font-weight:900;color:#9d0208">${escaparHtmlCorreo_(codigo)}</div>
+            </div>
+          </div>
+
+          <div style="padding:0 34px 10px">
+            <table role="presentation" style="width:100%;border-collapse:separate;border-spacing:0 10px">
+              <tr>
+                <td style="width:42%;padding:14px 16px;background:#fbf7f4;border-radius:14px 0 0 14px;color:#7a6662;font-size:13px;font-weight:800;text-transform:uppercase">Documento</td>
+                <td style="padding:14px 16px;background:#fbf7f4;border-radius:0 14px 14px 0;font-size:15px;font-weight:700">${escaparHtmlCorreo_(datos.Documento || "")}</td>
+              </tr>
+              <tr>
+                <td style="width:42%;padding:14px 16px;background:#fbf7f4;border-radius:14px 0 0 14px;color:#7a6662;font-size:13px;font-weight:800;text-transform:uppercase">Zona asignada</td>
+                <td style="padding:14px 16px;background:#fbf7f4;border-radius:0 14px 14px 0;font-size:15px;font-weight:700">${escaparHtmlCorreo_(zona)}</td>
+              </tr>
+              <tr>
+                <td style="width:42%;padding:14px 16px;background:#fbf7f4;border-radius:14px 0 0 14px;color:#7a6662;font-size:13px;font-weight:800;text-transform:uppercase">Lider para pago</td>
+                <td style="padding:14px 16px;background:#fbf7f4;border-radius:0 14px 14px 0;font-size:15px;font-weight:700">${escaparHtmlCorreo_(lider)}</td>
+              </tr>
+              <tr>
+                <td style="width:42%;padding:14px 16px;background:#fbf7f4;border-radius:14px 0 0 14px;color:#7a6662;font-size:13px;font-weight:800;text-transform:uppercase">Camiseta</td>
+                <td style="padding:14px 16px;background:#fbf7f4;border-radius:0 14px 14px 0;font-size:15px;font-weight:700">${escaparHtmlCorreo_(camisetaTexto)}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="padding:12px 34px 30px">
+            <div style="border-radius:18px;background:linear-gradient(90deg,#4b0003,#220000);padding:22px;color:white">
+              <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72);font-weight:800">Valor a pagar</div>
+              <div style="margin-top:8px;font-size:32px;line-height:1;font-weight:900">${resumenPago}</div>
+              <p style="margin:12px 0 0;color:rgba(255,255,255,.82);font-size:14px;line-height:1.45">El pago debe realizarse con el lider asignado. Si haces abonos, conserva cada comprobante.</p>
+            </div>
+          </div>
+
+          <div style="padding:0 34px 34px">
+            <div style="border-top:1px solid #eee1dc;padding-top:20px;color:#76615d;font-size:13px;line-height:1.55">
+              Este correo fue generado automaticamente por el sistema oficial del Congreso Trascendentales 2026.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  try {
+    MailApp.sendEmail({
+      to: correo,
+      subject: asunto,
+      htmlBody: html,
+      name: "Congreso Trascendentales 2026"
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function escaparHtmlCorreo_(valor) {
+  return String(valor || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function listarInscripciones_(nombreHoja) {
@@ -165,7 +261,7 @@ function listarInscripciones_(nombreHoja) {
 }
 
 function registrarPago_(datos) {
-  const hoja = obtenerHojaPagos_(datos.hoja || HOJA_PAGOS);
+  const hoja = obtenerHojaPagos_(HOJA_PAGOS);
   const idPago = datos.IdPago || crearIdPago_();
   const encabezados = obtenerEncabezadosActuales_(hoja, COLUMNAS_PAGOS);
   const datosPago = normalizarDatosPago_(datos, idPago);
@@ -311,7 +407,7 @@ function obtenerHojaPagos_(nombreHoja) {
     hoja = libro.insertSheet(nombreHoja);
   }
 
-  asegurarEncabezadosPersonalizados_(hoja, COLUMNAS_PAGOS);
+  asegurarEncabezadosExactos_(hoja, COLUMNAS_PAGOS);
   return hoja;
 }
 
@@ -323,7 +419,7 @@ function obtenerHojaComprobantes_(nombreHoja) {
     hoja = libro.insertSheet(nombreHoja);
   }
 
-  asegurarEncabezadosPersonalizados_(hoja, COLUMNAS_COMPROBANTES);
+  asegurarEncabezadosExactos_(hoja, COLUMNAS_COMPROBANTES);
   return hoja;
 }
 
@@ -348,8 +444,25 @@ function asegurarEncabezadosPersonalizados_(hoja, columnas) {
   }
 }
 
+function asegurarEncabezadosExactos_(hoja, columnas) {
+  const ancho = Math.max(hoja.getLastColumn(), columnas.length);
+  const encabezadosActuales = hoja.getRange(1, 1, 1, ancho).getValues()[0]
+    .map((valor) => String(valor || "").trim());
+  const encabezadosEsperados = columnas.join("||");
+  const encabezadosHoja = encabezadosActuales.slice(0, columnas.length).join("||");
+
+  if (encabezadosHoja !== encabezadosEsperados || hoja.getLastColumn() !== columnas.length) {
+    hoja.getRange(1, 1, 1, columnas.length).setValues([columnas]);
+    if (hoja.getLastColumn() > columnas.length) {
+      hoja.deleteColumns(columnas.length + 1, hoja.getLastColumn() - columnas.length);
+    }
+  }
+
+  hoja.setFrozenRows(1);
+}
+
 function obtenerEncabezadosActuales_(hoja, columnasBase) {
-  asegurarEncabezadosPersonalizados_(hoja, columnasBase);
+  asegurarEncabezadosExactos_(hoja, columnasBase);
   const ultimaColumna = Math.max(hoja.getLastColumn(), columnasBase.length);
   return hoja.getRange(1, 1, 1, ultimaColumna).getValues()[0]
     .map((valor) => String(valor || "").trim())

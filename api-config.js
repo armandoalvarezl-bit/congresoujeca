@@ -1,11 +1,13 @@
 window.UJECA_API = {
-  registro: "https://script.google.com/macros/s/AKfycbzJRfTZN8GAdfadp_kXVpehCkQqoo12RBC_T8I0vgjNbq0Q1kpOb55rqzKs9Y6YAryd/exec",
-  listado: "https://script.google.com/macros/s/AKfycbzJRfTZN8GAdfadp_kXVpehCkQqoo12RBC_T8I0vgjNbq0Q1kpOb55rqzKs9Y6YAryd/exec",
-  listadoAlterno: "https://script.google.com/macros/s/AKfycbzJRfTZN8GAdfadp_kXVpehCkQqoo12RBC_T8I0vgjNbq0Q1kpOb55rqzKs9Y6YAryd/exec",
-  pagos: "https://script.google.com/macros/s/AKfycbzJRfTZN8GAdfadp_kXVpehCkQqoo12RBC_T8I0vgjNbq0Q1kpOb55rqzKs9Y6YAryd/exec"
+  registro: "https://script.google.com/macros/s/AKfycbxU4Xma3gL3aYWs7FrE-x3CALgEsJGH94k3tGcYNRb6kmTyXovQ0Q-IJrRytDpSKCiw/exec",
+  listado: "https://script.google.com/macros/s/AKfycbxU4Xma3gL3aYWs7FrE-x3CALgEsJGH94k3tGcYNRb6kmTyXovQ0Q-IJrRytDpSKCiw/exec",
+  listadoAlterno: "https://script.google.com/macros/s/AKfycbxU4Xma3gL3aYWs7FrE-x3CALgEsJGH94k3tGcYNRb6kmTyXovQ0Q-IJrRytDpSKCiw/exec",
+  pagos: "https://script.google.com/macros/s/AKfycbxU4Xma3gL3aYWs7FrE-x3CALgEsJGH94k3tGcYNRb6kmTyXovQ0Q-IJrRytDpSKCiw/exec"
 };
 
 window.UJECA_STORAGE_KEY = "ujeca_registros_locales";
+window.UJECA_CACHE_REMOTA_KEY = "ujeca_registros_remotos_cache";
+window.UJECA_CACHE_REMOTA_TTL = 1000 * 60 * 10;
 window.UJECA_HOJA_INSCRIPCIONES = "Inscripciones2026";
 
 window.UJECA_COLUMNAS_INSCRITOS = [
@@ -120,6 +122,29 @@ window.guardarRegistroLocalUJECA = function(registro) {
   localStorage.setItem(window.UJECA_STORAGE_KEY, JSON.stringify(sinDuplicado));
 };
 
+window.obtenerCacheRegistrosRemotosUJECA = function(maxEdad = window.UJECA_CACHE_REMOTA_TTL) {
+  try {
+    const cache = JSON.parse(localStorage.getItem(window.UJECA_CACHE_REMOTA_KEY) || "null");
+    if (!cache || !Array.isArray(cache.datos)) return [];
+    if (maxEdad && Date.now() - Number(cache.fecha || 0) > maxEdad) return [];
+    return cache.datos.map(window.normalizarRegistroUJECA).filter(Boolean);
+  } catch {
+    return [];
+  }
+};
+
+window.guardarCacheRegistrosRemotosUJECA = function(registros) {
+  if (!Array.isArray(registros)) return;
+  try {
+    localStorage.setItem(window.UJECA_CACHE_REMOTA_KEY, JSON.stringify({
+      fecha: Date.now(),
+      datos: registros
+    }));
+  } catch {
+    // El navegador puede bloquear localStorage o quedarse sin espacio.
+  }
+};
+
 window.unificarRegistrosUJECA = function(remotos) {
   const mapa = new Map();
   const todos = []
@@ -177,7 +202,13 @@ window.cargarRegistrosRemotosUJECA = async function(baseUrl = window.UJECA_API.l
   });
 
   try {
-    const respuesta = await fetch(listadoUrl, { cache: "no-store" });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 7000);
+    const respuesta = await fetch(listadoUrl, {
+      cache: "no-store",
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
     const texto = await respuesta.text();
     if (!respuesta.ok) {
       throw new Error("No se pudo leer el listado remoto");
@@ -219,12 +250,13 @@ window.cargarRegistrosRemotosUJECA = async function(baseUrl = window.UJECA_API.l
     });
 
     document.body.appendChild(script);
-    setTimeout(() => finalizar([]), 12000);
+    setTimeout(() => finalizar([]), 6000);
   });
 };
 
 window.cargarRegistrosUJECA = async function(baseUrl = window.UJECA_API.listado) {
   const remotos = await window.cargarRegistrosRemotosUJECA(baseUrl);
+  if (remotos.length) window.guardarCacheRegistrosRemotosUJECA(remotos);
   return window.unificarRegistrosUJECA(remotos);
 };
 
