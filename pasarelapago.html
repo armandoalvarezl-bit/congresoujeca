@@ -807,6 +807,90 @@ button:hover{
  display:none;
 }
 
+.app-notice{
+ position:fixed;
+ inset:0;
+ z-index:6500;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:18px;
+ background:rgba(12,0,1,.54);
+ backdrop-filter:blur(8px);
+}
+
+.app-notice.show{
+ display:flex;
+}
+
+.app-notice-card{
+ width:min(480px,100%);
+ border-radius:22px;
+ padding:22px;
+ color:#201516;
+ background:linear-gradient(180deg,#fff,#fff8f4);
+ border:1px solid rgba(255,255,255,.78);
+ box-shadow:0 28px 80px rgba(35,0,0,.34);
+ animation:noticeIn .18s ease-out;
+}
+
+.app-notice-head{
+ display:flex;
+ align-items:flex-start;
+ gap:14px;
+}
+
+.app-notice-icon{
+ width:50px;
+ height:50px;
+ border-radius:16px;
+ display:grid;
+ place-items:center;
+ color:white;
+ background:linear-gradient(180deg,#e22025,#b80710);
+ box-shadow:0 14px 30px rgba(200,20,29,.24);
+ flex:none;
+}
+
+.app-notice h3{
+ margin:0;
+ color:#4b0003;
+ font-size:1.18rem;
+ line-height:1.12;
+}
+
+.app-notice p{
+ margin:8px 0 0;
+ color:#554343;
+ line-height:1.45;
+ font-weight:600;
+}
+
+.app-notice-actions{
+ margin-top:20px;
+ display:flex;
+ justify-content:flex-end;
+}
+
+.app-notice button{
+ min-width:112px;
+ min-height:44px;
+ border:0;
+ border-radius:12px;
+ padding:11px 18px;
+ color:white;
+ background:linear-gradient(180deg,#e22025,#b80710);
+ font:inherit;
+ font-weight:900;
+ cursor:pointer;
+ box-shadow:0 12px 24px rgba(200,20,29,.25);
+}
+
+@keyframes noticeIn{
+ from{opacity:0;transform:translateY(10px) scale(.98)}
+ to{opacity:1;transform:none}
+}
+
 .payment-loader{
  position:fixed;
  inset:0;
@@ -1249,6 +1333,27 @@ tr:hover td{
   </div>
 </div>
 
+<div id="appNotice" class="app-notice" aria-live="polite" aria-hidden="true">
+  <div class="app-notice-card" role="dialog" aria-modal="true" aria-labelledby="appNoticeTitle">
+    <div class="app-notice-head">
+      <div class="app-notice-icon" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <path d="M12 8v5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <path d="M10.3 4.2a2 2 0 0 1 3.4 0l8 13.8a2 2 0 0 1-1.7 3H4a2 2 0 0 1-1.7-3l8-13.8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <h3 id="appNoticeTitle">Aviso</h3>
+        <p id="appNoticeText"></p>
+      </div>
+    </div>
+    <div class="app-notice-actions">
+      <button type="button" onclick="cerrarAviso()">Aceptar</button>
+    </div>
+  </div>
+</div>
+
 <div class="shell">
   <header class="topbar">
     <div class="brand">
@@ -1470,12 +1575,13 @@ if(sessionStorage.getItem(AUTH_PAGOS_SESSION)==="1"){
 <script>
 const API=window.UJECA_API.pagos;
 const API_LISTADO=API+"?accion=listado";
-const HOJA_PAGOS="PagosIndividuales2026";
-const HOJA_COMPROBANTES="ComprobantesPago2026";
+const HOJA_PAGOS="PagosIndividuales2026_CORRECTO";
+const HOJA_COMPROBANTES="ComprobantesPago2026_CORRECTO";
 const API_PAGOS=crearUrlUJECA(API,{accion:"pagos",hoja:HOJA_PAGOS});
 const API_COMPROBANTES=crearUrlUJECA(API,{accion:"comprobantes",hoja:HOJA_COMPROBANTES});
 const STORAGE_PAGOS_ANTERIORES="ujeca_pagos_locales";
 const STORAGE_PAGOS="ujeca_pagos_individuales_2026";
+const STORAGE_PAGOS_PENDIENTES="ujeca_pagos_pendientes_sincronizar_2026";
 
 let BD=[];
 let cargada=false;
@@ -1526,9 +1632,16 @@ let participanteActual=null;
 let comprobanteTemporal=null;
 let pagosRemotos=[];
 let pagosHistorialActual=[];
+let participantesPorDocumento=new Map();
 
 function borrarPagosAnterioresLocales(){
   localStorage.removeItem(STORAGE_PAGOS_ANTERIORES);
+  localStorage.removeItem(STORAGE_PAGOS);
+}
+
+function limpiarCacheConsultaPagos(){
+  localStorage.removeItem(window.UJECA_STORAGE_KEY);
+  localStorage.removeItem(window.UJECA_CACHE_REMOTA_KEY);
 }
 
 function money(n){
@@ -1683,6 +1796,30 @@ function ocultarLoaderPago(delay=900){
     loader.setAttribute("aria-hidden","true");
   },delay);
 }
+
+function mostrarAviso(mensaje,titulo="Aviso"){
+  const aviso=document.getElementById("appNotice");
+  const tituloEl=document.getElementById("appNoticeTitle");
+  const textoEl=document.getElementById("appNoticeText");
+  if(!aviso || !tituloEl || !textoEl) return;
+  tituloEl.innerText=titulo;
+  textoEl.innerText=mensaje;
+  aviso.classList.add("show");
+  aviso.setAttribute("aria-hidden","false");
+  const boton=aviso.querySelector("button");
+  if(boton) boton.focus();
+}
+
+function cerrarAviso(){
+  const aviso=document.getElementById("appNotice");
+  if(!aviso) return;
+  aviso.classList.remove("show");
+  aviso.setAttribute("aria-hidden","true");
+}
+
+document.addEventListener("keydown",(event)=>{
+  if(event.key === "Escape") cerrarAviso();
+});
 
 async function generarDescargarComprobantePago(pago){
   const canvas=document.createElement("canvas");
@@ -2001,18 +2138,26 @@ function obtenerLiderPorIglesiaPago(persona){
   return asignacion ? asignacion.lider : "";
 }
 
-function obtenerPagosLocales(){
+function guardarPagoPendienteSincronizar(pago){
   try{
-    const raw=localStorage.getItem(STORAGE_PAGOS);
+    const raw=localStorage.getItem(STORAGE_PAGOS_PENDIENTES);
     const pagos=JSON.parse(raw || "[]");
-    return Array.isArray(pagos) ? pagos : [];
+    const lista=Array.isArray(pagos) ? pagos : [];
+    lista.unshift(pago);
+    localStorage.setItem(STORAGE_PAGOS_PENDIENTES, JSON.stringify(lista));
   }catch{
-    return [];
+    localStorage.setItem(STORAGE_PAGOS_PENDIENTES, JSON.stringify([pago]));
   }
 }
 
-function guardarPagosLocales(pagos){
-  localStorage.setItem(STORAGE_PAGOS, JSON.stringify(pagos));
+function indexarParticipantes(){
+  participantesPorDocumento=new Map();
+  (BD || []).forEach((row)=>{
+    const doc=String(row?.Documento || row?.documento || row?.cedula || "").trim();
+    if(doc && !participantesPorDocumento.has(doc)){
+      participantesPorDocumento.set(doc,row);
+    }
+  });
 }
 
 function normalizarPago(pago){
@@ -2060,7 +2205,15 @@ function obtenerCampistaKey(persona){
   if(!persona) return "";
   const documento=String(persona.Documento || persona.documento || persona.cedula || "").trim();
   const codigo=String(persona.Codigo || persona.codigo || persona.ID || "").trim();
+  if(documento && codigo) return `${documento}::${codigo}`;
   return documento || codigo;
+}
+
+function obtenerCampistaKeys(persona){
+  if(!persona) return [];
+  const documento=String(persona.Documento || persona.documento || persona.cedula || "").trim();
+  const codigo=String(persona.Codigo || persona.codigo || persona.ID || "").trim();
+  return [documento && codigo ? `${documento}::${codigo}` : "", documento, codigo].filter(Boolean);
 }
 
 function mezclarPagos(remotos, locales){
@@ -2084,18 +2237,18 @@ function mezclarPagos(remotos, locales){
 }
 
 function pagosDeDocumento(documento){
-  const pagos=mezclarPagos(pagosRemotos, obtenerPagosLocales());
-  const keyActual=obtenerCampistaKey(participanteActual);
+  const pagos=mezclarPagos(pagosRemotos, []);
+  const keysActuales=obtenerCampistaKeys(participanteActual);
   return pagos
     .filter(item => {
-      const mismaClave = keyActual && item.CampistaKey
-        ? String(item.CampistaKey).trim() === keyActual
-        : false;
+      if(item.CampistaKey){
+        return keysActuales.includes(String(item.CampistaKey).trim());
+      }
       const mismoDocumento = String(item.Documento || "").trim() === String(documento || "").trim();
       const mismoCodigo = participanteActual && participanteActual.Codigo && item.Codigo
         ? String(item.Codigo).trim() === String(participanteActual.Codigo).trim()
         : false;
-      return mismaClave || mismoDocumento || mismoCodigo;
+      return mismoDocumento || mismoCodigo;
     })
     .sort((a,b) => new Date(b.FechaRegistro || b.FechaPago || 0) - new Date(a.FechaRegistro || a.FechaPago || 0));
 }
@@ -2108,12 +2261,112 @@ function participanteTieneCamisa(persona){
   return String(persona?.DeseaCamisa || persona?.deseaCamisa || "").trim().toLowerCase() === "si";
 }
 
+function valorNumericoCampo(objeto, campos){
+  if(!objeto) return 0;
+  for(const campo of campos){
+    const valor=objeto[campo];
+    if(valor !== undefined && valor !== null && String(valor).trim() !== ""){
+      const numero=numeroPago(valor);
+      if(numero > 0) return numero;
+    }
+  }
+  return 0;
+}
+
+function porcentajeDescuentoParticipante(){
+  return valorNumericoCampo(participanteActual,[
+    "DescuentoPorcentaje",
+    "descuentoPorcentaje",
+    "PorcentajeDescuento",
+    "porcentajeDescuento",
+    "%",
+    "Descuento %"
+  ]);
+}
+
+function participanteAplicaDescuento(){
+  const valor=normalizarTextoPago(
+    participanteActual?.AplicaDescuento ||
+    participanteActual?.aplicaDescuento ||
+    participanteActual?.Descuento ||
+    participanteActual?.descuento ||
+    ""
+  );
+  return ["si","s","yes","true","1","aplica"].includes(valor) || porcentajeDescuentoParticipante() > 0;
+}
+
+function valorCongresoBaseParticipante(){
+  return valorNumericoCampo(participanteActual,[
+    "ValorCongreso",
+    "valorCongreso",
+    "PrecioCongreso",
+    "precioCongreso",
+    "ValorInscripcion",
+    "valorInscripcion",
+    "Valor Congreso",
+    "Precio Congreso"
+  ]) || PRECIO_CONGRESO;
+}
+
+function descuentoParticipante(){
+  const descuentoDirecto=valorNumericoCampo(participanteActual,[
+    "DescuentoAplicado",
+    "descuentoAplicado",
+    "ValorDescuento",
+    "valorDescuento",
+    "DescuentoValor",
+    "descuentoValor"
+  ]);
+  if(descuentoDirecto > 0) return descuentoDirecto;
+  if(!participanteAplicaDescuento()) return 0;
+  const porcentaje=Math.min(Math.max(porcentajeDescuentoParticipante(),0),100);
+  return Math.round(valorCongresoBaseParticipante() * porcentaje / 100);
+}
+
+function valorTotalGuardadoParticipante(){
+  return valorNumericoCampo(participanteActual,[
+    "ValorTotal",
+    "valorTotal",
+    "Total",
+    "total",
+    "TotalPagar",
+    "totalPagar",
+    "ValorAPagar",
+    "valorAPagar",
+    "ValorFinal",
+    "valorFinal",
+    "PrecioTotal",
+    "precioTotal",
+    "Valor a pagar",
+    "Total a pagar"
+  ]);
+}
+
+function valorCongresoParticipante(){
+  const valorCongresoGuardado=valorNumericoCampo(participanteActual,[
+    "ValorCongreso",
+    "valorCongreso",
+    "PrecioCongreso",
+    "precioCongreso",
+    "ValorInscripcion",
+    "valorInscripcion",
+    "Valor Congreso",
+    "Precio Congreso"
+  ]);
+  const totalGuardado=valorTotalGuardadoParticipante();
+  if(totalGuardado > 0 && valorCongresoGuardado === 0){
+    return Math.max(totalGuardado - valorCamisaParticipante(),0);
+  }
+  return Math.max(valorCongresoBaseParticipante() - descuentoParticipante(),0);
+}
+
 function valorCamisaParticipante(){
   return participanteTieneCamisa(participanteActual) ? PRECIO_CAMISA : 0;
 }
 
 function valorTotalParticipante(){
-  return PRECIO_CONGRESO + valorCamisaParticipante();
+  const totalGuardado=valorTotalGuardadoParticipante();
+  return totalGuardado > 0 ? totalGuardado : valorCongresoParticipante() + valorCamisaParticipante();
 }
 
 function actualizarResumenPago(){
@@ -2134,7 +2387,7 @@ function actualizarResumenPago(){
   const total = valorTotalParticipante();
   const saldo = Math.max(total - abonado, 0);
 
-  document.getElementById("metricValor").innerText=money(PRECIO_CONGRESO);
+  document.getElementById("metricValor").innerText=money(valorCongresoParticipante());
   document.getElementById("metricCamisa").innerText=money(valorCamisa);
   document.getElementById("metricAbonado").innerText=money(abonado);
   document.getElementById("metricSaldo").innerText=money(saldo);
@@ -2186,7 +2439,7 @@ function renderHistorialPagos(){
 async function descargarComprobanteHistorial(index){
   const pago=pagosHistorialActual[index];
   if(!pago){
-    alert("No se encontro el comprobante de este pago.");
+    mostrarAviso("No se encontro el comprobante de este pago.","Comprobante no disponible");
     return;
   }
   await generarDescargarComprobantePago({
@@ -2286,12 +2539,21 @@ function cargarDatosBase(persona){
 
 async function cargar(){
   borrarPagosAnterioresLocales();
+  limpiarCacheConsultaPagos();
   document.getElementById("fechaPago").value=new Date().toISOString().split("T")[0];
-  try{
-    BD = await cargarRegistrosUJECA(window.UJECA_API.listado);
+  cargada=false;
+  document.getElementById("mensajePago").innerHTML="Sincronizando base oficial de inscritos y pagos...";
 
-    let rPagos=await fetch(API_PAGOS);
-    let jsonPagos=await rPagos.json();
+  try{
+    const [registros, jsonPagos] = await Promise.all([
+      cargarRegistrosRemotosUJECA(window.UJECA_API.listado),
+      fetch(API_PAGOS,{cache:"no-store"}).then(r=>r.ok ? r.json() : [])
+    ]);
+
+    BD = Array.isArray(registros)
+      ? registros.map(normalizarRegistroUJECA).filter(Boolean)
+      : [];
+    indexarParticipantes();
     pagosRemotos = Array.isArray(jsonPagos)
       ? jsonPagos.map(item=>normalizarPago({...item,Fuente:"remoto"})).filter(Boolean)
       : [];
@@ -2301,37 +2563,40 @@ async function cargar(){
       // La hoja de comprobantes se sincroniza cuando el Apps Script actualizado este publicado.
     }
     cargada=true;
+    document.getElementById("mensajePago").innerHTML="";
     renderHistorialPagos();
   }catch(e){
-    BD = obtenerRegistrosLocalesUJECA();
+    BD = [];
+    indexarParticipantes();
     pagosRemotos = [];
-    cargada=true;
-    document.getElementById("mensajePago").innerHTML="No se pudo conectar con la base remota. Se usaran registros locales para la consulta.";
+    cargada=false;
+    participanteActual=null;
+    renderHistorialPagos();
+    actualizarResumenPago();
+    document.getElementById("mensajePago").innerHTML="No se pudo conectar con la base oficial. Por seguridad no se usaran datos locales para pagos.";
     renderHistorialPagos();
   }
 }
 
 function buscarParticipante(){
   if(!cargada){
-    alert("La base aun esta cargando, intenta nuevamente en un momento.");
+    mostrarAviso("La base oficial aun se esta sincronizando. Intenta nuevamente en un momento.","Base en proceso");
     return;
   }
 
   const doc=document.getElementById("cedula").value.trim();
   if(!doc){
-    alert("Ingrese documento");
+    mostrarAviso("Ingresa el documento del participante para consultar su registro.","Documento requerido");
     return;
   }
 
-  const persona = BD.find(row =>
-    String(row.Documento || row.documento || row.cedula || "").trim() === doc
-  );
+  const persona = participantesPorDocumento.get(doc);
 
   if(!persona){
     participanteActual=null;
     renderHistorialPagos();
     actualizarResumenPago();
-    alert("Participante no encontrado");
+    mostrarAviso("Este documento no aparece en la base oficial de inscritos. No se muestran pagos ni abonos locales.","Participante no inscrito");
     return;
   }
 
@@ -2349,7 +2614,7 @@ function buscarParticipante(){
 
 async function registrarPago(){
   if(!participanteActual){
-    alert("Primero busca un participante.");
+    mostrarAviso("Primero busca y selecciona un participante inscrito antes de registrar el pago.","Busca un participante");
     return;
   }
 
@@ -2361,20 +2626,22 @@ async function registrarPago(){
   const observacionPago=document.getElementById("observacionPago").value.trim();
 
   if(!organizador){
-    alert("Ingresa el nombre del organizador.");
+    mostrarAviso("Ingresa el nombre del organizador responsable del registro.","Organizador requerido");
     return;
   }
 
   if(valorAbono <= 0){
-    alert("Ingresa un valor de abono valido.");
+    mostrarAviso("Ingresa un valor de abono valido mayor que cero.","Valor no valido");
     return;
   }
 
   if(!fechaPago){
-    alert("Selecciona la fecha del pago.");
+    mostrarAviso("Selecciona la fecha en la que se realizo el pago.","Fecha requerida");
     return;
   }
 
+  const valorCongreso = valorCongresoParticipante();
+  const descuentoAplicado = descuentoParticipante();
   const valorCamisa = valorCamisaParticipante();
   const totalActual = valorTotalParticipante();
   const abonadoPrevio = totalPagadoDocumento(participanteActual.Documento);
@@ -2382,7 +2649,7 @@ async function registrarPago(){
   const saldo = Math.max(totalActual - nuevoTotal, 0);
 
   if(valorAbono > Math.max(totalActual - abonadoPrevio, 0)){
-    alert("El abono supera el saldo pendiente de este campista.");
+    mostrarAviso("El abono supera el saldo pendiente de este campista. Revisa el valor antes de guardar.","Abono mayor al saldo");
     return;
   }
 
@@ -2408,13 +2675,13 @@ async function registrarPago(){
     LiderAsignado:participanteActual.LiderAsignado || participanteActual.liderAsignado || organizador,
     Organizador:organizador,
     MedioPago:medioPago,
-    ValorCongreso:PRECIO_CONGRESO,
+    ValorCongreso:valorCongreso,
     DeseaCamisa:participanteActual.DeseaCamisa || participanteActual.deseaCamisa || "No",
     TipoCamiseta:participanteActual.TipoCamiseta || participanteActual.tipoCamiseta || "",
     TallaCamisa:participanteActual.TallaCamisa || participanteActual.tallaCamisa || "",
     ColorCamisa:participanteActual.ColorCamisa || participanteActual.colorCamisa || "",
     ValorCamisa:valorCamisa,
-    DescuentoAplicado:0,
+    DescuentoAplicado:descuentoAplicado,
     ValorTotal:totalActual,
     ValorAbono:valorAbono,
     FechaPago:fechaPago,
@@ -2469,12 +2736,10 @@ async function registrarPago(){
       throw new Error("El Apps Script no confirmo el guardado del pago");
     }
   }catch(error){
-    const pagos=obtenerPagosLocales();
-    pagos.push({
+    guardarPagoPendienteSincronizar({
       ...pagoPayload,
       Fuente:"local"
     });
-    guardarPagosLocales(pagos);
     renderHistorialPagos();
     actualizarResumenPago();
     setLoaderPago(

@@ -18,60 +18,66 @@ body{
 }
 
 .topbar,
-.ui-topbar{
+.ui-topbar,
+.live-topbar,
+body > header:not([class]){
+  position:sticky !important;
+  top:0 !important;
+  z-index:1000 !important;
   color:white !important;
-  background:
-    radial-gradient(circle at 10% 0,rgba(242,43,49,.18),transparent 30%),
-    linear-gradient(90deg,#180203,#050505 58%,#030303) !important;
+  background:linear-gradient(90deg,#4b0003,#220000) !important;
   border:0 !important;
   border-radius:0 !important;
-  box-shadow:none !important;
+  box-shadow:0 8px 28px rgba(50,0,0,.25) !important;
 }
 
 .topbar-inner,
 .topbar-content,
-.ui-topbar{
-  min-height:96px !important;
+.ui-topbar,
+.live-topbar{
+  min-height:86px !important;
   display:flex !important;
   align-items:center !important;
   justify-content:space-between !important;
-  gap:24px !important;
-  border-bottom:1px solid rgba(255,255,255,.08) !important;
+  gap:28px !important;
+  border-bottom:0 !important;
 }
 
 .topbar-inner,
 .topbar-content{
   width:min(1510px,100%) !important;
   margin:0 auto !important;
-  padding:12px 42px !important;
+  padding:12px 40px !important;
 }
 
 .ui-topbar{
-  padding:12px 22px !important;
+  padding:12px 40px !important;
 }
 
 .brand,
 .ui-brand,
-.logo-area{
+.logo-area,
+.live-brand{
   display:flex !important;
   align-items:center !important;
   gap:18px !important;
-  min-width:300px !important;
+  min-width:330px !important;
 }
 
 .brand img,
 .ui-brand-mark,
 .logo,
-.brand-badge{
-  width:78px !important;
-  height:58px !important;
+.brand-badge,
+.live-brand img{
+  width:72px !important;
+  height:60px !important;
   padding:0 !important;
   background:transparent !important;
   border:0 !important;
   border-radius:0 !important;
   box-shadow:none !important;
   object-fit:contain !important;
-  filter:drop-shadow(0 12px 24px rgba(0,0,0,.45));
+  filter:none !important;
   flex:none !important;
 }
 
@@ -92,11 +98,13 @@ body{
 .brand-copy h1,
 .ui-brand-copy h1,
 .ui-brand-copy strong,
+.live-brand strong,
 .titulo strong,
-.brand h1{
+.brand h1,
+body > header:not([class]) h1{
   margin:0 !important;
   color:white !important;
-  font-size:1.18rem !important;
+  font-size:1.35rem !important;
   line-height:1.05 !important;
   font-weight:900 !important;
 }
@@ -104,37 +112,41 @@ body{
 .brand-copy p,
 .ui-brand-copy p,
 .ui-brand-copy span,
+.live-brand span,
 .titulo span,
 .brand p{
   display:block !important;
-  margin:6px 0 0 !important;
-  color:rgba(255,255,255,.84) !important;
-  font-size:.95rem !important;
+  margin:5px 0 0 !important;
+  color:rgba(255,255,255,.88) !important;
+  font-size:1.05rem !important;
   line-height:1.15 !important;
+  text-transform:none !important;
 }
 
 .nav,
 .menu,
-.ui-nav{
+.ui-nav,
+.live-nav{
   display:flex !important;
   align-items:center !important;
-  justify-content:center !important;
+  justify-content:flex-end !important;
   gap:12px !important;
   flex-wrap:wrap !important;
 }
 
 .nav a,
 .menu a,
-.ui-nav a{
-  min-width:92px !important;
-  min-height:48px !important;
+.ui-nav a,
+.live-nav a{
+  min-width:86px !important;
+  min-height:auto !important;
   display:inline-flex !important;
   align-items:center !important;
   justify-content:center !important;
   gap:8px !important;
-  padding:13px 16px !important;
+  padding:14px 18px !important;
   border:0 !important;
-  border-radius:15px !important;
+  border-radius:10px !important;
   color:white !important;
   background:transparent !important;
   box-shadow:none !important;
@@ -148,10 +160,12 @@ body{
 .menu a:hover,
 .menu a.active,
 .ui-nav a:hover,
-.ui-nav a.active{
-  color:#f22b31 !important;
-  background:rgba(242,43,49,.08) !important;
-  box-shadow:0 0 32px rgba(242,43,49,.18) !important;
+.ui-nav a.active,
+.live-nav a:hover,
+.live-nav a.active{
+  color:white !important;
+  background:linear-gradient(180deg,#e22025,#b80710) !important;
+  box-shadow:0 12px 24px rgba(200,20,29,.25) !important;
 }
 
 .logout-link{
@@ -236,7 +250,8 @@ table,
 @media (max-width:1180px){
   .topbar-inner,
   .topbar-content,
-  .ui-topbar{
+  .ui-topbar,
+  .live-topbar{
     padding-left:18px !important;
     padding-right:18px !important;
   }
@@ -244,21 +259,24 @@ table,
   .topbar-inner,
   .topbar-content,
   .ui-topbar,
+  .live-topbar,
   .topbar{
     gap:14px !important;
   }
 
   .brand,
   .ui-brand,
-  .logo-area{
-    min-width:0;
+  .logo-area,
+  .live-brand{
+    min-width:0 !important;
   }
 
   .nav,
   .menu,
-  .ui-nav{
+  .ui-nav,
+  .live-nav{
     width:100%;
-    justify-content:flex-start;
+    justify-content:flex-start !important;
   }
 
   .hero-row,
@@ -291,15 +309,17 @@ table,
 
 @media (max-width:820px){
   .topbar,
-  .topbar-inner,
-  .topbar-content,
-  .ui-topbar{
-    position:static !important;
+  .ui-topbar,
+  .live-topbar,
+  body > header:not([class]){
+    position:sticky !important;
+    top:0 !important;
   }
 
   .topbar-inner,
   .topbar-content,
-  .ui-topbar{
+  .ui-topbar,
+  .live-topbar{
     min-height:auto !important;
     flex-direction:column !important;
     align-items:stretch !important;
@@ -310,7 +330,8 @@ table,
 
   .brand,
   .ui-brand,
-  .logo-area{
+  .logo-area,
+  .live-brand{
     width:100%;
     align-items:center;
     min-width:0 !important;
@@ -321,6 +342,7 @@ table,
   .brand-copy h1,
   .ui-brand-copy h1,
   .ui-brand-copy strong,
+  .live-brand strong,
   .titulo strong{
     font-size:clamp(1rem,5vw,1.25rem);
     line-height:1.12;
@@ -331,6 +353,7 @@ table,
   .brand-copy p,
   .ui-brand-copy p,
   .ui-brand-copy span,
+  .live-brand span,
   .titulo span{
     font-size:.88rem;
     line-height:1.25;
@@ -338,7 +361,8 @@ table,
 
   .nav,
   .menu,
-  .ui-nav{
+  .ui-nav,
+  .live-nav{
     width:100% !important;
     display:flex !important;
     flex-wrap:nowrap !important;
@@ -352,13 +376,15 @@ table,
 
   .nav::-webkit-scrollbar,
   .menu::-webkit-scrollbar,
-  .ui-nav::-webkit-scrollbar{
+  .ui-nav::-webkit-scrollbar,
+  .live-nav::-webkit-scrollbar{
     display:none;
   }
 
   .nav a,
   .menu a,
-  .ui-nav a{
+  .ui-nav a,
+  .live-nav a{
     width:auto;
     flex:0 0 auto !important;
     min-width:0 !important;
@@ -905,5 +931,263 @@ table,
     width:100% !important;
     flex:none !important;
     order:initial !important;
+  }
+}
+
+/* Header unificado estilo Home */
+.topbar,
+.ui-topbar,
+.live-topbar,
+body > header:not([class]){
+  position:sticky !important;
+  top:0 !important;
+  z-index:1000 !important;
+  width:100% !important;
+  color:white !important;
+  background:linear-gradient(90deg,#4b0003,#220000) !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:0 8px 28px rgba(50,0,0,.25) !important;
+}
+
+.topbar-inner,
+.topbar-content,
+.ui-topbar,
+.live-topbar,
+.shell > .topbar{
+  min-height:86px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:28px !important;
+  border-bottom:0 !important;
+}
+
+.topbar-inner,
+.topbar-content{
+  width:min(1510px,100%) !important;
+  margin:0 auto !important;
+  padding:12px 40px !important;
+}
+
+.ui-topbar,
+.shell > .topbar{
+  padding:12px 40px !important;
+}
+
+.brand,
+.ui-brand,
+.logo-area,
+.live-brand,
+.shell > .topbar .brand{
+  display:flex !important;
+  align-items:center !important;
+  gap:18px !important;
+  min-width:330px !important;
+  max-width:none !important;
+  margin-left:0 !important;
+  flex:0 1 auto !important;
+}
+
+.brand img,
+.ui-brand-mark,
+.logo,
+.brand-badge,
+.live-brand img{
+  width:72px !important;
+  height:60px !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  object-fit:contain !important;
+  filter:none !important;
+  flex:none !important;
+}
+
+.brand-copy h1,
+.ui-brand-copy h1,
+.ui-brand-copy strong,
+.live-brand strong,
+.titulo strong,
+.brand h1,
+body > header:not([class]) h1{
+  margin:0 !important;
+  color:white !important;
+  font-size:1.35rem !important;
+  line-height:1.05 !important;
+  font-weight:900 !important;
+}
+
+.brand-copy p,
+.ui-brand-copy p,
+.ui-brand-copy span,
+.live-brand span,
+.titulo span,
+.brand p{
+  display:block !important;
+  margin:5px 0 0 !important;
+  color:rgba(255,255,255,.88) !important;
+  font-size:1.05rem !important;
+  line-height:1.15 !important;
+  text-transform:none !important;
+}
+
+.nav,
+.menu,
+.ui-nav,
+.live-nav,
+.shell > .topbar .nav{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:12px !important;
+  flex:0 1 auto !important;
+  width:auto !important;
+  order:initial !important;
+  flex-wrap:wrap !important;
+}
+
+.nav a,
+.menu a,
+.ui-nav a,
+.live-nav a{
+  min-width:86px !important;
+  min-height:auto !important;
+  padding:14px 18px !important;
+  border:0 !important;
+  border-radius:10px !important;
+  color:white !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  font-weight:800 !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+}
+
+.nav a:hover,
+.nav a.active,
+.menu a:hover,
+.menu a.active,
+.ui-nav a:hover,
+.ui-nav a.active,
+.live-nav a:hover,
+.live-nav a.active{
+  color:white !important;
+  background:linear-gradient(180deg,#e22025,#b80710) !important;
+  box-shadow:0 12px 24px rgba(200,20,29,.25) !important;
+}
+
+@media (max-width:1180px){
+  .topbar-inner,
+  .topbar-content,
+  .ui-topbar,
+  .live-topbar,
+  .shell > .topbar{
+    flex-wrap:wrap !important;
+    gap:14px !important;
+    padding-left:18px !important;
+    padding-right:18px !important;
+  }
+
+  .brand,
+  .ui-brand,
+  .logo-area,
+  .live-brand,
+  .shell > .topbar .brand{
+    min-width:0 !important;
+    flex:1 1 320px !important;
+  }
+
+  .nav,
+  .menu,
+  .ui-nav,
+  .live-nav,
+  .shell > .topbar .nav{
+    flex:1 0 100% !important;
+    width:100% !important;
+    justify-content:flex-start !important;
+  }
+}
+
+@media (max-width:820px){
+  .topbar-inner,
+  .topbar-content,
+  .ui-topbar,
+  .live-topbar,
+  .shell > .topbar{
+    min-height:auto !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    padding:12px 14px !important;
+  }
+
+  .brand,
+  .ui-brand,
+  .logo-area,
+  .live-brand,
+  .shell > .topbar .brand{
+    width:100% !important;
+    flex:none !important;
+    gap:12px !important;
+  }
+
+  .brand h1,
+  .brand-copy h1,
+  .ui-brand-copy h1,
+  .ui-brand-copy strong,
+  .live-brand strong,
+  .titulo strong{
+    font-size:clamp(1rem,5vw,1.25rem) !important;
+    line-height:1.12 !important;
+    overflow-wrap:anywhere !important;
+  }
+
+  .brand p,
+  .brand-copy p,
+  .ui-brand-copy p,
+  .ui-brand-copy span,
+  .live-brand span,
+  .titulo span{
+    font-size:.88rem !important;
+    line-height:1.25 !important;
+  }
+
+  .nav,
+  .menu,
+  .ui-nav,
+  .live-nav,
+  .shell > .topbar .nav{
+    width:100% !important;
+    display:flex !important;
+    flex:0 0 auto !important;
+    flex-wrap:nowrap !important;
+    justify-content:flex-start !important;
+    gap:8px !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    padding:2px 0 6px !important;
+    scrollbar-width:none !important;
+  }
+
+  .nav::-webkit-scrollbar,
+  .menu::-webkit-scrollbar,
+  .ui-nav::-webkit-scrollbar,
+  .live-nav::-webkit-scrollbar{
+    display:none !important;
+  }
+
+  .nav a,
+  .menu a,
+  .ui-nav a,
+  .live-nav a{
+    width:auto !important;
+    flex:0 0 auto !important;
+    min-width:0 !important;
+    min-height:40px !important;
+    padding:10px 13px !important;
+    border-radius:999px !important;
+    font-size:.92rem !important;
   }
 }
