@@ -339,6 +339,12 @@ margin:0 0 14px;
 color:var(--ui-wine);
 text-align:left;
 }
+.modal-subtitle{
+margin:8px 0 24px;
+font-size:1rem;
+line-height:1.7;
+color:#5e3a37;
+}
 
 .modal,.modal-confirmacion,.modal-bienvenida{
 display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
@@ -346,19 +352,19 @@ backdrop-filter:blur(5px);align-items:center;justify-content:center;z-index:2000
 padding:20px;
 }
 .modal-content,.modal-confirmacion-content,.modal-bienvenida-content{
-background:#fffdfb;
+background:linear-gradient(180deg,#fffdfb,#f8ebe0);
 padding:35px;
-border-radius:18px;
+border-radius:24px;
 width:90%;
 max-width:500px;
-box-shadow:0 24px 70px rgba(0,0,0,0.28);
+box-shadow:0 24px 70px rgba(0,0,0,0.20);
 animation:zoomIn .3s ease;
-border-top:6px solid #d60000;
+border:1px solid rgba(214,0,0,.14);
 }
 .modal-content{max-width:640px;}
 .modal-confirmacion-content{
-max-width:680px;
-max-height:min(88vh,820px);
+max-width:720px;
+max-height:min(88vh,860px);
 display:flex;
 flex-direction:column;
 }
@@ -368,10 +374,17 @@ flex-direction:column;
 width:96px;
 height:72px;
 object-fit:contain;
-margin-bottom:14px;
+margin-bottom:18px;
 }
-.modal-bienvenida-content h1{font-size:32px;margin-bottom:10px;}
-.modal-bienvenida-content button{width:auto;padding:14px 40px;}
+.modal-bienvenida-content h1{font-size:34px;margin-bottom:10px;}
+.modal-bienvenida-content button,
+.modal-content button,
+.modal-confirmacion-content button{
+width:auto;
+padding:14px 32px;
+font-weight:800;
+letter-spacing:.02em;
+}
 
 .datos-confirmacion{
 background:#faf7f4;
@@ -394,35 +407,79 @@ border-bottom:1px solid #e5e7eb;
 
 .botones-confirmacion{
 display:flex;
-gap:10px;
+gap:12px;
 position:sticky;
 bottom:0;
-background:white;
-padding-top:8px;
+background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.95));
+padding:14px 0 0;
+margin-top:16px;
 }
-.botones-confirmacion button{flex:1;margin-top:0;}
-.btn-cancelar{background:#6b7280;}
-.btn-cancelar:hover{background:#4b5563;}
+.botones-confirmacion button{
+flex:1;
+margin-top:0;
+border-radius:14px;
+letter-spacing:.01em;
+}
+.btn-cancelar{
+background:#f3f4f6;
+color:#3f4b58;
+box-shadow:inset 0 0 0 1px rgba(52,65,77,.08);
+}
+.btn-cancelar:hover{background:#e2e6eb;}
+.btn-primario{
+background:linear-gradient(135deg,var(--ui-wine),var(--ui-red));
+color:white;
+box-shadow:0 16px 30px rgba(143,29,44,.22);
+}
+.btn-primario:hover{transform:translateY(-1px);box-shadow:0 18px 34px rgba(143,29,44,.28);}
 
 .ticket-pago{
-margin-top:18px;
-padding:18px;
-border-radius:16px;
-background:linear-gradient(135deg,#fff7df,#ffe8a3);
-border:1px dashed #d60000;
-color:#7a1c1c;
-text-align:left;
+  margin-top:18px;
+  padding:24px 24px 22px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#fffdf8,#f8e5d8);
+  border:1px solid rgba(214,0,0,.18);
+  box-shadow:0 20px 40px rgba(0,0,0,.08);
+  color:#4a1a18;
 }
-.ticket-pago strong{
-display:block;
-font-size:18px;
-margin-bottom:6px;
+.ticket-pago .ticket-header{
+  margin-bottom:18px;
+  padding-bottom:10px;
+  border-bottom:1px solid rgba(74,26,24,.12);
 }
-.ticket-pago span{
-display:block;
-font-size:14px;
-margin-top:3px;
+.ticket-pago .ticket-header strong{
+  display:block;
+  font-size:1rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#9e1d1d;
 }
+.ticket-pago .ticket-grid{
+  display:grid;
+  grid-template-columns:minmax(130px,1fr) minmax(180px,1.6fr);
+  gap:10px 18px;
+  align-items:start;
+}
+.ticket-pago .ticket-label{
+  font-size:.92rem;
+  font-weight:700;
+  color:#7e2420;
+}
+.ticket-pago .ticket-value{
+  font-size:.95rem;
+  color:#3f1c1d;
+  line-height:1.5;
+}
+.ticket-pago .ticket-total{
+  grid-column:1/-1;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px dashed rgba(74,26,24,.16);
+  font-size:1rem;
+  font-weight:800;
+  color:#861d1d;
+}
+.ticket-pago .ticket-value span{display:block;}
 
 .camiseta-grid{
 grid-column:1/-1;
@@ -622,6 +679,10 @@ flex-direction:column;
 <option>L</option>
 <option>XL</option>
 <option>XXL</option>
+<option>2XL</option>
+<option>3XL</option>
+<option>4XL</option>
+<option>5XL</option>
 </select>
 <select name="ColorCamisa" id="colorCamisa" disabled required>
 <option value="">Color de camiseta</option>
@@ -675,21 +736,26 @@ flex-direction:column;
 <div id="datosConfirmacionContent" class="datos-confirmacion"></div>
 <div class="botones-confirmacion">
 <button class="btn-cancelar" onclick="cancelarConfirmacion()">Editar</button>
-<button onclick="enviarInscripcion()">Confirmar y Enviar</button>
+<button class="btn-primario" onclick="enviarInscripcion()">Confirmar y Enviar</button>
 </div>
+</div>
+</div>
+
+<div id="modalCarga" class="modal modal-carga" aria-hidden="true">
+<div class="modal-carga-content">
+<div class="carga-icon"></div>
+<h2>Enviando inscripción</h2>
+<p class="modal-subtitle">Estamos procesando tus datos. No cierres esta ventana hasta que termine el envío.</p>
 </div>
 </div>
 
 <div id="modal" class="modal">
 <div class="modal-content">
 <h2>Inscripción Confirmada</h2>
-<h2>Estimado campista, tu inscripción ha sido registrada exitosamente.</h2>
+<p class="modal-subtitle">Estimado campista, tu inscripción ha sido registrada exitosamente.</p>
 <p id="modalMensaje"></p>
 <div id="ticketPago" class="ticket-pago" style="display:none;"></div>
-<button onclick="cerrarModal()">Cerrar</button>
-</div>
-</div>
-
+<button class="btn-primario" onclick="cerrarModal()">Cerrar</button>
 <script src="api-config.js"></script>
 <script>
 const url=window.UJECA_API.registro;
@@ -957,11 +1023,38 @@ function actualizarPreviewCamisetas(){
     }
 }
 
+function esTallaGrande(talla) {
+    const valor = String(talla || "").trim().toUpperCase().replace(/\s+/g, "");
+    return ["XXL", "2XL", "3XL", "XXXL", "4XL", "5XL"].includes(valor);
+}
+
+function obtenerValorCamisa(talla) {
+    return esTallaGrande(talla) ? 45000 : 35000;
+}
+
+function obtenerDescuentoPuesto(puesto) {
+    const numero = Number(puesto);
+    return numero > 0 && numero <= 80 ? 30000 : 0;
+}
+
+function formatearPrecio(valor) {
+    return "$" + Number(valor || 0).toLocaleString("es-CO");
+}
+
+function calcularPagos(datos) {
+    const valorCamisa = String(datos.DeseaCamisa || "").toLowerCase() === "si"
+        ? obtenerValorCamisa(datos.TallaCamisa)
+        : 0;
+    const descuentoAplicado = obtenerDescuentoPuesto(datos.Puesto);
+    const valorTotal = Math.max(500000 + valorCamisa - descuentoAplicado, 0);
+    return { valorCamisa, descuentoAplicado, valorTotal };
+}
+
 async function cargarCupos(){
     try{
         registrosExistentes=await cargarRegistrosUJECA(window.UJECA_API.listado);
     }catch{
-        registrosExistentes=obtenerRegistrosLocalesUJECA();
+        registrosExistentes=[];
     }
     totalInscritosActual=registrosExistentes.length;
     const disponibles=Math.max(500-totalInscritosActual,0);
@@ -986,8 +1079,12 @@ function prepararEnvio(){
     datos.HojaDestino=window.UJECA_HOJA_INSCRIPCIONES;
     datos.FechaRegistro=new Date().toISOString();
     datos.Puesto=totalInscritosActual+1;
-    datos.AplicaDescuento="No";
-    datos.DescuentoPorcentaje=0;
+    const pagos = calcularPagos(datos);
+    datos.ValorCamisa = pagos.valorCamisa;
+    datos.DescuentoAplicado = pagos.descuentoAplicado;
+    datos.ValorTotal = pagos.valorTotal;
+    datos.AplicaDescuento = pagos.descuentoAplicado > 0 ? "Si" : "No";
+    datos.DescuentoPorcentaje = 0;
     datos.ZonaAsignada=datos.ZonaAsignada || document.getElementById("zonaAsignada").value || "Zona general";
     datos.LiderAsignado=datos.LiderAsignado || document.getElementById("liderAsignado").value || "Coordinacion General Zona 6";
     mostrarConfirmacion(datos);
@@ -1046,6 +1143,13 @@ function cancelarConfirmacion(){
     document.getElementById("modalConfirmacion").style.display="none";
 }
 
+function mostrarModalCarga(activo){
+    const modal = document.getElementById("modalCarga");
+    if(!modal) return;
+    modal.style.display = activo ? "flex" : "none";
+    modal.setAttribute("aria-hidden", activo ? "false" : "true");
+}
+
 function limpiarFormulario(){
     document.getElementById("formulario").reset();
     configurarCamiseta();
@@ -1054,8 +1158,7 @@ function limpiarFormulario(){
 
 async function enviarInscripcion(){
     document.getElementById("modalConfirmacion").style.display="none";
-    document.getElementById("Estado").innerHTML="Enviando inscripcion...";
-
+    mostrarModalCarga(true);
     try{
         let r=await fetch(url,{
             method:"POST",
@@ -1078,9 +1181,9 @@ async function enviarInscripcion(){
             throw new Error(j.error || "No se pudo registrar en la base remota");
         }
 
-        guardarRegistroLocalUJECA(datosFormulario);
         document.getElementById("modalMensaje").innerHTML="Codigo: "+(j.codigo || "Pendiente de asignacion");
         mostrarResumenPago(datosFormulario, j.codigo || "");
+        mostrarModalCarga(false);
         document.getElementById("modal").style.display="flex";
         document.getElementById("Estado").innerHTML=j.correoEnviado
             ? "Inscripcion registrada correctamente. Enviamos la confirmacion al correo indicado."
@@ -1088,14 +1191,11 @@ async function enviarInscripcion(){
         limpiarFormulario();
         cargarCupos();
     }catch(error){
-        guardarRegistroLocalUJECA({
-            ...datosFormulario,
-            EstadoRegistro:"Pendiente de sincronizacion"
-        });
-        document.getElementById("modalMensaje").innerHTML="Tu registro quedo guardado en este equipo. Error: "+error.message;
+        mostrarModalCarga(false);
+        document.getElementById("modalMensaje").innerHTML="No se pudo completar la inscripción. Error: "+error.message;
         mostrarResumenPago(datosFormulario, "");
         document.getElementById("modal").style.display="flex";
-        document.getElementById("Estado").innerHTML="Fallo el envio al Excel en linea; se guardo una copia local.";
+        document.getElementById("Estado").innerHTML="No se guardó ningún registro local. Intenta nuevamente cuando la conexión esté disponible.";
         cargarCupos();
     }
 }
@@ -1103,14 +1203,20 @@ async function enviarInscripcion(){
 function mostrarResumenPago(datos, codigo){
     const ticket=document.getElementById("ticketPago");
     if(datos && datos.LiderAsignado){
+        const pagos = calcularPagos(datos);
         ticket.style.display="block";
         ticket.innerHTML=`
-            <strong>Resumen de pago</strong>
-            <span>Campista: ${datos.Nombre || "Sin nombre"}</span>
-            <span>Codigo: ${codigo || "Pendiente de asignacion"}</span>
-            <span>Zona asignada: ${datos.ZonaAsignada || "Zona general"}</span>
-            <span>Lider para pago: ${datos.LiderAsignado || "Coordinacion General Zona 6"}</span>
-            <span>Valor congreso: $500.000${datos.DeseaCamisa==="Si" ? " + camiseta $35.000" : ""}</span>
+            <div class="ticket-header"><strong>Resumen de pago</strong></div>
+            <div class="ticket-grid">
+                <div class="ticket-label">Campista</div><div class="ticket-value">${datos.Nombre || "Sin nombre"}</div>
+                <div class="ticket-label">Codigo</div><div class="ticket-value">${codigo || "Pendiente de asignacion"}</div>
+                <div class="ticket-label">Zona asignada</div><div class="ticket-value">${datos.ZonaAsignada || "Zona general"}</div>
+                <div class="ticket-label">Lider para pago</div><div class="ticket-value">${datos.LiderAsignado || "Coordinacion General Zona 6"}</div>
+                <div class="ticket-label">Valor congreso</div><div class="ticket-value">${formatearPrecio(500000)}</div>
+                <div class="ticket-label">Valor camiseta</div><div class="ticket-value">${formatearPrecio(pagos.valorCamisa)}</div>
+                ${pagos.descuentoAplicado ? '<div class="ticket-label">Descuento aplicado</div><div class="ticket-value">-' + formatearPrecio(pagos.descuentoAplicado) + '</div>' : ''}
+                <div class="ticket-label ticket-total">Total a pagar</div><div class="ticket-value ticket-total">${formatearPrecio(pagos.valorTotal)}</div>
+            </div>
         `;
     }else{
         ticket.style.display="none";
