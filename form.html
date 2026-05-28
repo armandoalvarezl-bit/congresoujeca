@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="ui-theme.css">
+<link rel="icon" type="image/png" href="img/logo.png">
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Outfit',sans-serif;}
@@ -361,6 +362,80 @@ box-shadow:0 24px 70px rgba(0,0,0,0.20);
 animation:zoomIn .3s ease;
 border:1px solid rgba(214,0,0,.14);
 }
+.modal-launch-content{
+background:#ffffff;
+padding:32px 30px 28px;
+border-radius:28px;
+width:100%;
+max-width:520px;
+box-shadow:0 32px 90px rgba(0,0,0,.22);
+position:relative;
+}
+.modal-launch-content h2{
+font-size:2.3rem;
+line-height:1;
+margin:16px 0 12px;
+color:#8b0e11;
+}
+.modal-launch-content .modal-subtitle{
+margin:0 0 24px;
+font-size:1rem;
+line-height:1.6;
+color:#4f4f4f;
+}
+.modal-launch-brand{
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:20px;
+}
+.modal-launch-brand img{
+width:56px;
+height:56px;
+object-fit:contain;
+border-radius:18px;
+box-shadow:0 12px 35px rgba(0,0,0,.12);
+}
+.modal-launch-brand span{
+font-weight:900;
+color:#8b0e11;
+font-size:1.05rem;
+letter-spacing:.08em;
+}
+.launch-counter{
+margin:16px 0 6px;
+font-size:3.2rem;
+font-weight:900;
+color:#b80f14;
+letter-spacing:.02em;
+}
+.launch-caption{
+margin:0;
+font-size:.95rem;
+line-height:1.5;
+color:#6b6b6b;
+text-transform:uppercase;
+letter-spacing:.08em;
+}
+.modal-close{
+position:absolute;
+top:18px;
+right:18px;
+width:42px;
+height:42px;
+border:none;
+border-radius:999px;
+background:rgba(255,255,255,.92);
+color:#6b2b28;
+font-size:1.6rem;
+font-weight:800;
+line-height:1;
+cursor:pointer;
+box-shadow:0 12px 26px rgba(0,0,0,.14);
+}
+.modal-close:hover{
+background:#fff;
+}
 .modal-content{max-width:640px;}
 .modal-confirmacion-content{
 max-width:720px;
@@ -642,6 +717,16 @@ flex-direction:column;
 <input name="ZonaAsignada" id="zonaAsignada" placeholder="Zona asignada" readonly required>
 <input name="LiderAsignado" id="liderAsignado" placeholder="Lider asignado para el pago" readonly required>
 
+<!-- Sección para permiso de menores -->
+<div id="permisoSection" style="display:none;grid-column:1/-1;margin-top:8px;padding:12px;border-radius:12px;background:#fff8f7;border:1px solid rgba(199,57,47,.08);">
+    <p style="margin:0 0 8px;color:#5f3a36;font-weight:700">Si eres menor de edad, debes descargar y presentar un permiso firmado por tu representante.</p>
+    <p style="margin:0 0 8px">Descarga el permiso oficial: <a href="PERMISO ADOLESCENTE.docx" download>Descargar permiso</a></p>
+    <label style="display:flex;align-items:center;gap:8px;font-weight:600;color:#6b2b28;font-size:0.95rem;">
+        <input type="checkbox" id="tienePermiso" name="TienePermiso" style="width:18px;height:18px;flex:none;margin:0"> 
+        Declaro que tengo el permiso firmado y lo presentaré al momento del evento.
+    </label>
+</div>
+
 <h3>Iglesia</h3>
 <input name="Iglesia" placeholder="Nombre de la iglesia" required>
 <input name="Pastor" placeholder="Nombre del pastor" required>
@@ -710,7 +795,7 @@ flex-direction:column;
 <textarea name="Observaciones" rows="3"></textarea>
 
 <div class="form-actions">
-<button type="button" onclick="prepararEnvio()">Enviar inscripción</button>
+<button type="button" onclick="prepararEnvio()" disabled>Enviar inscripción</button>
 <button class="btn-secundario" type="button" onclick="limpiarFormulario()">Limpiar formulario</button>
 </div>
 
@@ -727,6 +812,20 @@ flex-direction:column;
 <p>Si tienes alguna pregunta, no dudes en contactarnos a través de nuestras redes sociales o correo electrónico.</p>
 <p>infocircuito@gmail.com</p>
 <button onclick="cerrarBienvenida()">Continuar</button>
+</div>
+</div>
+
+<div id="modalLanzamiento" class="modal modal-lanzamiento" aria-hidden="true" style="display:none;">
+<div class="modal-launch-content">
+  <button class="modal-close" type="button" aria-label="Cerrar" onclick="document.getElementById('modalLanzamiento').style.display='none'">×</button>
+  <div class="modal-launch-brand">
+    <img src="img/logo.png" alt="Logo UJECA">
+    <span>UJECA</span>
+  </div>
+  <h2>Inscripciones cerradas</h2>
+  <p class="modal-subtitle">Las inscripciones se abrirán mañana a las 6:00 a.m.</p>
+  <div class="launch-counter" id="lanzamientoCuenta">00:00:00</div>
+  <p class="launch-caption">Tiempo restante para el inicio de inscripciones</p>
 </div>
 </div>
 
@@ -763,6 +862,46 @@ let datosFormulario=null;
 let totalInscritosActual=0;
 let registrosExistentes=[];
 const STORAGE_ROTACION_LIDERES="ujeca_rotacion_lideres";
+
+function obtenerInicioInscripciones(){
+    const inicio = new Date();
+    inicio.setDate(inicio.getDate() + 1);
+    inicio.setHours(6, 0, 0, 0);
+    return inicio;
+}
+
+function iniciarControlLanzamientoInscripciones(){
+    const enviarBtn=document.querySelector('button[onclick="prepararEnvio()"]');
+    const estado=document.getElementById('Estado');
+    const modalLanzamiento=document.getElementById('modalLanzamiento');
+    const lanzamientoCuenta=document.getElementById('lanzamientoCuenta');
+    if(!enviarBtn || !estado || !modalLanzamiento || !lanzamientoCuenta) return;
+
+    const inicio = obtenerInicioInscripciones();
+    const actualizarEstado = ()=>{
+        const ahora = new Date();
+        const diff = inicio - ahora;
+        if(diff <= 0){
+            enviarBtn.disabled = false;
+            modalLanzamiento.style.display = 'none';
+            estado.innerText = "Inscripciones abiertas. Completa el formulario y presiona Enviar inscripción.";
+            return;
+        }
+        enviarBtn.disabled = true;
+        modalLanzamiento.style.display = 'flex';
+        const totalSegundos=Math.floor(diff/1000);
+        const dias=Math.floor(totalSegundos/86400);
+        const horas=Math.floor((totalSegundos%86400)/3600);
+        const minutos=Math.floor((totalSegundos%3600)/60);
+        const segundos=totalSegundos%60;
+        const cuenta = `${dias>0?dias+"d ":""}${String(horas).padStart(2,"0")}:${String(minutos).padStart(2,"0")}:${String(segundos).padStart(2,"0")}`;
+        lanzamientoCuenta.innerText = cuenta;
+        estado.innerText = `Las inscripciones se abren mañana a las 6:00 a.m.`;
+    };
+
+    actualizarEstado();
+    setInterval(actualizarEstado,1000);
+}
 const LIDER_KATE="Katherine Bermudez - Coordinadora General - UJECA - +57 319 4480759";
 const LIDER_ANDRES="Andres Miranda";
 const LIDER_MELANIA="Melania Angulo - Area Tesoreria - +57 321 6818450";
@@ -820,9 +959,32 @@ const LIDERES_POR_ZONA={
 };
 
 window.addEventListener("load",()=>{
-    document.getElementById("modalBienvenida").style.display="flex";
+    iniciarControlLanzamientoInscripciones();
+    const enviarBtn=document.querySelector('button[onclick="prepararEnvio()"]');
+    if(enviarBtn && !enviarBtn.disabled){
+        document.getElementById("modalBienvenida").style.display="flex";
+    }
     configurarAsignacionZona();
 });
+
+function configurarPermisoMenor(){
+    const edadInput=document.querySelector('[name="Edad"]');
+    if(!edadInput) return;
+    const togglePermiso=()=>{
+        const edad=Number(edadInput.value) || 0;
+        const permisoSection=document.getElementById('permisoSection');
+        console.debug('configurarPermisoMenor: edad=', edad, 'permisoSectionExists=', !!permisoSection);
+        if(permisoSection){
+            permisoSection.style.display= edad>0 && edad<18 ? 'block' : 'none';
+        }
+    };
+    edadInput.addEventListener('input',togglePermiso);
+    edadInput.addEventListener('change',togglePermiso);
+    togglePermiso();
+}
+
+// Inicializar control de permiso para menores
+window.addEventListener('load',()=>{ configurarPermisoMenor(); });
 
 function cerrarBienvenida(){
     document.getElementById("modalBienvenida").style.display="none";
@@ -947,6 +1109,8 @@ function configurarAsignacionZona(){
     });
     configurarCamiseta();
     actualizarZonaYLider();
+    // Asegurar inicialización del control para permisos de menores
+    try{ if(typeof configurarPermisoMenor === 'function') configurarPermisoMenor(); }catch(e){ console.error('Error iniciando permiso menor', e); }
 }
 
 function configurarCamiseta(){
@@ -1072,6 +1236,15 @@ function prepararEnvio(){
     if(datos.DeseaCamisa==="Si" && (!datos.TipoCamiseta || !datos.TallaCamisa || !datos.ColorCamisa)){
         alert("Si desea camiseta, debe seleccionar corte, talla y color.");
         return;
+    }
+    // Validación para menores de edad: debe confirmar permiso firmado
+    const edadNum = Number(datos.Edad || 0);
+    if(edadNum > 0 && edadNum < 18){
+        const tienePermiso = document.getElementById('tienePermiso') ? document.getElementById('tienePermiso').checked : false;
+        if(!tienePermiso){
+            alert('Si eres menor de edad, debes descargar y presentar un permiso firmado por tu representante. Marca la casilla para confirmar.');
+            return;
+        }
     }
     datos.token="UJECA2026";
     datos.accion="registrar";

@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="ui-theme.css">
+<link rel="icon" type="image/png" href="img/logo.png">
 <style>
 .admin-toolbar{
   display:grid;
@@ -47,7 +48,7 @@
     <div class="ui-hero-copy">
       <span class="ui-eyebrow">Base consolidada</span>
       <h2>Consulta, filtra y exporta los inscritos del congreso.</h2>
-      <p>Esta vista reúne los registros disponibles en línea y los respaldos locales del equipo, con búsqueda rápida y modo administrador para eliminación puntual.</p>
+      <p>Esta vista muestra únicamente los inscritos disponibles en línea, con búsqueda rápida y modo administrador para eliminación puntual.</p>
     </div>
     <div class="ui-hero-panel">
       <div class="ui-grid cols-2">
@@ -140,7 +141,8 @@ function renderTabla(data){
 
   html+="</tbody></table></div>";
   document.getElementById("tabla").innerHTML=html;
-  document.getElementById("contador").innerText=data.length+" inscritos";
+  const contador = data.length === 1 ? "1 inscrito" : data.length + " inscritos";
+  document.getElementById("contador").innerText=contador;
 }
 
 document.getElementById("busqueda").addEventListener("input",e=>{
@@ -170,15 +172,17 @@ document.getElementById("descargar").addEventListener("click",()=>{
 
 function eliminarRegistro(index){
   if(!confirm("¿Eliminar este registro?")) return;
-  fetch(API,{
+  const registro = datosGlobal[index];
+  const indexHoja = datosGlobal.length - 1 - index;
+  fetch(API,{ 
     method:"POST",
-    body:JSON.stringify({accion:"eliminar",index:index,hoja:window.UJECA_HOJA_INSCRIPCIONES})
+    body:JSON.stringify({accion:"eliminar",index:indexHoja,hoja:window.UJECA_HOJA_INSCRIPCIONES})
   })
   .then(r=>r.json())
   .then(res=>{
     if(res.resultado==="ok"){
       alert("Registro eliminado");
-      location.reload();
+      cargarListado();
     }else{
       alert("Error al eliminar");
     }
@@ -192,20 +196,13 @@ function cargarDatos(data){
 
 async function cargarListado(){
   document.getElementById("tabla").innerHTML="Sincronizando inscritos...";
-  const locales=obtenerRegistrosLocalesUJECA();
-  if(locales.length){
-    datosGlobal=locales;
-    renderTabla(datosGlobal);
-  }
 
   try{
     datosGlobal=await cargarRegistrosUJECA(API);
     renderTabla(datosGlobal);
   }catch(error){
-    if(!datosGlobal.length){
-      document.getElementById("tabla").innerHTML="No se pudo sincronizar el listado remoto.";
-      document.getElementById("contador").innerText="0 inscritos";
-    }
+    document.getElementById("tabla").innerHTML="No se pudo sincronizar el listado remoto.";
+    document.getElementById("contador").innerText="0 inscritos";
   }
 }
 

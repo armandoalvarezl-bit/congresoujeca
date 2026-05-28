@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Control de Pagos | Congreso 2026</title>
+<link rel="icon" type="image/png" href="img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2360,8 +2361,15 @@ function valorCongresoParticipante(){
   return Math.max(valorCongresoBaseParticipante() - descuentoParticipante(),0);
 }
 
+function obtenerValorCamisaPorTalla(talla) {
+  const valor = String(talla || "").trim().toUpperCase().replace(/\s+/g, "");
+  return ["XXL", "2XL", "3XL", "XXXL", "4XL", "5XL"].includes(valor) ? 45000 : 35000;
+}
+
 function valorCamisaParticipante(){
-  return participanteTieneCamisa(participanteActual) ? PRECIO_CAMISA : 0;
+  const valorGuardado=valorNumericoCampo(participanteActual,["ValorCamisa","valorCamisa"]);
+  if(valorGuardado > 0) return valorGuardado;
+  return participanteTieneCamisa(participanteActual) ? obtenerValorCamisaPorTalla(participanteActual?.TallaCamisa || participanteActual?.tallaCamisa) : 0;
 }
 
 function valorTotalParticipante(){

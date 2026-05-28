@@ -149,11 +149,13 @@ function enviarCorreoInscripcion_(datos, codigo) {
   const nombre = datos.Nombre || "campista";
   const lider = datos.LiderAsignado || "Coordinacion General Zona 6";
   const zona = datos.ZonaAsignada || "Zona general";
-  const valorCamisa = String(datos.DeseaCamisa || "").toLowerCase() === "si" ? 35000 : 0;
-  const valorTotal = 500000 + valorCamisa;
+  const valorCamisa = String(datos.DeseaCamisa || "").toLowerCase() === "si" ? Number(datos.ValorCamisa || 0) : 0;
+  const descuentoAplicado = Number(datos.DescuentoAplicado || 0);
+  const valorTotal = Number(datos.ValorTotal || Math.max(500000 + valorCamisa - descuentoAplicado, 0));
   const asunto = "Inscripcion confirmada - Congreso Trascendentales 2026";
   const resumenPago = "$" + valorTotal.toLocaleString("es-CO");
   const camisetaTexto = valorCamisa ? "Incluye camiseta seleccionada" : "No incluye camiseta";
+  const descuentoTexto = descuentoAplicado ? "Descuento aplicado: -$" + descuentoAplicado.toLocaleString("es-CO") : "";
   const html = `
     <div style="margin:0;padding:0;background:#f6f1ee;color:#201516;font-family:Arial,Helvetica,sans-serif">
       <div style="padding:34px 14px">
@@ -192,6 +194,10 @@ function enviarCorreoInscripcion_(datos, codigo) {
               <tr>
                 <td style="width:42%;padding:14px 16px;background:#fbf7f4;border-radius:14px 0 0 14px;color:#7a6662;font-size:13px;font-weight:800;text-transform:uppercase">Camiseta</td>
                 <td style="padding:14px 16px;background:#fbf7f4;border-radius:0 14px 14px 0;font-size:15px;font-weight:700">${escaparHtmlCorreo_(camisetaTexto)}</td>
+              </tr>
+              <tr>
+                <td style="width:42%;padding:14px 16px;background:#fbf7f4;border-radius:14px 0 0 14px;color:#7a6662;font-size:13px;font-weight:800;text-transform:uppercase">Descuento</td>
+                <td style="padding:14px 16px;background:#fbf7f4;border-radius:0 14px 14px 0;font-size:15px;font-weight:700">${escaparHtmlCorreo_(descuentoTexto || "No aplica")}</td>
               </tr>
             </table>
           </div>
