@@ -1211,7 +1211,7 @@ padding:24px 22px 22px;
 <div class="carga-logo"><img src="img/logo.png" alt="Logo UJECA"></div>
 <div>
 <h2>Registrando preinscripción</h2>
-<p>Estamos guardando tus datos y preparando el correo de confirmación.</p>
+<p>Estamos guardando tus datos y preparando el soporte de preinscripcion.</p>
 </div>
 </div>
 <div class="carga-body">
@@ -1234,7 +1234,7 @@ padding:24px 22px 22px;
 <div class="carga-step">
 <div class="carga-step-dot"><div class="carga-spinner"></div></div>
 <div>
-<strong>Enviando confirmación al correo</strong>
+<strong>Enviando soporte al correo</strong>
 <span>Por favor espera unos segundos antes de cerrar.</span>
 </div>
 </div>
@@ -1246,8 +1246,8 @@ padding:24px 22px 22px;
 
 <div id="modal" class="modal">
 <div class="modal-content">
-<h2>Inscripción Confirmada</h2>
-<p class="modal-subtitle">Estimado campista, tu inscripción ha sido registrada exitosamente.</p>
+<h2>Preinscripcion registrada</h2>
+<p class="modal-subtitle">Estimado campista, recibimos tus datos. Apareceras como inscrito cuando el pago quede registrado.</p>
 <p id="modalMensaje"></p>
 <div id="ticketPago" class="ticket-pago" style="display:none;"></div>
 <button class="btn-primario" onclick="cerrarModal()">Cerrar</button>
@@ -1654,6 +1654,7 @@ function prepararEnvio(){
     datos.ValorTotal = pagos.valorTotal;
     datos.AplicaDescuento = pagos.descuentoAplicado > 0 ? "Si" : "No";
     datos.DescuentoPorcentaje = 0;
+    datos.EstadoRegistro = "Preinscrito pendiente de pago";
     datos.ZonaAsignada=datos.ZonaAsignada || document.getElementById("zonaAsignada").value || "Zona general";
     datos.LiderAsignado=datos.LiderAsignado || document.getElementById("liderAsignado").value || "Coordinacion General Zona 6";
     mostrarConfirmacion(datos);
@@ -1755,8 +1756,8 @@ async function enviarInscripcion(){
         mostrarModalCarga(false);
         document.getElementById("modal").style.display="flex";
         document.getElementById("Estado").innerHTML=j.correoEnviado
-            ? "Inscripcion registrada correctamente. Enviamos la confirmacion al correo indicado."
-            : "Inscripcion registrada correctamente. No se pudo confirmar el envio del correo.";
+            ? "Preinscripcion registrada correctamente. Enviamos el soporte al correo indicado. Aparecera como inscrito cuando el pago quede registrado."
+            : "Preinscripcion registrada correctamente. No se pudo confirmar el envio del correo. Aparecera como inscrito cuando el pago quede registrado.";
         limpiarFormulario();
         cargarCupos();
     }catch(error){

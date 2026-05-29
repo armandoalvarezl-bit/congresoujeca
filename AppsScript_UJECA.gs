@@ -98,6 +98,10 @@ function doGet(e) {
     return responderJson_(listarInscripciones_(params.hoja), params.callback);
   }
 
+  if (accion === "listadoConfirmado") {
+    return responderJson_(listarInscripcionesConPago_(params.hoja), params.callback);
+  }
+
   if (accion === "pagos") {
     return responderJson_(listarPagos_(HOJA_PAGOS), params.callback);
   }
@@ -142,6 +146,7 @@ function registrarInscripcion_(datos) {
   const codigo = datos.Codigo || crearCodigo_(hoja.getLastRow());
   const fila = COLUMNAS_INSCRIPCIONES.map((columna) => {
     if (columna === "Codigo") return codigo;
+    if (columna === "EstadoRegistro") return datos[columna] || "Preinscrito pendiente de pago";
     return datos[columna] || "";
   });
 
@@ -160,7 +165,7 @@ function enviarCorreoInscripcion_(datos, codigo) {
   const valorCamisa = String(datos.DeseaCamisa || "").toLowerCase() === "si" ? Number(datos.ValorCamisa || 0) : 0;
   const descuentoAplicado = Number(datos.DescuentoAplicado || 0);
   const valorTotal = Number(datos.ValorTotal || Math.max(500000 + valorCamisa - descuentoAplicado, 0));
-  const asunto = "Inscripcion confirmada - Congreso Trascendentales 2026";
+  const asunto = "Preinscripcion recibida - Congreso Trascendentales 2026";
   const resumenPago = "$" + valorTotal.toLocaleString("es-CO");
   const camisetaTexto = valorCamisa ? "Incluye camiseta seleccionada" : "No incluye camiseta";
   const descuentoTexto = descuentoAplicado ? "Descuento aplicado: -$" + descuentoAplicado.toLocaleString("es-CO") : "";
@@ -170,12 +175,12 @@ function enviarCorreoInscripcion_(datos, codigo) {
         <div style="max-width:680px;margin:0 auto;background:#ffffff;border-radius:24px;overflow:hidden;border:1px solid #eaded9;box-shadow:0 18px 46px rgba(70,0,0,.14)">
           <div style="background:linear-gradient(135deg,#4b0003 0%,#220000 64%,#090000 100%);padding:34px 34px 30px;color:#ffffff">
             <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#ffb6b9">Congreso Juvenil 2026</div>
-            <h1 style="margin:12px 0 0;font-size:34px;line-height:1.05;font-weight:900">Inscripcion confirmada</h1>
-            <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:rgba(255,255,255,.84)">Tu registro para Trascendentales fue recibido correctamente.</p>
+            <h1 style="margin:12px 0 0;font-size:34px;line-height:1.05;font-weight:900">Preinscripcion recibida</h1>
+            <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:rgba(255,255,255,.84)">Tu registro para Trascendentales fue recibido correctamente y queda pendiente de pago.</p>
           </div>
 
           <div style="padding:30px 34px 8px">
-            <p style="margin:0;font-size:17px;line-height:1.62">Hola <strong>${escaparHtmlCorreo_(nombre)}</strong>, nos alegra confirmar tu inscripcion. Conserva este mensaje como soporte y ten a mano tu codigo al momento de realizar seguimiento.</p>
+            <p style="margin:0;font-size:17px;line-height:1.62">Hola <strong>${escaparHtmlCorreo_(nombre)}</strong>, recibimos tu preinscripcion. Tu cupo queda confirmado como inscrito cuando el pago sea registrado en el portal de pagos.</p>
           </div>
 
           <div style="padding:20px 34px">
@@ -230,7 +235,7 @@ function enviarCorreoInscripcion_(datos, codigo) {
 
   const cuerpoTexto = `Hola ${nombre},
 
-Su inscripción para el Congreso Trascendentales 2026 ha sido recibida y confirmada correctamente.
+Su preinscripcion para el Congreso Trascendentales 2026 ha sido recibida correctamente y queda pendiente de pago.
 
 Código de registro: ${codigo}
 Documento: ${datos.Documento || ""}
@@ -240,7 +245,7 @@ ${camisetaTexto}
 Descuento: ${descuentoTexto || "No aplica"}
 Valor total a pagar: ${resumenPago}
 
-Guarde este correo como comprobante de su inscripción. Si tiene alguna pregunta, puede responder a este mensaje o comunicarse con la organización.
+Guarde este correo como soporte de preinscripcion. Su cupo queda confirmado como inscrito cuando el pago sea registrado en el portal de pagos. Si tiene alguna pregunta, puede responder a este mensaje o comunicarse con la organizacion.
 
 Atentamente,
 Equipo organizador del Congreso Trascendentales 2026`;
@@ -291,6 +296,29 @@ function listarInscripciones_(nombreHoja) {
       });
       return registro;
     });
+}
+
+function listarInscripcionesConPago_(nombreHoja) {
+  const registros = listarInscripciones_(nombreHoja || HOJA_INSCRIPCIONES);
+  const pagos = listarPagos_(HOJA_PAGOS);
+  const documentosConPago = {};
+  const codigosConPago = {};
+
+  pagos.forEach((pago) => {
+    const valor = Number(pago.ValorAbono || 0);
+    if (!(valor > 0)) return;
+
+    const documento = String(pago.Documento || "").trim();
+    const codigo = String(pago.Codigo || "").trim().toLowerCase();
+    if (documento) documentosConPago[documento] = true;
+    if (codigo) codigosConPago[codigo] = true;
+  });
+
+  return registros.filter((registro) => {
+    const documento = String(registro.Documento || "").trim();
+    const codigo = String(registro.Codigo || "").trim().toLowerCase();
+    return (documento && documentosConPago[documento]) || (codigo && codigosConPago[codigo]);
+  });
 }
 
 function registrarPago_(datos) {
@@ -590,6 +618,29 @@ function listarPagos_(nombreHoja) {
 
 function eliminarInscripcion_(datos) {
   const hoja = obtenerHoja_(datos.hoja || datos.HojaDestino || HOJA_INSCRIPCIONES);
+  const documento = String(datos.Documento || datos.documento || "").trim();
+  const codigo = String(datos.Codigo || datos.codigo || "").trim().toLowerCase();
+
+  if (documento || codigo) {
+    const valores = hoja.getDataRange().getValues();
+    const encabezados = valores.shift().map((encabezado) => String(encabezado || "").trim());
+    const indiceDocumento = encabezados.indexOf("Documento");
+    const indiceCodigo = encabezados.indexOf("Codigo");
+
+    for (let i = 0; i < valores.length; i++) {
+      const filaDocumento = indiceDocumento >= 0 ? String(valores[i][indiceDocumento] || "").trim() : "";
+      const filaCodigo = indiceCodigo >= 0 ? String(valores[i][indiceCodigo] || "").trim().toLowerCase() : "";
+      const coincideDocumento = documento && filaDocumento === documento;
+      const coincideCodigo = codigo && filaCodigo === codigo;
+      if (coincideDocumento || coincideCodigo) {
+        hoja.deleteRow(i + 2);
+        return { resultado: "ok" };
+      }
+    }
+
+    return { resultado: "error", error: "No se encontro el registro para eliminar" };
+  }
+
   const index = Number(datos.index);
   const fila = index + 2;
 

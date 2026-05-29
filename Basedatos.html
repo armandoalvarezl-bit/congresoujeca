@@ -48,7 +48,7 @@
     <div class="ui-hero-copy">
       <span class="ui-eyebrow">Base consolidada</span>
       <h2>Consulta, filtra y exporta los inscritos del congreso.</h2>
-      <p>Esta vista muestra únicamente los inscritos disponibles en línea, con búsqueda rápida y modo administrador para eliminación puntual.</p>
+      <p>Esta vista muestra unicamente participantes con pago registrado en el portal de pagos, con busqueda rapida y modo administrador para eliminacion puntual.</p>
     </div>
     <div class="ui-hero-panel">
       <div class="ui-grid cols-2">
@@ -94,7 +94,6 @@ function formatearFecha(fechaISO){
 }
 
 const API=window.UJECA_API.listado;
-const API_LISTADO=crearUrlUJECA(API,{accion:"listado",hoja:window.UJECA_HOJA_INSCRIPCIONES});
 let datosGlobal=[];
 let adminActivo=false;
 const PASSWORD="admin2026";
@@ -173,10 +172,14 @@ document.getElementById("descargar").addEventListener("click",()=>{
 function eliminarRegistro(index){
   if(!confirm("¿Eliminar este registro?")) return;
   const registro = datosGlobal[index];
-  const indexHoja = datosGlobal.length - 1 - index;
   fetch(API,{ 
     method:"POST",
-    body:JSON.stringify({accion:"eliminar",index:indexHoja,hoja:window.UJECA_HOJA_INSCRIPCIONES})
+    body:JSON.stringify({
+      accion:"eliminar",
+      Documento:registro.Documento || "",
+      Codigo:registro.Codigo || "",
+      hoja:window.UJECA_HOJA_INSCRIPCIONES
+    })
   })
   .then(r=>r.json())
   .then(res=>{
@@ -198,7 +201,7 @@ async function cargarListado(){
   document.getElementById("tabla").innerHTML="Sincronizando inscritos...";
 
   try{
-    datosGlobal=await cargarRegistrosUJECA(API);
+    datosGlobal=await cargarInscritosConfirmadosUJECA(API, window.UJECA_API.pagos);
     renderTabla(datosGlobal);
   }catch(error){
     document.getElementById("tabla").innerHTML="No se pudo sincronizar el listado remoto.";

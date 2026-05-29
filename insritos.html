@@ -35,7 +35,7 @@
       <div class="ui-hero-copy">
         <span class="ui-eyebrow">Consulta general</span>
         <h2>Participantes registrados en el sistema.</h2>
-        <p>Esta vista muestra el consolidado de inscritos disponibles en línea.</p>
+        <p>Esta vista muestra el consolidado de participantes con pago registrado.</p>
       </div>
       <div class="ui-hero-panel">
         <div id="tabla" class="small">Cargando datos...</div>
@@ -72,7 +72,7 @@
 
   async function cargarListado(){
       try{
-          const registros = await cargarRegistrosUJECA(window.UJECA_API.listadoAlterno);
+          const registros = await cargarInscritosConfirmadosUJECA(window.UJECA_API.listadoAlterno, window.UJECA_API.pagos);
           cargarDatos(registros);
       }catch(error){
           document.getElementById("tabla").innerHTML = "No se pudo sincronizar el listado remoto.";

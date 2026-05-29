@@ -1,8 +1,8 @@
 window.UJECA_API = {
-  registro: "https://script.google.com/macros/s/AKfycbxPWZ0_53cdkUiF0oDDS6pC_DzkDsM6qYXMq2MW62Z_Xs666t0PZQE8H43iTX5RVb0F/exec",
-  listado: "https://script.google.com/macros/s/AKfycbxPWZ0_53cdkUiF0oDDS6pC_DzkDsM6qYXMq2MW62Z_Xs666t0PZQE8H43iTX5RVb0F/exec",
-  listadoAlterno: "https://script.google.com/macros/s/AKfycbxPWZ0_53cdkUiF0oDDS6pC_DzkDsM6qYXMq2MW62Z_Xs666t0PZQE8H43iTX5RVb0F/exec",
-  pagos: "https://script.google.com/macros/s/AKfycbxPWZ0_53cdkUiF0oDDS6pC_DzkDsM6qYXMq2MW62Z_Xs666t0PZQE8H43iTX5RVb0F/exec"
+  registro: "https://script.google.com/macros/s/AKfycbx7wOs2zKY4FeL275m03EZVkTRxNuDXB3m9zeNiHmiyFTCZJOwoq_otgvgLjBwv9lwH/exec",
+  listado: "https://script.google.com/macros/s/AKfycbx7wOs2zKY4FeL275m03EZVkTRxNuDXB3m9zeNiHmiyFTCZJOwoq_otgvgLjBwv9lwH/exec",
+  listadoAlterno: "https://script.google.com/macros/s/AKfycbx7wOs2zKY4FeL275m03EZVkTRxNuDXB3m9zeNiHmiyFTCZJOwoq_otgvgLjBwv9lwH/exec",
+  pagos: "https://script.google.com/macros/s/AKfycbx7wOs2zKY4FeL275m03EZVkTRxNuDXB3m9zeNiHmiyFTCZJOwoq_otgvgLjBwv9lwH/exec"
 };
 
 window.UJECA_STORAGE_KEY = "ujeca_registros_locales";
@@ -167,6 +167,83 @@ window.crearUrlUJECA = function(base, params = {}) {
   return url.toString();
 };
 
+window.cargarPagosRemotosUJECA = async function(baseUrl = window.UJECA_API.pagos) {
+  const pagosUrl = window.crearUrlUJECA(baseUrl, { accion: "pagos" });
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 7000);
+    const respuesta = await fetch(pagosUrl, {
+      cache: "no-store",
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    const texto = await respuesta.text();
+    if (!respuesta.ok) {
+      throw new Error("No se pudo leer el listado de pagos");
+    }
+
+    let json = null;
+    try {
+      json = JSON.parse(texto);
+    } catch {
+      const match = texto.match(/^[\w$]+\(([\s\S]*)\);?$/);
+      if (match) json = JSON.parse(match[1]);
+    }
+
+    const lista = window.extraerListaUJECA(json);
+    if (lista.length) return lista;
+  } catch {
+    // Si fetch falla por CORS o red, se intenta JSONP abajo.
+  }
+
+  return new Promise((resolve) => {
+    const callbackName = "ujecaPagosCallback_" + Date.now();
+    const script = document.createElement("script");
+    let terminado = false;
+
+    const finalizar = (datos) => {
+      if (terminado) return;
+      terminado = true;
+      delete window[callbackName];
+      script.remove();
+      resolve(window.extraerListaUJECA(datos));
+    };
+
+    window[callbackName] = finalizar;
+    script.onerror = () => finalizar([]);
+    script.src = window.crearUrlUJECA(baseUrl, {
+      accion: "pagos",
+      callback: callbackName
+    });
+
+    document.body.appendChild(script);
+    setTimeout(() => finalizar([]), 6000);
+  });
+};
+
+window.filtrarRegistrosConPagoUJECA = function(registros, pagos) {
+  const documentosConPago = new Set();
+  const codigosConPago = new Set();
+
+  (Array.isArray(pagos) ? pagos : []).forEach((pago) => {
+    if (!pago || typeof pago !== "object") return;
+    const valor = Number(pago.ValorAbono || pago.abono || pago.valor || 0);
+    if (!(valor > 0)) return;
+
+    const documento = String(pago.Documento || pago.documento || pago.cedula || "").trim();
+    const codigo = String(pago.Codigo || pago.codigo || pago.ID || "").trim().toLowerCase();
+    if (documento) documentosConPago.add(documento);
+    if (codigo) codigosConPago.add(codigo);
+  });
+
+  return (Array.isArray(registros) ? registros : []).filter((registro) => {
+    const documento = String(registro?.Documento || registro?.documento || registro?.cedula || "").trim();
+    const codigo = String(registro?.Codigo || registro?.codigo || registro?.ID || "").trim().toLowerCase();
+    return (documento && documentosConPago.has(documento)) || (codigo && codigosConPago.has(codigo));
+  });
+};
+
 window.cargarRegistrosRemotosUJECA = async function(baseUrl = window.UJECA_API.listado) {
   const listadoUrl = window.crearUrlUJECA(baseUrl, {
     accion: "listado",
@@ -229,6 +306,15 @@ window.cargarRegistrosRemotosUJECA = async function(baseUrl = window.UJECA_API.l
 window.cargarRegistrosUJECA = async function(baseUrl = window.UJECA_API.listado) {
   const remotos = await window.cargarRegistrosRemotosUJECA(baseUrl);
   return window.unificarRegistrosUJECA(remotos);
+};
+
+window.cargarInscritosConfirmadosUJECA = async function(baseUrl = window.UJECA_API.listado, pagosUrl = window.UJECA_API.pagos) {
+  const [registros, pagos] = await Promise.all([
+    window.cargarRegistrosRemotosUJECA(baseUrl),
+    window.cargarPagosRemotosUJECA(pagosUrl)
+  ]);
+
+  return window.unificarRegistrosUJECA(window.filtrarRegistrosConPagoUJECA(registros, pagos));
 };
 
 window.obtenerColumnasInscritosUJECA = function(registros) {
