@@ -626,6 +626,41 @@ object-fit:contain;
 margin-bottom:18px;
 }
 .modal-bienvenida-content h1{font-size:34px;margin-bottom:10px;}
+.modal-aviso-pago h2{
+text-align:left;
+margin-bottom:12px;
+}
+.modal-aviso-pago .aviso-pago-box{
+background:#fff8f5;
+border:1px solid rgba(214,0,0,.16);
+border-radius:18px;
+padding:18px;
+margin:18px 0 22px;
+color:#4e2f2d;
+line-height:1.6;
+text-align:left;
+}
+.modal-aviso-pago .aviso-pago-box strong{
+color:var(--ui-wine);
+}
+.modal-aviso-actions{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+justify-content:flex-end;
+}
+.modal-aviso-actions a,
+.modal-aviso-actions button{
+margin-top:0;
+text-decoration:none;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:14px 24px;
+border-radius:14px;
+font-weight:800;
+letter-spacing:.02em;
+}
 .modal-bienvenida-content button,
 .modal-content button,
 .modal-confirmacion-content button{
@@ -1180,6 +1215,22 @@ padding:24px 22px 22px;
 </div>
 </div>
 
+<div id="modalAvisoPago" class="modal" aria-hidden="true">
+<div class="modal-content modal-aviso-pago">
+<h2>Importante sobre tu inscripcion</h2>
+<p class="modal-subtitle">El formulario registra tus datos como preinscripcion.</p>
+<div class="aviso-pago-box">
+<strong>Para aparecer en el listado oficial de inscritos debes consignar o realizar el pago al lider de zona asignado.</strong>
+El campista no registra el pago en el portal; ese proceso lo realiza el lider autorizado de pagos.
+<br><br>
+Mientras el lider no registre el pago en el portal, tu informacion queda guardada para seguimiento, pero no se mostrara en el listado publico de inscritos.
+</div>
+<div class="modal-aviso-actions">
+<button class="btn-primario" type="button" onclick="cerrarAvisoPago()">Entendido</button>
+</div>
+</div>
+</div>
+
 <div id="modalLanzamiento" class="modal modal-lanzamiento" aria-hidden="true" style="display:none;">
 <div class="modal-launch-content">
   <button class="modal-close" type="button" aria-label="Cerrar" onclick="document.getElementById('modalLanzamiento').style.display='none'">×</button>
@@ -1247,7 +1298,7 @@ padding:24px 22px 22px;
 <div id="modal" class="modal">
 <div class="modal-content">
 <h2>Preinscripcion registrada</h2>
-<p class="modal-subtitle">Estimado campista, recibimos tus datos. Apareceras como inscrito cuando el pago quede registrado.</p>
+<p class="modal-subtitle">Estimado campista, recibimos tus datos. Apareceras como inscrito cuando tu lider de zona registre el pago.</p>
 <p id="modalMensaje"></p>
 <div id="ticketPago" class="ticket-pago" style="display:none;"></div>
 <button class="btn-primario" onclick="cerrarModal()">Cerrar</button>
@@ -1384,6 +1435,18 @@ window.addEventListener('load',()=>{ configurarPermisoMenor(); });
 
 function cerrarBienvenida(){
     document.getElementById("modalBienvenida").style.display="none";
+    const modalAvisoPago=document.getElementById("modalAvisoPago");
+    if(modalAvisoPago){
+        modalAvisoPago.style.display="flex";
+        modalAvisoPago.setAttribute("aria-hidden","false");
+    }
+}
+
+function cerrarAvisoPago(){
+    const modalAvisoPago=document.getElementById("modalAvisoPago");
+    if(!modalAvisoPago) return;
+    modalAvisoPago.style.display="none";
+    modalAvisoPago.setAttribute("aria-hidden","true");
 }
 
 function normalizarTexto(valor){
@@ -1756,8 +1819,8 @@ async function enviarInscripcion(){
         mostrarModalCarga(false);
         document.getElementById("modal").style.display="flex";
         document.getElementById("Estado").innerHTML=j.correoEnviado
-            ? "Preinscripcion registrada correctamente. Enviamos el soporte al correo indicado. Aparecera como inscrito cuando el pago quede registrado."
-            : "Preinscripcion registrada correctamente. No se pudo confirmar el envio del correo. Aparecera como inscrito cuando el pago quede registrado.";
+            ? "Preinscripcion registrada correctamente. Enviamos el soporte al correo indicado. Aparecera como inscrito cuando tu lider de zona registre el pago."
+            : "Preinscripcion registrada correctamente. No se pudo confirmar el envio del correo. Aparecera como inscrito cuando tu lider de zona registre el pago.";
         limpiarFormulario();
         cargarCupos();
     }catch(error){
