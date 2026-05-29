@@ -865,7 +865,6 @@ const STORAGE_ROTACION_LIDERES="ujeca_rotacion_lideres";
 
 function obtenerInicioInscripciones(){
     const inicio = new Date();
-    inicio.setDate(inicio.getDate() + 1);
     inicio.setHours(6, 0, 0, 0);
     return inicio;
 }
@@ -896,7 +895,7 @@ function iniciarControlLanzamientoInscripciones(){
         const segundos=totalSegundos%60;
         const cuenta = `${dias>0?dias+"d ":""}${String(horas).padStart(2,"0")}:${String(minutos).padStart(2,"0")}:${String(segundos).padStart(2,"0")}`;
         lanzamientoCuenta.innerText = cuenta;
-        estado.innerText = `Las inscripciones se abren mañana a las 6:00 a.m.`;
+        estado.innerText = `Las inscripciones se abren a las 6:00 a.m.`;
     };
 
     actualizarEstado();
