@@ -608,6 +608,141 @@ background:#fbf7f3;
 border:1px solid rgba(143,29,44,.09);
 }
 
+.modal-carga{
+background:rgba(18,0,2,.68);
+backdrop-filter:blur(12px);
+z-index:2600;
+}
+.modal-carga-content{
+width:min(520px,100%);
+padding:0;
+border-radius:24px;
+overflow:hidden;
+background:#fffdfb;
+border:1px solid rgba(255,255,255,.78);
+box-shadow:0 34px 90px rgba(35,0,0,.34);
+animation:zoomIn .24s ease;
+}
+.carga-head{
+padding:28px 28px 24px;
+display:grid;
+grid-template-columns:auto 1fr;
+gap:18px;
+align-items:center;
+color:white;
+background:linear-gradient(135deg,#4b0003 0%,#220000 72%,#090000 100%);
+}
+.carga-logo{
+width:62px;
+height:62px;
+border-radius:18px;
+display:grid;
+place-items:center;
+background:rgba(255,255,255,.1);
+border:1px solid rgba(255,255,255,.16);
+box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.carga-logo img{
+width:48px;
+height:42px;
+object-fit:contain;
+}
+.carga-head h2{
+margin:0;
+font-size:1.65rem;
+line-height:1.05;
+font-weight:900;
+}
+.carga-head p{
+margin:8px 0 0;
+color:rgba(255,255,255,.78);
+font-size:.95rem;
+line-height:1.45;
+font-weight:600;
+}
+.carga-body{
+padding:24px 28px 28px;
+}
+.carga-progress{
+height:9px;
+border-radius:999px;
+overflow:hidden;
+background:#f1ded8;
+}
+.carga-progress span{
+display:block;
+width:58%;
+height:100%;
+border-radius:999px;
+background:linear-gradient(90deg,var(--ui-wine),var(--ui-red),#f3b23f);
+animation:cargaProgress 1.25s ease-in-out infinite alternate;
+}
+.carga-steps{
+display:grid;
+gap:12px;
+margin-top:22px;
+}
+.carga-step{
+display:grid;
+grid-template-columns:42px 1fr;
+gap:12px;
+align-items:center;
+padding:12px;
+border-radius:16px;
+background:#fff8f5;
+border:1px solid #f0dfd8;
+}
+.carga-step-dot{
+width:42px;
+height:42px;
+border-radius:14px;
+display:grid;
+place-items:center;
+background:#fff;
+border:1px solid rgba(143,29,44,.16);
+}
+.carga-spinner{
+width:20px;
+height:20px;
+border-radius:50%;
+border:3px solid rgba(143,29,44,.18);
+border-top-color:var(--ui-red);
+animation:cargaSpin .8s linear infinite;
+}
+.carga-step strong{
+display:block;
+color:var(--ui-wine);
+font-size:.98rem;
+font-weight:900;
+}
+.carga-step span{
+display:block;
+margin-top:3px;
+color:#6f5a55;
+font-size:.9rem;
+line-height:1.35;
+font-weight:600;
+}
+.carga-foot{
+margin-top:18px;
+padding-top:16px;
+border-top:1px solid #eee1dc;
+color:#76615d;
+font-size:.9rem;
+line-height:1.45;
+font-weight:700;
+text-align:center;
+}
+
+@keyframes cargaSpin{
+to{transform:rotate(360deg);}
+}
+
+@keyframes cargaProgress{
+from{width:34%;}
+to{width:92%;}
+}
+
 @keyframes zoomIn{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
 
 @media(max-width:768px){
@@ -640,6 +775,13 @@ gap:4px;
 flex-direction:column;
 }
 .camiseta-card img{height:220px;}
+.carga-head{
+grid-template-columns:1fr;
+text-align:center;
+justify-items:center;
+padding:24px 22px 22px;
+}
+.carga-body{padding:22px;}
 }
 </style>
 <link rel="stylesheet" href="responsive-fixes.css">
@@ -842,9 +984,40 @@ flex-direction:column;
 
 <div id="modalCarga" class="modal modal-carga" aria-hidden="true">
 <div class="modal-carga-content">
-<div class="carga-icon"></div>
-<h2>Enviando inscripción</h2>
-<p class="modal-subtitle">Estamos procesando tus datos. No cierres esta ventana hasta que termine el envío.</p>
+<div class="carga-head">
+<div class="carga-logo"><img src="img/logo.png" alt="Logo UJECA"></div>
+<div>
+<h2>Registrando preinscripción</h2>
+<p>Estamos guardando tus datos y preparando el correo de confirmación.</p>
+</div>
+</div>
+<div class="carga-body">
+<div class="carga-progress" aria-hidden="true"><span></span></div>
+<div class="carga-steps">
+<div class="carga-step">
+<div class="carga-step-dot"><div class="carga-spinner"></div></div>
+<div>
+<strong>Conectando con la base oficial</strong>
+<span>Validando el registro en línea.</span>
+</div>
+</div>
+<div class="carga-step">
+<div class="carga-step-dot"><div class="carga-spinner"></div></div>
+<div>
+<strong>Asignando código y datos de pago</strong>
+<span>Calculando valor, zona y líder asignado.</span>
+</div>
+</div>
+<div class="carga-step">
+<div class="carga-step-dot"><div class="carga-spinner"></div></div>
+<div>
+<strong>Enviando confirmación al correo</strong>
+<span>Por favor espera unos segundos antes de cerrar.</span>
+</div>
+</div>
+</div>
+<div class="carga-foot">No actualices la página mientras termina el proceso.</div>
+</div>
 </div>
 </div>
 

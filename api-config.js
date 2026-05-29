@@ -1,8 +1,8 @@
 window.UJECA_API = {
-  registro: "https://script.google.com/macros/s/AKfycbwL4xTlB_xGd-s2XD6dfBZu_SmQfJ4eTfDJ_nt6riS65WhgDC7IfKRiNvXZ2sb6GaGu/exec",
-  listado: "https://script.google.com/macros/s/AKfycbwL4xTlB_xGd-s2XD6dfBZu_SmQfJ4eTfDJ_nt6riS65WhgDC7IfKRiNvXZ2sb6GaGu/exec",
-  listadoAlterno: "https://script.google.com/macros/s/AKfycbwL4xTlB_xGd-s2XD6dfBZu_SmQfJ4eTfDJ_nt6riS65WhgDC7IfKRiNvXZ2sb6GaGu/exec",
-  pagos: "https://script.google.com/macros/s/AKfycbwL4xTlB_xGd-s2XD6dfBZu_SmQfJ4eTfDJ_nt6riS65WhgDC7IfKRiNvXZ2sb6GaGu/exec"
+  registro: "https://script.google.com/macros/s/AKfycbxPWZ0_53cdkUiF0oDDS6pC_DzkDsM6qYXMq2MW62Z_Xs666t0PZQE8H43iTX5RVb0F/exec",
+  listado: "https://script.google.com/macros/s/AKfycbxPWZ0_53cdkUiF0oDDS6pC_DzkDsM6qYXMq2MW62Z_Xs666t0PZQE8H43iTX5RVb0F/exec",
+  listadoAlterno: "https://script.google.com/macros/s/AKfycbxPWZ0_53cdkUiF0oDDS6pC_DzkDsM6qYXMq2MW62Z_Xs666t0PZQE8H43iTX5RVb0F/exec",
+  pagos: "https://script.google.com/macros/s/AKfycbxPWZ0_53cdkUiF0oDDS6pC_DzkDsM6qYXMq2MW62Z_Xs666t0PZQE8H43iTX5RVb0F/exec"
 };
 
 window.UJECA_STORAGE_KEY = "ujeca_registros_locales";

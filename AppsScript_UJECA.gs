@@ -122,6 +122,14 @@ function doPost(e) {
     return responderJson_(registrarPago_(datos));
   }
 
+  if (accion === "reenviarCorreoInscripcion") {
+    return responderJson_(reenviarCorreoInscripcion_(datos));
+  }
+
+  if (accion === "enviarEstadoCuenta") {
+    return responderJson_(enviarEstadoCuenta_(datos));
+  }
+
   if (accion === "eliminar") {
     return responderJson_(eliminarInscripcion_(datos));
   }
@@ -220,11 +228,30 @@ function enviarCorreoInscripcion_(datos, codigo) {
     </div>
   `;
 
+  const cuerpoTexto = `Hola ${nombre},
+
+Su inscripción para el Congreso Trascendentales 2026 ha sido recibida y confirmada correctamente.
+
+Código de registro: ${codigo}
+Documento: ${datos.Documento || ""}
+Zona asignada: ${zona}
+Líder de pago: ${lider}
+${camisetaTexto}
+Descuento: ${descuentoTexto || "No aplica"}
+Valor total a pagar: ${resumenPago}
+
+Guarde este correo como comprobante de su inscripción. Si tiene alguna pregunta, puede responder a este mensaje o comunicarse con la organización.
+
+Atentamente,
+Equipo organizador del Congreso Trascendentales 2026`;
+
   try {
     MailApp.sendEmail({
       to: correo,
       subject: asunto,
+      body: cuerpoTexto,
       htmlBody: html,
+      replyTo: "infocircuito@gmail.com",
       name: "Congreso Trascendentales 2026"
     });
     return true;
@@ -275,7 +302,188 @@ function registrarPago_(datos) {
 
   hoja.appendRow(fila);
   registrarComprobantePago_(datosPago);
-  return { resultado: "ok", IdPago: idPago };
+  const correoEnviado = enviarCorreoEstadoCuentaPorPago_(datosPago);
+  return { resultado: "ok", IdPago: idPago, correoEnviado: correoEnviado };
+}
+
+function reenviarCorreoInscripcion_(datos) {
+  const participante = buscarInscripcionPorDocumentoOCodigo_(datos);
+  if (!participante) {
+    return { resultado: "error", error: "No se encontro una inscripcion con ese documento o codigo" };
+  }
+
+  const codigo = participante.Codigo || datos.Codigo || "";
+  const enviado = enviarCorreoInscripcion_(participante, codigo);
+  return {
+    resultado: enviado ? "ok" : "error",
+    correoEnviado: enviado,
+    correo: participante.Correo || "",
+    error: enviado ? "" : "No se pudo enviar el correo de inscripcion"
+  };
+}
+
+function enviarEstadoCuenta_(datos) {
+  const participante = buscarInscripcionPorDocumentoOCodigo_(datos);
+  if (!participante) {
+    return { resultado: "error", error: "No se encontro una inscripcion con ese documento o codigo" };
+  }
+
+  const resumen = calcularEstadoCuentaParticipante_(participante);
+  const enviado = enviarCorreoEstadoCuenta_(participante, resumen, datos.Motivo || "Actualizacion de estado de cuenta");
+  return {
+    resultado: enviado ? "ok" : "error",
+    correoEnviado: enviado,
+    correo: participante.Correo || "",
+    saldo: resumen.saldo,
+    error: enviado ? "" : "No se pudo enviar el estado de cuenta"
+  };
+}
+
+function enviarCorreoEstadoCuentaPorPago_(datosPago) {
+  const participante = buscarInscripcionPorDocumentoOCodigo_({
+    Documento: datosPago.Documento,
+    Codigo: datosPago.Codigo
+  });
+  if (!participante) return false;
+
+  const resumen = calcularEstadoCuentaParticipante_(participante);
+  return enviarCorreoEstadoCuenta_(participante, resumen, "Pago registrado");
+}
+
+function buscarInscripcionPorDocumentoOCodigo_(datos) {
+  const documento = String(datos.Documento || datos.documento || "").trim();
+  const codigo = String(datos.Codigo || datos.codigo || "").trim().toLowerCase();
+  const correo = String(datos.Correo || datos.correo || "").trim().toLowerCase();
+  const registros = listarInscripciones_(HOJA_INSCRIPCIONES);
+
+  return registros.find((item) => {
+    const docItem = String(item.Documento || "").trim();
+    const codigoItem = String(item.Codigo || "").trim().toLowerCase();
+    const correoItem = String(item.Correo || "").trim().toLowerCase();
+    return (documento && docItem === documento) ||
+      (codigo && codigoItem === codigo) ||
+      (correo && correoItem === correo);
+  }) || null;
+}
+
+function calcularEstadoCuentaParticipante_(participante) {
+  const pagos = listarPagos_(HOJA_PAGOS).filter((pago) =>
+    String(pago.Documento || "").trim() === String(participante.Documento || "").trim()
+  );
+  const total = obtenerValorTotalParticipante_(participante);
+  const abonado = pagos.reduce((suma, pago) => suma + Number(pago.ValorAbono || 0), 0);
+  const saldo = Math.max(total - abonado, 0);
+  return {
+    total: total,
+    abonado: abonado,
+    saldo: saldo,
+    pagos: pagos,
+    estado: saldo === 0 && abonado > 0 ? "Pago completo" : "Saldo pendiente"
+  };
+}
+
+function obtenerValorTotalParticipante_(participante) {
+  const totalGuardado = Number(participante.ValorTotal || 0);
+  if (totalGuardado > 0) return totalGuardado;
+
+  const deseaCamisa = String(participante.DeseaCamisa || "").toLowerCase() === "si";
+  const talla = String(participante.TallaCamisa || "").trim().toUpperCase().replace(/\s+/g, "");
+  const valorCamisa = deseaCamisa
+    ? (["XXL", "2XL", "3XL", "XXXL", "4XL", "5XL"].indexOf(talla) >= 0 ? 45000 : 35000)
+    : 0;
+  const descuento = Number(participante.DescuentoAplicado || 0);
+  return Math.max(500000 + valorCamisa - descuento, 0);
+}
+
+function enviarCorreoEstadoCuenta_(participante, resumen, motivo) {
+  const correo = String(participante.Correo || participante.correo || "").trim();
+  if (!correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) return false;
+
+  const nombre = participante.Nombre || "campista";
+  const codigo = participante.Codigo || "";
+  const asunto = "Estado de cuenta - Congreso Trascendentales 2026";
+  const totalTexto = formatearMonedaCorreo_(resumen.total);
+  const abonadoTexto = formatearMonedaCorreo_(resumen.abonado);
+  const saldoTexto = formatearMonedaCorreo_(resumen.saldo);
+  const ultimosPagos = (resumen.pagos || []).slice(-5).reverse();
+  const pagosHtml = ultimosPagos.length
+    ? ultimosPagos.map((pago) => `
+      <tr>
+        <td style="padding:12px;border-bottom:1px solid #f0dfd8">${escaparHtmlCorreo_(pago.FechaPago || "")}</td>
+        <td style="padding:12px;border-bottom:1px solid #f0dfd8;font-weight:800">${formatearMonedaCorreo_(pago.ValorAbono)}</td>
+        <td style="padding:12px;border-bottom:1px solid #f0dfd8">${escaparHtmlCorreo_(pago.MedioPago || "")}</td>
+      </tr>
+    `).join("")
+    : `<tr><td colspan="3" style="padding:12px;color:#76615d">Aun no hay pagos registrados.</td></tr>`;
+
+  const html = `
+    <div style="margin:0;padding:0;background:#f6f1ee;color:#201516;font-family:Arial,Helvetica,sans-serif">
+      <div style="padding:34px 14px">
+        <div style="max-width:680px;margin:0 auto;background:#ffffff;border-radius:24px;overflow:hidden;border:1px solid #eaded9;box-shadow:0 18px 46px rgba(70,0,0,.14)">
+          <div style="background:linear-gradient(135deg,#4b0003 0%,#220000 64%,#090000 100%);padding:34px;color:#ffffff">
+            <div style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#ffb6b9">Congreso Juvenil 2026</div>
+            <h1 style="margin:12px 0 0;font-size:34px;line-height:1.05;font-weight:900">Estado de cuenta</h1>
+            <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:rgba(255,255,255,.84)">${escaparHtmlCorreo_(motivo || "Actualizacion")}</p>
+          </div>
+          <div style="padding:30px 34px 8px">
+            <p style="margin:0;font-size:17px;line-height:1.62">Hola <strong>${escaparHtmlCorreo_(nombre)}</strong>, compartimos el estado actualizado de tu cuenta para el Congreso Trascendentales 2026.</p>
+          </div>
+          <div style="padding:20px 34px">
+            <table role="presentation" style="width:100%;border-collapse:separate;border-spacing:0 10px">
+              <tr><td style="padding:14px 16px;background:#fbf7f4;border-radius:14px 0 0 14px;color:#7a6662;font-size:13px;font-weight:800;text-transform:uppercase">Codigo</td><td style="padding:14px 16px;background:#fbf7f4;border-radius:0 14px 14px 0;font-size:15px;font-weight:700">${escaparHtmlCorreo_(codigo)}</td></tr>
+              <tr><td style="padding:14px 16px;background:#fbf7f4;border-radius:14px 0 0 14px;color:#7a6662;font-size:13px;font-weight:800;text-transform:uppercase">Valor total</td><td style="padding:14px 16px;background:#fbf7f4;border-radius:0 14px 14px 0;font-size:15px;font-weight:700">${totalTexto}</td></tr>
+              <tr><td style="padding:14px 16px;background:#fbf7f4;border-radius:14px 0 0 14px;color:#7a6662;font-size:13px;font-weight:800;text-transform:uppercase">Abonado</td><td style="padding:14px 16px;background:#fbf7f4;border-radius:0 14px 14px 0;font-size:15px;font-weight:700">${abonadoTexto}</td></tr>
+            </table>
+            <div style="border-radius:18px;background:linear-gradient(90deg,#4b0003,#220000);padding:22px;color:white">
+              <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72);font-weight:800">${escaparHtmlCorreo_(resumen.estado)}</div>
+              <div style="margin-top:8px;font-size:32px;line-height:1;font-weight:900">Saldo: ${saldoTexto}</div>
+            </div>
+          </div>
+          <div style="padding:0 34px 26px">
+            <h2 style="margin:0 0 12px;color:#4b0003;font-size:20px">Ultimos movimientos</h2>
+            <table role="presentation" style="width:100%;border-collapse:collapse;background:#fff8f5;border:1px solid #f0dfd8;border-radius:16px;overflow:hidden">
+              <thead><tr><th style="padding:12px;text-align:left;color:#8d3539">Fecha</th><th style="padding:12px;text-align:left;color:#8d3539">Abono</th><th style="padding:12px;text-align:left;color:#8d3539">Medio</th></tr></thead>
+              <tbody>${pagosHtml}</tbody>
+            </table>
+          </div>
+          <div style="padding:0 34px 34px">
+            <div style="border-top:1px solid #eee1dc;padding-top:20px;color:#76615d;font-size:13px;line-height:1.55">
+              Este correo fue generado automaticamente por el sistema oficial del Congreso Trascendentales 2026.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const cuerpoTexto = `Hola ${nombre},
+
+Estado de cuenta actualizado.
+Codigo: ${codigo}
+Valor total: ${totalTexto}
+Abonado: ${abonadoTexto}
+Saldo: ${saldoTexto}
+Estado: ${resumen.estado}
+
+Equipo organizador del Congreso Trascendentales 2026`;
+
+  try {
+    MailApp.sendEmail({
+      to: correo,
+      subject: asunto,
+      body: cuerpoTexto,
+      htmlBody: html,
+      replyTo: "infocircuito@gmail.com",
+      name: "Congreso Trascendentales 2026"
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function formatearMonedaCorreo_(valor) {
+  return "$" + Number(valor || 0).toLocaleString("es-CO");
 }
 
 function registrarComprobantePago_(datosPago) {
