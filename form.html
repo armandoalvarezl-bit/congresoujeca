@@ -158,6 +158,55 @@ line-height:1.5;
 font-weight:600;
 }
 
+.registration-guide{
+display:grid;
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:14px;
+margin:0 0 22px;
+}
+
+.guide-card{
+position:relative;
+display:grid;
+grid-template-columns:auto 1fr;
+gap:12px;
+align-items:start;
+padding:18px;
+border-radius:18px;
+background:rgba(255,255,255,.82);
+border:1px solid rgba(124,36,36,.10);
+box-shadow:0 14px 34px rgba(61,32,24,.08);
+}
+
+.guide-number{
+width:38px;
+height:38px;
+display:grid;
+place-items:center;
+border-radius:12px;
+background:linear-gradient(135deg,var(--ui-wine),var(--ui-red));
+color:#fff;
+font-weight:900;
+box-shadow:0 10px 22px rgba(143,29,44,.22);
+}
+
+.guide-card strong{
+display:block;
+color:var(--ui-wine);
+font-size:1rem;
+line-height:1.15;
+font-weight:900;
+}
+
+.guide-card span{
+display:block;
+margin-top:5px;
+color:#62524d;
+font-size:.92rem;
+line-height:1.45;
+font-weight:600;
+}
+
 form{
 position:relative;
 overflow:hidden;
@@ -177,6 +226,131 @@ position:absolute;
 inset:0 0 auto;
 height:7px;
 background:linear-gradient(90deg,var(--ui-wine),var(--ui-red),#f3b23f);
+}
+
+.form-intro,
+.field-note,
+.payment-guide{
+grid-column:1/-1;
+border-radius:16px;
+border:1px solid rgba(143,29,44,.10);
+background:#fff8f4;
+color:#5f504b;
+}
+
+.form-intro{
+display:flex;
+gap:14px;
+align-items:flex-start;
+padding:18px;
+margin-top:8px;
+}
+
+.form-intro strong{
+display:block;
+color:var(--ui-wine);
+font-size:1.05rem;
+font-weight:900;
+}
+
+.form-intro span{
+display:block;
+margin-top:4px;
+font-size:.95rem;
+line-height:1.5;
+font-weight:600;
+}
+
+.form-intro-icon{
+width:42px;
+height:42px;
+flex:0 0 auto;
+display:grid;
+place-items:center;
+border-radius:14px;
+background:#fff;
+color:#9b1c2b;
+box-shadow:inset 0 0 0 1px rgba(143,29,44,.10);
+}
+
+.form-intro-icon:before{
+content:"";
+width:11px;
+height:20px;
+border:solid #9b1c2b;
+border-width:0 4px 4px 0;
+transform:rotate(45deg);
+margin-top:-3px;
+}
+
+.field-note{
+padding:12px 14px;
+font-size:.92rem;
+line-height:1.45;
+font-weight:700;
+}
+
+.field-note a{
+color:#8f1d2c;
+font-weight:900;
+}
+
+.payment-guide{
+display:grid;
+grid-template-columns:minmax(0,1fr) minmax(180px,auto);
+gap:16px;
+align-items:center;
+padding:18px;
+margin-top:10px;
+background:linear-gradient(135deg,#fff8f4,#f6fbfb);
+}
+
+.payment-guide strong{
+display:block;
+color:var(--ui-wine);
+font-size:1.05rem;
+font-weight:900;
+}
+
+.payment-guide span{
+display:block;
+margin-top:5px;
+color:#5f504b;
+font-size:.94rem;
+line-height:1.45;
+font-weight:600;
+}
+
+.payment-amount{
+display:flex;
+flex-direction:column;
+gap:2px;
+align-items:center;
+justify-content:center;
+min-height:74px;
+padding:12px 16px;
+border-radius:14px;
+background:#fff;
+color:#8f1d2c;
+font-weight:900;
+text-align:center;
+box-shadow:0 10px 24px rgba(61,32,24,.08);
+}
+
+.payment-amount small{
+display:block;
+color:#6f5a55;
+font-size:.78rem;
+font-weight:800;
+text-transform:uppercase;
+letter-spacing:.05em;
+}
+
+.payment-amount strong{
+display:block;
+color:#8f1d2c;
+font-size:1.22rem;
+line-height:1.05;
 }
 
 #cupos{
@@ -753,7 +927,12 @@ to{width:92%;}
 .page-title{font-size:clamp(2.1rem,13vw,3rem);}
 .hero-meta span{width:100%;justify-content:center;border-radius:14px;}
 .form-hero-side{padding:18px;}
+.registration-guide{grid-template-columns:1fr;gap:10px;margin-bottom:16px;}
+.guide-card{padding:15px;}
 form{grid-template-columns:1fr;padding:24px 18px;border-radius:20px;gap:14px;}
+.form-intro{padding:15px;}
+.payment-guide{grid-template-columns:1fr;}
+.payment-amount{width:100%;text-align:center;}
 #cupos{border-radius:16px;}
 .form-actions{grid-template-columns:1fr;}
 .modal,.modal-confirmacion,.modal-bienvenida{padding:12px;}
@@ -831,7 +1010,39 @@ padding:24px 22px 22px;
 </aside>
 </section>
 
+<section class="registration-guide" aria-label="Guia rapida de inscripcion">
+<div class="guide-card">
+<div class="guide-number">1</div>
+<div>
+<strong>Prepara tus datos</strong>
+<span>Documento, telefono, correo, iglesia y contacto de emergencia.</span>
+</div>
+</div>
+<div class="guide-card">
+<div class="guide-number">2</div>
+<div>
+<strong>Completa cada seccion</strong>
+<span>La zona y el lider de pago se asignan automaticamente.</span>
+</div>
+</div>
+<div class="guide-card">
+<div class="guide-number">3</div>
+<div>
+<strong>Revisa y confirma</strong>
+<span>Antes de registrar, veras un resumen para corregir cualquier dato.</span>
+</div>
+</div>
+</section>
+
 <form id="formulario">
+
+<div class="form-intro">
+<div class="form-intro-icon" aria-hidden="true"></div>
+<div>
+<strong>Tu inscripcion empieza aqui</strong>
+<span>Llena los campos obligatorios con informacion real. Cuando presiones enviar, la plataforma mostrara una confirmacion antes de guardar.</span>
+</div>
+</div>
 
 <h3>Datos personales</h3>
 <input name="Nombre" placeholder="Nombre completo" required>
@@ -858,6 +1069,7 @@ padding:24px 22px 22px;
 </select>
 <input name="ZonaAsignada" id="zonaAsignada" placeholder="Zona asignada" readonly required>
 <input name="LiderAsignado" id="liderAsignado" placeholder="Lider asignado para el pago" readonly required>
+<div class="field-note">La plataforma asigna la zona y el lider de pago segun municipio, tipo de zona e iglesia. Revisa que esos datos esten bien escritos.</div>
 
 <!-- Sección para permiso de menores -->
 <div id="permisoSection" style="display:none;grid-column:1/-1;margin-top:8px;padding:12px;border-radius:12px;background:#fff8f7;border:1px solid rgba(199,57,47,.08);">
@@ -934,7 +1146,18 @@ padding:24px 22px 22px;
 </div>
 
 <h3>Observaciones</h3>
-<textarea name="Observaciones" rows="3"></textarea>
+<textarea name="Observaciones" rows="3" placeholder="Escribe aqui cualquier detalle importante para el equipo organizador."></textarea>
+
+<div class="payment-guide">
+<div>
+<strong>Pago despues del registro</strong>
+<span>La inscripcion base es de $250.000. Si agregas camiseta, la plataforma sumara ese valor al confirmar.</span>
+</div>
+<div class="payment-amount">
+<small>Inscripcion base</small>
+<strong>$250.000</strong>
+</div>
+</div>
 
 <div class="form-actions">
 <button type="button" onclick="prepararEnvio()" disabled>Enviar inscripción</button>
@@ -1034,6 +1257,7 @@ const url=window.UJECA_API.registro;
 let datosFormulario=null;
 let totalInscritosActual=0;
 let registrosExistentes=[];
+const VALOR_INSCRIPCION_BASE=250000;
 const STORAGE_ROTACION_LIDERES="ujeca_rotacion_lideres";
 
 function obtenerInicioInscripciones(){
@@ -1382,7 +1606,7 @@ function calcularPagos(datos) {
         ? obtenerValorCamisa(datos.TallaCamisa)
         : 0;
     const descuentoAplicado = obtenerDescuentoPuesto(datos.Puesto);
-    const valorTotal = Math.max(500000 + valorCamisa - descuentoAplicado, 0);
+    const valorTotal = Math.max(VALOR_INSCRIPCION_BASE + valorCamisa - descuentoAplicado, 0);
     return { valorCamisa, descuentoAplicado, valorTotal };
 }
 
@@ -1557,7 +1781,7 @@ function mostrarResumenPago(datos, codigo){
                 <div class="ticket-label">Codigo</div><div class="ticket-value">${codigo || "Pendiente de asignacion"}</div>
                 <div class="ticket-label">Zona asignada</div><div class="ticket-value">${datos.ZonaAsignada || "Zona general"}</div>
                 <div class="ticket-label">Lider para pago</div><div class="ticket-value">${datos.LiderAsignado || "Coordinacion General Zona 6"}</div>
-                <div class="ticket-label">Valor congreso</div><div class="ticket-value">${formatearPrecio(500000)}</div>
+                <div class="ticket-label">Valor congreso</div><div class="ticket-value">${formatearPrecio(VALOR_INSCRIPCION_BASE)}</div>
                 <div class="ticket-label">Valor camiseta</div><div class="ticket-value">${formatearPrecio(pagos.valorCamisa)}</div>
                 ${pagos.descuentoAplicado ? '<div class="ticket-label">Descuento aplicado</div><div class="ticket-value">-' + formatearPrecio(pagos.descuentoAplicado) + '</div>' : ''}
                 <div class="ticket-label ticket-total">Total a pagar</div><div class="ticket-value ticket-total">${formatearPrecio(pagos.valorTotal)}</div>
