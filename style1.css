@@ -66,12 +66,19 @@ padding:40px 20px;
     border-radius:15px;
 }
 
-/* TABLA */
+/* TABLA - comportamiento responsivo */
 #tabla table{
     border-collapse:collapse;
-    min-width:1600px;
+    min-width:100%;
     width:100%;
     font-size:13px;
+    table-layout:fixed; /* evita ancho excesivo y permite wrap */
+}
+
+/* permitir que celdas se ajusten en dispositivos pequeños */
+#tabla th, #tabla td{
+    white-space:normal;
+    word-break:break-word;
 }
 
 /* encabezado */
@@ -79,17 +86,15 @@ padding:40px 20px;
     background:#d62828;
     color:white;
     padding:14px;
-    white-space:nowrap;
 }
 
 /* celdas */
 #tabla td{
     padding:10px;
     border-bottom:1px solid #041579;
-    white-space:nowrap;
-    max-width:180px;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    white-space:normal;
+    max-width:280px;
+    word-break:break-word;
 }
 
 /* zebra profesional */
@@ -227,9 +232,9 @@ padding:40px;
 font-weight:600;
 color:var(--rojo);
 }
-/* HEADER SUPERIOR */
 
-.topbar{
+/* HEADER SUPERIOR - unificado para variantes existentes */
+header.topbar, header.ui-topbar, header.live-topbar, header.auth-brand{
     position:fixed;
     top:0;
     left:0;
@@ -243,7 +248,7 @@ color:var(--rojo);
     box-shadow:0 5px 15px rgba(0,0,0,0.2);
 }
 
-.topbar-content{
+.topbar-content, .topbar-inner{
     width:100%;
     max-width:1200px;
     margin:auto;
@@ -288,6 +293,37 @@ color:var(--rojo);
 
 .menu a:hover{
     opacity:.7;
+}
+
+/* Tarjetas y elementos comunes */
+.site-card{
+    background:white;
+    border-radius:14px;
+    padding:18px;
+    box-shadow:var(--sombra);
+    border-top:6px solid var(--rojo);
+}
+
+.page-card{
+    background:white;
+    padding:22px;
+    border-radius:12px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.06);
+}
+
+.primary-btn{
+    background:var(--rojo);
+    color:white;
+    border-radius:10px;
+    padding:10px 14px;
+    font-weight:700;
+    border:none;
+}
+
+@media (max-width:780px){
+    .menu a{display:none}
+    .search input{width:100%;}
+    .panel{margin:20px auto;padding:16px;border-radius:12px}
 }
 
 /* BAJAR CONTENIDO POR HEADER */

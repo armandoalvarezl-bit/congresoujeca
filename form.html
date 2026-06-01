@@ -1091,7 +1091,7 @@ padding:24px 22px 22px;
 </select>
 
 <input name="Telefono" placeholder="Teléfono" required>
-<input name="Correo" type="email" placeholder="Correo electrónico" required>
+<input id="Correo" name="Correo" type="email" placeholder="Correo electrónico" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" oninput="validarCorreoCampo(this)" oninvalid="this.setCustomValidity('Ingresa un correo electrónico válido')">
 
 <h3>Ubicación</h3>
 <input name="Pais" value="Colombia" required>
@@ -1121,8 +1121,14 @@ padding:24px 22px 22px;
 <input name="Pastor" placeholder="Nombre del pastor" required>
 
 <select name="tipo" required>
+<option value="">Tipo de participante</option>
 <option>Joven</option>
 <option>Lider</option>
+<option>Presidente Red</option>
+<option>Secretario Red</option>
+<option>Fiscal Red</option>
+<option>Vicepresidente Red</option>
+<option>Tesorero Red</option>
 <option>Pastor</option>
 <option>Invitado</option>
 </select>
@@ -1688,6 +1694,15 @@ cargarCupos();
 
 function prepararEnvio(){
     let form=document.getElementById("formulario");
+    const correoInput = document.getElementById("Correo");
+    if(correoInput){
+        const valido = validarCorreo(correoInput.value || "");
+        correoInput.setCustomValidity(valido ? "" : "Ingresa un correo electrónico válido");
+        if(!valido){
+            correoInput.reportValidity();
+            return;
+        }
+    }
     if(!form.reportValidity()) return;
 
     actualizarZonaYLider();
@@ -1705,11 +1720,15 @@ function prepararEnvio(){
             return;
         }
     }
+    if(!validarCorreo(datos.Correo)){
+        alert('Ingresa un correo electrónico válido antes de enviar el formulario.');
+        return;
+    }
     datos.token="UJECA2026";
     datos.accion="registrar";
     datos.hoja=window.UJECA_HOJA_INSCRIPCIONES;
     datos.HojaDestino=window.UJECA_HOJA_INSCRIPCIONES;
-    datos.FechaRegistro=new Date().toISOString();
+    datos.FechaRegistro=new Date().toISOString().slice(0,10);
     datos.Puesto=totalInscritosActual+1;
     const pagos = calcularPagos(datos);
     datos.ValorCamisa = pagos.valorCamisa;
@@ -1721,6 +1740,16 @@ function prepararEnvio(){
     datos.ZonaAsignada=datos.ZonaAsignada || document.getElementById("zonaAsignada").value || "Zona general";
     datos.LiderAsignado=datos.LiderAsignado || document.getElementById("liderAsignado").value || "Coordinacion General Zona 6";
     mostrarConfirmacion(datos);
+}
+
+function validarCorreo(email){
+    return typeof email === 'string' && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email.trim());
+}
+
+function validarCorreoCampo(input){
+    if(!input) return;
+    const valido = validarCorreo(input.value || '');
+    input.setCustomValidity(valido ? '' : 'Ingresa un correo electrónico válido');
 }
 
 function mostrarConfirmacion(datos){

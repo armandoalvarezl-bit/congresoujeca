@@ -79,6 +79,13 @@
 
 <script src="api-config.js"></script>
 <script>
+window.addEventListener("unhandledrejection", (event) => {
+  const mensaje = String(event.reason?.message || event.reason || "");
+  if (mensaje.includes("A listener indicated an asynchronous response by returning true")) {
+    event.preventDefault();
+  }
+});
+
 function formatearFecha(fechaISO){
   if(!fechaISO) return "";
   const fecha = new Date(fechaISO);
@@ -189,6 +196,9 @@ function eliminarRegistro(index){
     }else{
       alert("Error al eliminar");
     }
+  })
+  .catch(()=>{
+    alert("No se pudo conectar con el servidor para eliminar el registro");
   });
 }
 

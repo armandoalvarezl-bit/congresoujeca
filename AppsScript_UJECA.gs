@@ -126,6 +126,10 @@ function doPost(e) {
     return responderJson_(registrarPago_(datos));
   }
 
+  if (accion === "actualizarPago") {
+    return responderJson_(actualizarPago_(datos));
+  }
+
   if (accion === "reenviarCorreoInscripcion") {
     return responderJson_(reenviarCorreoInscripcion_(datos));
   }
@@ -180,7 +184,7 @@ function enviarCorreoInscripcion_(datos, codigo) {
           </div>
 
           <div style="padding:30px 34px 8px">
-            <p style="margin:0;font-size:17px;line-height:1.62">Hola <strong>${escaparHtmlCorreo_(nombre)}</strong>, recibimos tu preinscripcion. Tu cupo queda confirmado como inscrito cuando el pago sea registrado en el portal de pagos.</p>
+            <p style="margin:0;font-size:17px;line-height:1.62">Hola <strong>${escaparHtmlCorreo_(nombre)}</strong>, recibimos tu preinscripcion. Tu cupo queda confirmado como inscrito cuando tu lider de zona registre el pago en el portal autorizado.</p>
           </div>
 
           <div style="padding:20px 34px">
@@ -219,7 +223,7 @@ function enviarCorreoInscripcion_(datos, codigo) {
             <div style="border-radius:18px;background:linear-gradient(90deg,#4b0003,#220000);padding:22px;color:white">
               <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72);font-weight:800">Valor a pagar</div>
               <div style="margin-top:8px;font-size:32px;line-height:1;font-weight:900">${resumenPago}</div>
-              <p style="margin:12px 0 0;color:rgba(255,255,255,.82);font-size:14px;line-height:1.45">El pago debe realizarse con el lider asignado. Si haces abonos, conserva cada comprobante.</p>
+              <p style="margin:12px 0 0;color:rgba(255,255,255,.82);font-size:14px;line-height:1.45">El pago debe realizarse con el lider asignado. El lider autorizado registrara el pago en el portal. Si haces abonos, conserva cada comprobante.</p>
             </div>
           </div>
 
@@ -245,7 +249,7 @@ ${camisetaTexto}
 Descuento: ${descuentoTexto || "No aplica"}
 Valor total a pagar: ${resumenPago}
 
-Guarde este correo como soporte de preinscripcion. Su cupo queda confirmado como inscrito cuando el pago sea registrado en el portal de pagos. Si tiene alguna pregunta, puede responder a este mensaje o comunicarse con la organizacion.
+Guarde este correo como soporte de preinscripcion. Su cupo queda confirmado como inscrito cuando su lider de zona registre el pago en el portal autorizado. Si tiene alguna pregunta, puede responder a este mensaje o comunicarse con la organizacion.
 
 Atentamente,
 Equipo organizador del Congreso Trascendentales 2026`;
@@ -332,6 +336,86 @@ function registrarPago_(datos) {
   registrarComprobantePago_(datosPago);
   const correoEnviado = enviarCorreoEstadoCuentaPorPago_(datosPago);
   return { resultado: "ok", IdPago: idPago, correoEnviado: correoEnviado };
+}
+
+function actualizarPago_(datos) {
+  const hoja = obtenerHojaPagos_(HOJA_PAGOS);
+  const idPago = String(datos.IdPago || datos.idPago || "").trim();
+  if (!idPago) {
+    return { resultado: "error", error: "IdPago requerido para actualizar el pago" };
+  }
+
+  const filaIndex = buscarFilaPagoPorIdPago_(hoja, idPago);
+  if (filaIndex < 0) {
+    return { resultado: "error", error: "No se encontro el pago para actualizar" };
+  }
+
+  const encabezados = obtenerEncabezadosActuales_(hoja, COLUMNAS_PAGOS);
+  const datosPago = normalizarDatosPago_(datos, idPago);
+  const fila = encabezados.map((columna) => datosPago[columna] || "");
+
+  hoja.getRange(filaIndex, 1, 1, fila.length).setValues([fila]);
+  actualizarComprobantePago_(datosPago);
+  const correoEnviado = enviarCorreoEstadoCuentaPorPago_(datosPago);
+  return { resultado: "ok", IdPago: idPago, correoEnviado: correoEnviado };
+}
+
+function buscarFilaPagoPorIdPago_(hoja, idPago) {
+  const valores = hoja.getDataRange().getValues();
+  if (valores.length < 2) return -1;
+
+  const encabezados = valores[0].map((valor) => String(valor || "").trim());
+  const indiceIdPago = encabezados.indexOf("IdPago");
+  if (indiceIdPago < 0) return -1;
+
+  const busqueda = String(idPago || "").trim();
+  for (let i = 1; i < valores.length; i++) {
+    if (String(valores[i][indiceIdPago] || "").trim() === busqueda) {
+      return i + 1;
+    }
+  }
+
+  return -1;
+}
+
+function buscarFilaComprobantePorIdPago_(hoja, idPago) {
+  const valores = hoja.getDataRange().getValues();
+  if (valores.length < 2) return -1;
+
+  const encabezados = valores[0].map((valor) => String(valor || "").trim());
+  const indiceIdPago = encabezados.indexOf("IdPago");
+  const indiceIdComprobante = encabezados.indexOf("IdComprobante");
+  const busqueda = String(idPago || "").trim();
+
+  for (let i = 1; i < valores.length; i++) {
+    const fila = valores[i];
+    const coincideIdPago = indiceIdPago >= 0 && String(fila[indiceIdPago] || "").trim() === busqueda;
+    const coincideIdComprobante = indiceIdComprobante >= 0 && String(fila[indiceIdComprobante] || "").trim() === busqueda;
+    if (coincideIdPago || coincideIdComprobante) {
+      return i + 1;
+    }
+  }
+
+  return -1;
+}
+
+function actualizarComprobantePago_(datosPago) {
+  const hoja = obtenerHojaComprobantes_(HOJA_COMPROBANTES);
+  const encabezados = obtenerEncabezadosActuales_(hoja, COLUMNAS_COMPROBANTES);
+  const comprobante = normalizarDatosComprobantePago_(datosPago);
+  const fila = encabezados.map((columna) => comprobante[columna] || "");
+  const filaIndex = buscarFilaComprobantePorIdPago_(hoja, datosPago.IdPago);
+
+  if (filaIndex > 0) {
+    const filaExistente = hoja.getRange(filaIndex, 1, 1, encabezados.length).getValues()[0];
+    const indiceFechaEmision = encabezados.indexOf("FechaEmision");
+    if (indiceFechaEmision >= 0 && filaExistente[indiceFechaEmision]) {
+      fila[indiceFechaEmision] = filaExistente[indiceFechaEmision];
+    }
+    hoja.getRange(filaIndex, 1, 1, fila.length).setValues([fila]);
+  } else {
+    hoja.appendRow(fila);
+  }
 }
 
 function reenviarCorreoInscripcion_(datos) {
@@ -734,11 +818,18 @@ function obtenerEncabezadosActuales_(hoja, columnasBase) {
     .filter((valor) => valor !== "");
 }
 
+function parseDateValor(valor) {
+  if (valor instanceof Date) return valor;
+  if (!valor) return null;
+  const fecha = new Date(valor);
+  return Number.isNaN(fecha.getTime()) ? null : fecha;
+}
+
 function normalizarDatosPago_(datos, idPago) {
   const comprobanteData = datos.ComprobanteData || datos.ComprobanteURL || "";
   return {
     IdPago: idPago,
-    FechaRegistro: datos.FechaRegistro || new Date().toISOString(),
+    FechaRegistro: parseDateValor(datos.FechaRegistro) || new Date(),
     CampistaKey: datos.CampistaKey || datos.Documento || datos.Codigo || "",
     Documento: datos.Documento || "",
     Codigo: datos.Codigo || "",
@@ -758,7 +849,7 @@ function normalizarDatosPago_(datos, idPago) {
     DescuentoAplicado: datos.DescuentoAplicado || "",
     ValorTotal: datos.ValorTotal || "",
     ValorAbono: datos.ValorAbono || "",
-    FechaPago: datos.FechaPago || "",
+    FechaPago: parseDateValor(datos.FechaPago) || datos.FechaPago || "",
     ReferenciaPago: datos.ReferenciaPago || "",
     ObservacionPago: datos.ObservacionPago || "",
     ObservacionPag: datos.ObservacionPago || datos.ObservacionPag || "",
@@ -777,8 +868,8 @@ function normalizarDatosComprobantePago_(datosPago) {
   return {
     IdComprobante: idComprobante,
     IdPago: datosPago.IdPago || "",
-    FechaEmision: new Date().toISOString(),
-    FechaPago: datosPago.FechaPago || "",
+    FechaEmision: new Date(),
+    FechaPago: parseDateValor(datosPago.FechaPago) || datosPago.FechaPago || "",
     Documento: datosPago.Documento || "",
     Codigo: datosPago.Codigo || "",
     Nombre: datosPago.Nombre || "",
