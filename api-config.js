@@ -1,8 +1,8 @@
 window.UJECA_API = {
-  registro: "https://script.google.com/macros/s/AKfycbyGuLEE-8uv_AURYDbPQ_f6wlVlb-a86NlTlV03nvST2KckSB20CLBLoKJDLhNHiiEc/exec",
-  listado: "https://script.google.com/macros/s/AKfycbyGuLEE-8uv_AURYDbPQ_f6wlVlb-a86NlTlV03nvST2KckSB20CLBLoKJDLhNHiiEc/exec",
-  listadoAlterno: "https://script.google.com/macros/s/AKfycbyGuLEE-8uv_AURYDbPQ_f6wlVlb-a86NlTlV03nvST2KckSB20CLBLoKJDLhNHiiEc/exec",
-  pagos: "https://script.google.com/macros/s/AKfycbyGuLEE-8uv_AURYDbPQ_f6wlVlb-a86NlTlV03nvST2KckSB20CLBLoKJDLhNHiiEc/exec"
+  registro: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec",
+  listado: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec",
+  listadoAlterno: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec",
+  pagos: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec"
 };
 
 window.UJECA_STORAGE_KEY = "ujeca_registros_locales";
@@ -33,7 +33,10 @@ window.UJECA_COLUMNAS_INSCRITOS = [
   "ColorCamisa",
   "AplicaDescuento",
   "DescuentoPorcentaje",
-  "EstadoRegistro"
+  "EstadoRegistro",
+  "SeguimientoNota",
+  "SeguimientoFecha",
+  "SeguimientoActualizado"
 ];
 
 window.UJECA_ETIQUETAS_INSCRITOS = {
@@ -59,7 +62,10 @@ window.UJECA_ETIQUETAS_INSCRITOS = {
   ColorCamisa: "Color",
   AplicaDescuento: "Descuento",
   DescuentoPorcentaje: "%",
-  EstadoRegistro: "Estado"
+  EstadoRegistro: "Estado",
+  SeguimientoNota: "Seguimiento",
+  SeguimientoFecha: "Proximo contacto",
+  SeguimientoActualizado: "Actualizado"
 };
 
 window.escaparHtmlUJECA = function(valor) {
@@ -95,6 +101,9 @@ window.normalizarRegistroUJECA = function(registro) {
   limpio.TallaCamisa = limpio.TallaCamisa || limpio.tallaCamisa || "";
   limpio.ColorCamisa = limpio.ColorCamisa || limpio.colorCamisa || "";
   limpio.EstadoRegistro = limpio.EstadoRegistro || limpio.estadoRegistro || "";
+  limpio.SeguimientoNota = limpio.SeguimientoNota || limpio.seguimientoNota || "";
+  limpio.SeguimientoFecha = limpio.SeguimientoFecha || limpio.seguimientoFecha || "";
+  limpio.SeguimientoActualizado = limpio.SeguimientoActualizado || limpio.seguimientoActualizado || "";
 
   return limpio;
 };

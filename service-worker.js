@@ -1,10 +1,10 @@
-const CACHE_NAME = "ujeca-congreso-v1";
+const CACHE_NAME = "ujeca-congreso-v7";
 
 const APP_SHELL = [
   "./",
   "index.html",
   "home.html",
-  "app.html",
+  "cpanel.html",
   "form.html",
   "consulta-deuda.html",
   "pasarelapago.html",
@@ -49,6 +49,6 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
         return response;
       })
-      .catch(() => caches.match(request).then((cached) => cached || caches.match("app.html")))
+      .catch(() => caches.match(request).then((cached) => cached || caches.match("home.html")))
   );
 });

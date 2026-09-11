@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <style>
 :root{
@@ -116,6 +117,10 @@ body::before,body::after{display:none}
  border-radius:10px;
  font-weight:800;
  text-align:center;
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:8px;
  transition:.2s ease;
 }
 
@@ -726,6 +731,10 @@ button{
  font:inherit;
  font-weight:700;
  cursor:pointer;
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:8px;
  transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
 }
 
@@ -816,8 +825,8 @@ button:hover{
  align-items:center;
  justify-content:center;
  padding:18px;
- background:rgba(12,0,1,.54);
- backdrop-filter:blur(8px);
+ background:rgba(12,0,1,.64);
+ backdrop-filter:blur(12px);
 }
 
 .app-notice.show{
@@ -825,9 +834,10 @@ button:hover{
 }
 
 .app-notice-card{
- width:min(480px,100%);
+ width:min(540px,100%);
  border-radius:22px;
- padding:22px;
+ overflow:hidden;
+ padding:0;
  color:#201516;
  background:linear-gradient(180deg,#fff,#fff8f4);
  border:1px solid rgba(255,255,255,.78);
@@ -835,15 +845,23 @@ button:hover{
  animation:noticeIn .18s ease-out;
 }
 
+.app-notice-card::before{
+ content:"";
+ display:block;
+ height:7px;
+ background:linear-gradient(90deg,#8f1d2c,#e22025,#f5b942);
+}
+
 .app-notice-head{
  display:flex;
  align-items:flex-start;
  gap:14px;
+ padding:24px 24px 6px;
 }
 
 .app-notice-icon{
- width:50px;
- height:50px;
+ width:56px;
+ height:56px;
  border-radius:16px;
  display:grid;
  place-items:center;
@@ -851,13 +869,28 @@ button:hover{
  background:linear-gradient(180deg,#e22025,#b80710);
  box-shadow:0 14px 30px rgba(200,20,29,.24);
  flex:none;
+ font-size:1.55rem;
+}
+
+.app-notice-icon.warn{
+ background:linear-gradient(135deg,#b45309,#f59e0b);
+ box-shadow:0 14px 30px rgba(180,83,9,.22);
+}
+
+.app-notice-icon.info{
+ background:linear-gradient(135deg,#1d4ed8,#2563eb);
+ box-shadow:0 14px 30px rgba(29,78,216,.22);
+}
+
+.app-notice-icon.error{
+ background:linear-gradient(180deg,#e22025,#b80710);
 }
 
 .app-notice h3{
  margin:0;
  color:#4b0003;
- font-size:1.18rem;
- line-height:1.12;
+ font-size:1.32rem;
+ line-height:1.08;
 }
 
 .app-notice p{
@@ -865,17 +898,21 @@ button:hover{
  color:#554343;
  line-height:1.45;
  font-weight:600;
+ overflow-wrap:anywhere;
 }
 
 .app-notice-actions{
- margin-top:20px;
+ margin-top:18px;
+ padding:18px 24px 24px;
  display:flex;
  justify-content:flex-end;
+ border-top:1px solid rgba(143,29,44,.1);
+ background:#fffaf7;
 }
 
 .app-notice button{
- min-width:112px;
- min-height:44px;
+ min-width:128px;
+ min-height:48px;
  border:0;
  border-radius:12px;
  padding:11px 18px;
@@ -885,6 +922,10 @@ button:hover{
  font-weight:900;
  cursor:pointer;
  box-shadow:0 12px 24px rgba(200,20,29,.25);
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:8px;
 }
 
 @keyframes noticeIn{
@@ -1393,11 +1434,7 @@ tr:hover td{
   <div class="app-notice-card" role="dialog" aria-modal="true" aria-labelledby="appNoticeTitle">
     <div class="app-notice-head">
       <div class="app-notice-icon" aria-hidden="true">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-          <path d="M12 8v5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-          <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-          <path d="M10.3 4.2a2 2 0 0 1 3.4 0l8 13.8a2 2 0 0 1-1.7 3H4a2 2 0 0 1-1.7-3l8-13.8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-        </svg>
+        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
       </div>
       <div>
         <h3 id="appNoticeTitle">Aviso</h3>
@@ -1405,7 +1442,7 @@ tr:hover td{
       </div>
     </div>
     <div class="app-notice-actions">
-      <button type="button" onclick="cerrarAviso()">Aceptar</button>
+      <button type="button" onclick="cerrarAviso()"><i class="bi bi-check2-circle" aria-hidden="true"></i>Aceptar</button>
     </div>
   </div>
 </div>
@@ -1422,12 +1459,13 @@ tr:hover td{
       </div>
     </div>
     <nav class="nav">
-      <a href="index.html">Inicio</a>
-      <a href="Basedatos.html">Inscritos</a>
-      <a href="form.html">Registro</a>
-      <a href="live.html">Live</a>
+      <a href="index.html"><i class="bi bi-house-door" aria-hidden="true"></i>Inicio</a>
+      <a href="Basedatos.html"><i class="bi bi-people" aria-hidden="true"></i>Inscritos</a>
+      <a href="cpanel.html"><i class="bi bi-speedometer2" aria-hidden="true"></i>CPanel</a>
+      <a href="form.html"><i class="bi bi-person-plus" aria-hidden="true"></i>Registro</a>
+      <a href="live.html"><i class="bi bi-broadcast" aria-hidden="true"></i>Live</a>
     </nav>
-    <a class="logout-link" href="#" onclick="cerrarSesionPagos();return false;">Cerrar sesión</a>
+    <a class="logout-link" href="#" onclick="cerrarSesionPagos();return false;"><i class="bi bi-box-arrow-right" aria-hidden="true"></i>Cerrar sesión</a>
   </header>
 
   <section class="hero">
@@ -1442,7 +1480,7 @@ tr:hover td{
             <label for="cedula">Documento, nombre o código del participante</label>
             <input id="cedula" placeholder="Ingrese documento, nombre o código">
           </div>
-          <button class="btn-primary" onclick="buscarParticipante()">Buscar participante</button>
+          <button class="btn-primary" onclick="buscarParticipante()"><i class="bi bi-search" aria-hidden="true"></i>Buscar participante</button>
         </div>
 
         <div class="stats-grid">
@@ -1505,6 +1543,7 @@ tr:hover td{
             <option value="Consignacion">Consignacion</option>
             <option value="Nequi">Nequi</option>
             <option value="Daviplata">Daviplata</option>
+            <option value="Meta Pay">Meta Pay</option>
           </select>
         </div>
         <div>
@@ -1536,10 +1575,10 @@ tr:hover td{
 
       <div id="notaEdicion" class="edit-note" style="display:none;margin-bottom:12px;color:#8f1d2c;font-weight:700;">Estás editando un pago existente. Al guardar se actualizará el registro en lugar de crear uno nuevo.</div>
       <div class="toolbar">
-        <button id="btnGuardarPago" class="btn-success" type="button" onclick="registrarPago()">Guardar pago</button>
-        <button id="btnCancelarEdicion" class="btn-muted" type="button" onclick="cancelarEdicionPago()" style="display:none;">Cancelar edición</button>
-        <button class="btn-muted" onclick="limpiarFormularioPago()">Limpiar formulario</button>
-        <button class="btn-primary" onclick="window.print()">Imprimir resumen</button>
+        <button id="btnGuardarPago" class="btn-success" type="button" onclick="registrarPago()"><i class="bi bi-check2-circle" aria-hidden="true"></i>Guardar pago</button>
+        <button id="btnCancelarEdicion" class="btn-muted" type="button" onclick="cancelarEdicionPago()" style="display:none;"><i class="bi bi-x-circle" aria-hidden="true"></i>Cancelar edición</button>
+        <button class="btn-muted" onclick="limpiarFormularioPago()"><i class="bi bi-eraser" aria-hidden="true"></i>Limpiar formulario</button>
+        <button class="btn-primary" onclick="window.print()"><i class="bi bi-printer" aria-hidden="true"></i>Imprimir resumen</button>
       </div>
 
       <div id="mensajePago" class="status-line"></div>
@@ -1647,6 +1686,7 @@ const STORAGE_PAGOS_PENDIENTES="ujeca_pagos_pendientes_sincronizar_2026";
 
 let BD=[];
 let cargada=false;
+let busquedaInicialAplicada=false;
 const PRECIO_CONGRESO=500000;
 const PRECIO_CAMISA=35000;
 const LIDER_KATE="Katherine Bermudez - Coordinadora General - UJECA - +57 319 4480759";
@@ -1920,9 +1960,21 @@ function mostrarAviso(mensaje,titulo="Aviso"){
   const aviso=document.getElementById("appNotice");
   const tituloEl=document.getElementById("appNoticeTitle");
   const textoEl=document.getElementById("appNoticeText");
+  const icono=aviso ? aviso.querySelector(".app-notice-icon") : null;
   if(!aviso || !tituloEl || !textoEl) return;
   tituloEl.innerText=titulo;
   textoEl.innerHTML=mensaje;
+  if(icono){
+    const tituloNormalizado=normalizarTextoPago(titulo);
+    const esError=/duplicado|rechazada|error|no encontrado|no se pudo/.test(tituloNormalizado);
+    const esInfo=/proceso|consulta|participante|base/.test(tituloNormalizado);
+    icono.className="app-notice-icon " + (esError ? "error" : esInfo ? "info" : "warn");
+    icono.innerHTML=esError
+      ? '<i class="bi bi-x-circle" aria-hidden="true"></i>'
+      : esInfo
+        ? '<i class="bi bi-info-circle" aria-hidden="true"></i>'
+        : '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i>';
+  }
   aviso.classList.add("show");
   aviso.setAttribute("aria-hidden","false");
   const boton=aviso.querySelector("button");
@@ -2860,7 +2912,11 @@ function setModoEdicionPago(activo){
   const btnCancelar = document.getElementById("btnCancelarEdicion");
   const nota = document.getElementById("notaEdicion");
 
-  if(btnGuardar) btnGuardar.innerText = activo ? "Actualizar pago" : "Guardar pago";
+  if(btnGuardar){
+    btnGuardar.innerHTML = activo
+      ? '<i class="bi bi-arrow-repeat" aria-hidden="true"></i>Actualizar pago'
+      : '<i class="bi bi-check2-circle" aria-hidden="true"></i>Guardar pago';
+  }
   if(btnCancelar) btnCancelar.style.display = activo ? "inline-flex" : "none";
   if(nota) nota.style.display = activo ? "block" : "none";
 }
@@ -3017,6 +3073,7 @@ function esDatoNoReferenciaPago(valor,linea=""){
 
 function detectarMedioDesdeOCRPago(texto){
   const normalizado=limpiarTextoOCRPago(texto).toLowerCase();
+  if(normalizado.includes("meta pay") || normalizado.includes("metapay")) return "Meta Pay";
   if(normalizado.includes("nequi")) return "Nequi";
   if(normalizado.includes("daviplata") || normalizado.includes("davi plata")) return "Daviplata";
   if(normalizado.includes("bancolombia") || normalizado.includes("banco colombia")) return "Transferencia";
@@ -3285,6 +3342,17 @@ function cargarDatosBase(persona){
   document.getElementById("fechaLabel").innerText=fecha;
 }
 
+function aplicarBusquedaInicialPago(){
+  if(busquedaInicialAplicada) return;
+  const params=new URLSearchParams(window.location.search);
+  const valor=params.get("buscar") || sessionStorage.getItem("ujeca_pago_busqueda") || "";
+  if(!valor) return;
+  busquedaInicialAplicada=true;
+  sessionStorage.removeItem("ujeca_pago_busqueda");
+  document.getElementById("cedula").value=valor;
+  setTimeout(()=>buscarParticipante(),80);
+}
+
 async function cargar(){
   borrarPagosAnterioresLocales();
   limpiarCacheConsultaPagos();
@@ -3311,6 +3379,7 @@ async function cargar(){
     cargada=true;
     document.getElementById("mensajePago").innerHTML="";
     renderHistorialPagos();
+    aplicarBusquedaInicialPago();
   }catch(e){
     BD = [];
     indexarParticipantes();

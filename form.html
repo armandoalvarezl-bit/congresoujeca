@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="ui-theme.css">
 <link rel="icon" type="image/png" href="img/logo.png">
 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Outfit',sans-serif;}
 
@@ -508,33 +510,76 @@ display:flex;align-items:center;z-index:1000;box-shadow:0 10px 34px rgba(50,0,0,
 
 .modal-content h2,
 .modal-confirmacion-content h2{
-font-size:1.7rem;
-line-height:1.1;
-margin:0 0 14px;
+font-size:1.72rem;
+line-height:1.08;
+margin:0 0 10px;
 color:var(--ui-wine);
 text-align:left;
 }
 .modal-subtitle{
-margin:8px 0 24px;
+margin:8px 0 22px;
 font-size:1rem;
-line-height:1.7;
+line-height:1.62;
 color:#5e3a37;
+font-weight:600;
 }
 
 .modal,.modal-confirmacion,.modal-bienvenida{
-display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);
-backdrop-filter:blur(5px);align-items:center;justify-content:center;z-index:2000;
+display:none;
+position:fixed;
+inset:0;
+background:rgba(18,0,2,.62);
+backdrop-filter:blur(12px);
+align-items:center;
+justify-content:center;
+z-index:2000;
 padding:20px;
 }
 .modal-content,.modal-confirmacion-content,.modal-bienvenida-content{
-background:linear-gradient(180deg,#fffdfb,#f8ebe0);
-padding:35px;
-border-radius:24px;
-width:90%;
-max-width:500px;
-box-shadow:0 24px 70px rgba(0,0,0,0.20);
-animation:zoomIn .3s ease;
-border:1px solid rgba(214,0,0,.14);
+position:relative;
+background:linear-gradient(180deg,#fff,#fff8f3);
+padding:0;
+border-radius:22px;
+width:min(640px,100%);
+max-height:min(90dvh,860px);
+overflow:hidden;
+box-shadow:0 34px 90px rgba(35,0,0,.32);
+animation:zoomIn .22s ease;
+border:1px solid rgba(255,255,255,.78);
+}
+.modal-content::before,
+.modal-confirmacion-content::before,
+.modal-bienvenida-content::before{
+content:"";
+display:block;
+height:7px;
+background:linear-gradient(90deg,var(--ui-wine),var(--ui-red),#f3b23f);
+}
+.modal-body{
+padding:28px;
+}
+.modal-icon{
+width:58px;
+height:58px;
+display:grid;
+place-items:center;
+border-radius:18px;
+margin-bottom:16px;
+color:white;
+background:linear-gradient(180deg,#e22025,#b80710);
+box-shadow:0 16px 32px rgba(184,15,20,.24);
+font-size:1.65rem;
+}
+.modal-icon.success{
+background:linear-gradient(135deg,#20744f,#2f7d5c);
+box-shadow:0 16px 32px rgba(47,125,92,.24);
+}
+.modal-icon.warn{
+background:linear-gradient(135deg,#b45309,#f59e0b);
+box-shadow:0 16px 32px rgba(180,83,9,.22);
+}
+.modal-content.is-error .modal-icon{
+background:linear-gradient(180deg,#e22025,#b80710);
 }
 .modal-launch-content{
 background:#ffffff;
@@ -610,7 +655,6 @@ box-shadow:0 12px 26px rgba(0,0,0,.14);
 .modal-close:hover{
 background:#fff;
 }
-.modal-content{max-width:640px;}
 .modal-confirmacion-content{
 max-width:720px;
 max-height:min(88vh,860px);
@@ -618,14 +662,14 @@ display:flex;
 flex-direction:column;
 }
 
-.modal-bienvenida-content{text-align:center;}
+.modal-bienvenida-content{text-align:left;}
 .modal-bienvenida-content .icono{
-width:96px;
-height:72px;
+width:88px;
+height:68px;
 object-fit:contain;
-margin-bottom:18px;
+margin-bottom:16px;
 }
-.modal-bienvenida-content h1{font-size:34px;margin-bottom:10px;}
+.modal-bienvenida-content h1{font-size:2rem;line-height:1.05;margin:0 0 10px;color:var(--ui-wine);}
 .modal-aviso-pago h2{
 text-align:left;
 margin-bottom:12px;
@@ -648,6 +692,9 @@ display:flex;
 gap:12px;
 flex-wrap:wrap;
 justify-content:flex-end;
+padding:18px 28px 26px;
+border-top:1px solid rgba(124,36,36,.08);
+background:#fffaf7;
 }
 .modal-aviso-actions a,
 .modal-aviso-actions button{
@@ -665,38 +712,51 @@ letter-spacing:.02em;
 .modal-content button,
 .modal-confirmacion-content button{
 width:auto;
-padding:14px 32px;
+min-height:48px;
+padding:14px 24px;
 font-weight:800;
 letter-spacing:.02em;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:8px;
 }
 
 .datos-confirmacion{
-background:#faf7f4;
-padding:15px;
-border-radius:10px;
-margin-bottom:20px;
+background:#fffaf7;
+padding:6px 18px;
+border-radius:16px;
+border:1px solid rgba(124,36,36,.09);
+margin:6px 28px 0;
 overflow:auto;
 flex:1;
 min-height:0;
 }
 .dato-item{
-display:flex;
-justify-content:space-between;
+display:grid;
+grid-template-columns:minmax(150px,.8fr) minmax(0,1.2fr);
 gap:16px;
-padding:8px 0;
-border-bottom:1px solid #e5e7eb;
+padding:12px 0;
+border-bottom:1px solid rgba(124,36,36,.08);
 }
 .dato-item:last-child{border-bottom:none;}
-.dato-label{font-weight:600;color:#d60000;}
+.dato-label{font-weight:900;color:var(--ui-wine);}
+.dato-item span:last-child{
+color:#352221;
+font-weight:700;
+overflow-wrap:anywhere;
+text-align:right;
+}
 
 .botones-confirmacion{
 display:flex;
 gap:12px;
 position:sticky;
 bottom:0;
-background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.95));
-padding:14px 0 0;
+background:linear-gradient(180deg,rgba(255,250,247,.98),#fff);
+padding:18px 28px 26px;
 margin-top:16px;
+border-top:1px solid rgba(124,36,36,.08);
 }
 .botones-confirmacion button{
 flex:1;
@@ -973,20 +1033,23 @@ form{grid-template-columns:1fr;padding:24px 18px;border-radius:20px;gap:14px;}
 .modal,.modal-confirmacion,.modal-bienvenida{padding:12px;}
 .modal-content,.modal-confirmacion-content,.modal-bienvenida-content{
 width:100%;
-padding:22px;
+max-height:92dvh;
 }
+.modal-body{padding:22px;}
+.modal-aviso-actions{padding:14px 22px 22px;}
 .topbar{position:static;}
 .topbar-content{flex-direction:column;align-items:flex-start;padding:12px 14px;}
 .menu{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
 .menu a{text-align:center;padding-inline:10px;}
 .modal-confirmacion-content{max-height:90vh;}
 .dato-item{
-flex-direction:column;
-align-items:flex-start;
+grid-template-columns:1fr;
 gap:4px;
 }
+.dato-item span:last-child{text-align:left;}
 .botones-confirmacion{
 flex-direction:column;
+padding:14px 22px 22px;
 }
 .camiseta-card img{height:220px;}
 .carga-head{
@@ -999,6 +1062,111 @@ padding:24px 22px 22px;
 }
 </style>
 <link rel="stylesheet" href="responsive-fixes.css">
+<style>
+.topbar{
+  background:rgba(75,0,3,.96);
+  border-bottom:1px solid rgba(255,255,255,.12);
+  box-shadow:0 14px 38px rgba(36,0,2,.18);
+}
+.topbar-content{width:min(1180px,100%);min-height:82px;}
+.menu{gap:8px;}
+.menu a{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  border-radius:8px;
+}
+.container{width:min(1180px,100%);padding-top:28px;}
+.form-hero{
+  grid-template-columns:minmax(0,1fr) 300px;
+  align-items:stretch;
+}
+.form-hero-main,
+.form-hero-side,
+.guide-card,
+form{
+  border-radius:8px;
+  box-shadow:0 16px 42px rgba(32,21,18,.10);
+}
+.form-hero-main{
+  min-height:270px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  background:
+    linear-gradient(90deg,rgba(75,0,3,.92),rgba(100,10,16,.70)),
+    url("img/banner.jpg") center/cover no-repeat;
+  color:white;
+}
+.form-hero-main:after{display:none;}
+.page-title{color:#fff;font-size:clamp(2rem,4.6vw,3.8rem);}
+.form-hero-main p{color:rgba(255,255,255,.88);}
+.eyebrow{color:#ffd0d0;}
+.eyebrow:before{background:#fff;}
+.hero-meta span{
+  border-color:rgba(255,255,255,.18);
+  background:rgba(255,255,255,.13);
+  color:white;
+}
+.form-hero-side{
+  background:#fff;
+  border-left:5px solid var(--ui-red);
+}
+.registration-guide{grid-template-columns:repeat(3,minmax(0,1fr));}
+.guide-card{background:#fff;}
+form{
+  background:#fff;
+  border-color:rgba(28,37,47,.10);
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:15px;
+}
+form h3{
+  grid-column:1/-1;
+  margin-top:14px;
+  padding:12px 0 6px;
+  border-bottom:1px solid rgba(28,37,47,.10);
+  color:#4b0003;
+}
+form input,
+form select,
+form textarea{
+  grid-column:span 6;
+  min-height:52px;
+  border:1px solid #d6dee8;
+  border-radius:8px;
+  background:#fbfdff;
+  color:#1f2937;
+  font-weight:650;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+}
+form textarea,
+.form-intro,
+.field-note,
+.payment-guide,
+.camiseta-section,
+.form-actions,
+.aviso-pago-box{grid-column:1/-1;}
+form input:focus,
+form select:focus,
+form textarea:focus{
+  outline:3px solid rgba(200,20,29,.14);
+  border-color:#c8141d;
+}
+.form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+}
+.form-actions button,
+button[type="submit"]{
+  border-radius:8px;
+  min-height:52px;
+}
+@media (max-width:900px){
+  .form-hero,.registration-guide{grid-template-columns:1fr;}
+  form{grid-template-columns:1fr;}
+  form input,form select,form textarea{grid-column:1/-1;}
+}
+</style>
 </head>
 
 <body class="ui-body">
@@ -1014,8 +1182,9 @@ padding:24px 22px 22px;
 </div>
 <nav class="menu">
 <a href="home.html">Inicio</a>
-<a href="Basedatos.html">Ver Inscritos</a>
-<a href="pasarelapago.html">Pagos</a>
+
+
+
 <a href="contacto.html">Contacto</a>
 <a href="live.html">Live</a>
 <a href="Evento.html">Eventos</a>
@@ -1211,18 +1380,22 @@ padding:24px 22px 22px;
 
 <div id="modalBienvenida" class="modal-bienvenida">
 <div class="modal-bienvenida-content">
+<div class="modal-body">
 <img src="img/logo.png" class="icono">
 
 <h1>Bienvenido</h1>
 <p>Estimado campista, por favor completa el formulario para confirmar tu inscripción. Recuerda que el evento se llevará a cabo del 5 al 8 de diciembre de 2026 en Gerizim - Sincelejo, bajo el lema Fe + Acción.</p>
 <p>Si tienes alguna pregunta, no dudes en contactarnos a través de nuestras redes sociales o correo electrónico.</p>
 <p>infocircuito@gmail.com</p>
-<button onclick="cerrarBienvenida()">Continuar</button>
+<button class="btn-primario" onclick="cerrarBienvenida()"><i class="bi bi-arrow-right-circle" aria-hidden="true"></i>Continuar</button>
+</div>
 </div>
 </div>
 
 <div id="modalAvisoPago" class="modal" aria-hidden="true">
 <div class="modal-content modal-aviso-pago">
+<div class="modal-body">
+<div class="modal-icon warn"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
 <h2>Importante sobre tu inscripcion</h2>
 <p class="modal-subtitle">El formulario registra tus datos como preinscripcion.</p>
 <div class="aviso-pago-box">
@@ -1231,8 +1404,9 @@ El campista no registra el pago en el portal; ese proceso lo realiza el lider au
 <br><br>
 Mientras el lider no registre el pago en el portal, tu informacion queda guardada para seguimiento, pero no se mostrara en el listado publico de inscritos.
 </div>
+</div>
 <div class="modal-aviso-actions">
-<button class="btn-primario" type="button" onclick="cerrarAvisoPago()">Entendido</button>
+<button class="btn-primario" type="button" onclick="cerrarAvisoPago()"><i class="bi bi-check2-circle" aria-hidden="true"></i>Entendido</button>
 </div>
 </div>
 </div>
@@ -1253,11 +1427,15 @@ Mientras el lider no registre el pago en el portal, tu informacion queda guardad
 
 <div id="modalConfirmacion" class="modal-confirmacion">
 <div class="modal-confirmacion-content">
-<h2>Confirmar Datos</h2>
+<div class="modal-body">
+<div class="modal-icon"><i class="bi bi-clipboard-check" aria-hidden="true"></i></div>
+<h2>Confirmar datos</h2>
+<p class="modal-subtitle">Revisa que la información esté correcta antes de enviar la preinscripción.</p>
+</div>
 <div id="datosConfirmacionContent" class="datos-confirmacion"></div>
 <div class="botones-confirmacion">
-<button class="btn-cancelar" onclick="cancelarConfirmacion()">Editar</button>
-<button class="btn-primario" onclick="enviarInscripcion()">Confirmar y Enviar</button>
+<button class="btn-cancelar" onclick="cancelarConfirmacion()"><i class="bi bi-pencil-square" aria-hidden="true"></i>Editar</button>
+<button class="btn-primario" onclick="enviarInscripcion()"><i class="bi bi-send-check" aria-hidden="true"></i>Confirmar y enviar</button>
 </div>
 </div>
 </div>
@@ -1303,11 +1481,31 @@ Mientras el lider no registre el pago en el portal, tu informacion queda guardad
 
 <div id="modal" class="modal">
 <div class="modal-content">
+<div class="modal-body">
+<div id="modalResultadoIcono" class="modal-icon success"><i class="bi bi-check2-circle" aria-hidden="true"></i></div>
 <h2>Preinscripcion registrada</h2>
 <p class="modal-subtitle">Estimado campista, recibimos tus datos. Apareceras como inscrito cuando tu lider de zona registre el pago.</p>
 <p id="modalMensaje"></p>
 <div id="ticketPago" class="ticket-pago" style="display:none;"></div>
-<button class="btn-primario" onclick="cerrarModal()">Cerrar</button>
+</div>
+<div class="modal-aviso-actions">
+<button class="btn-primario" onclick="cerrarModal()"><i class="bi bi-check2" aria-hidden="true"></i>Cerrar</button>
+</div>
+</div>
+</div>
+
+<div id="modalAvisoGeneral" class="modal" aria-hidden="true">
+<div class="modal-content">
+<div class="modal-body">
+<div class="modal-icon warn"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
+<h2 id="modalAvisoGeneralTitulo">Verificación requerida</h2>
+<p id="modalAvisoGeneralTexto" class="modal-subtitle"></p>
+</div>
+<div class="modal-aviso-actions">
+<button class="btn-primario" type="button" onclick="cerrarAvisoGeneral()"><i class="bi bi-check2-circle" aria-hidden="true"></i>Entendido</button>
+</div>
+</div>
+</div>
 <script src="api-config.js"></script>
 <script>
 const url=window.UJECA_API.registro;
@@ -1700,6 +1898,7 @@ function prepararEnvio(){
         correoInput.setCustomValidity(valido ? "" : "Ingresa un correo electrónico válido");
         if(!valido){
             correoInput.reportValidity();
+            mostrarAvisoGeneral("Correo no válido","Ingresa un correo electrónico válido antes de continuar.");
             return;
         }
     }
@@ -1708,7 +1907,7 @@ function prepararEnvio(){
     actualizarZonaYLider();
     let datos=Object.fromEntries(new FormData(form).entries());
     if(datos.DeseaCamisa==="Si" && (!datos.TipoCamiseta || !datos.TallaCamisa || !datos.ColorCamisa)){
-        alert("Si desea camiseta, debe seleccionar corte, talla y color.");
+        mostrarAvisoGeneral("Faltan datos de camiseta","Si deseas camiseta, selecciona corte, talla y color antes de enviar.");
         return;
     }
     // Validación para menores de edad: debe confirmar permiso firmado
@@ -1716,12 +1915,12 @@ function prepararEnvio(){
     if(edadNum > 0 && edadNum < 18){
         const tienePermiso = document.getElementById('tienePermiso') ? document.getElementById('tienePermiso').checked : false;
         if(!tienePermiso){
-            alert('Si eres menor de edad, debes descargar y presentar un permiso firmado por tu representante. Marca la casilla para confirmar.');
+            mostrarAvisoGeneral("Permiso requerido","Si eres menor de edad, debes descargar y presentar un permiso firmado por tu representante. Marca la casilla para confirmar.");
             return;
         }
     }
     if(!validarCorreo(datos.Correo)){
-        alert('Ingresa un correo electrónico válido antes de enviar el formulario.');
+        mostrarAvisoGeneral("Correo no válido","Ingresa un correo electrónico válido antes de enviar el formulario.");
         return;
     }
     datos.token="UJECA2026";
@@ -1755,6 +1954,7 @@ function validarCorreoCampo(input){
 function mostrarConfirmacion(datos){
     datosFormulario=datos;
     let html="";
+    const escapar=(valor)=>window.escaparHtmlUJECA ? window.escaparHtmlUJECA(valor) : String(valor ?? "");
     const camposOcultos=["token","accion","hoja","HojaDestino","FechaRegistro","Puesto","AplicaDescuento","DescuentoPorcentaje"];
     const etiquetas={
         Nombre:"Nombre",
@@ -1785,8 +1985,8 @@ function mostrarConfirmacion(datos){
         if(!camposOcultos.includes(k)&&datos[k]){
             html+=`
             <div class="dato-item">
-                <span class="dato-label">${etiquetas[k] || k}</span>
-                <span>${datos[k]}</span>
+                <span class="dato-label">${escapar(etiquetas[k] || k)}</span>
+                <span>${escapar(datos[k])}</span>
             </div>`;
         }
     }
@@ -1794,7 +1994,7 @@ function mostrarConfirmacion(datos){
         html+=`
         <div class="dato-item">
             <span class="dato-label">Pago asignado</span>
-            <span>Debe pagar a ${datos.LiderAsignado}</span>
+            <span>Debe pagar a ${escapar(datos.LiderAsignado)}</span>
         </div>`;
     }
     document.getElementById("datosConfirmacionContent").innerHTML=html;
@@ -1804,6 +2004,33 @@ function mostrarConfirmacion(datos){
 function cancelarConfirmacion(){
     document.getElementById("modalConfirmacion").style.display="none";
 }
+
+function mostrarAvisoGeneral(titulo,mensaje){
+    const modal=document.getElementById("modalAvisoGeneral");
+    const tituloEl=document.getElementById("modalAvisoGeneralTitulo");
+    const textoEl=document.getElementById("modalAvisoGeneralTexto");
+    if(!modal || !tituloEl || !textoEl) return;
+    tituloEl.textContent=titulo || "Verificación requerida";
+    textoEl.textContent=mensaje || "";
+    modal.style.display="flex";
+    modal.setAttribute("aria-hidden","false");
+    const boton=modal.querySelector("button");
+    if(boton) boton.focus();
+}
+
+function cerrarAvisoGeneral(){
+    const modal=document.getElementById("modalAvisoGeneral");
+    if(!modal) return;
+    modal.style.display="none";
+    modal.setAttribute("aria-hidden","true");
+}
+
+document.addEventListener("keydown",(event)=>{
+    if(event.key === "Escape"){
+        cerrarAvisoGeneral();
+        cerrarAvisoPago();
+    }
+});
 
 function mostrarModalCarga(activo){
     const modal = document.getElementById("modalCarga");
@@ -1843,7 +2070,8 @@ async function enviarInscripcion(){
             throw new Error(j.error || "No se pudo registrar en la base remota");
         }
 
-        document.getElementById("modalMensaje").innerHTML="Codigo: "+(j.codigo || "Pendiente de asignacion");
+        actualizarModalResultado(false);
+        document.getElementById("modalMensaje").innerHTML="Código: "+(j.codigo || "Pendiente de asignación");
         mostrarResumenPago(datosFormulario, j.codigo || "");
         mostrarModalCarga(false);
         document.getElementById("modal").style.display="flex";
@@ -1854,11 +2082,32 @@ async function enviarInscripcion(){
         cargarCupos();
     }catch(error){
         mostrarModalCarga(false);
+        actualizarModalResultado(true);
         document.getElementById("modalMensaje").innerHTML="No se pudo completar la inscripción. Error: "+error.message;
         mostrarResumenPago(datosFormulario, "");
         document.getElementById("modal").style.display="flex";
         document.getElementById("Estado").innerHTML="No se guardó ningún registro local. Intenta nuevamente cuando la conexión esté disponible.";
         cargarCupos();
+    }
+}
+
+function actualizarModalResultado(esError){
+    const modal=document.getElementById("modal");
+    const icono=document.getElementById("modalResultadoIcono");
+    const titulo=modal ? modal.querySelector("h2") : null;
+    const subtitulo=modal ? modal.querySelector(".modal-subtitle") : null;
+    if(modal) modal.querySelector(".modal-content")?.classList.toggle("is-error", Boolean(esError));
+    if(icono){
+        icono.className=esError ? "modal-icon" : "modal-icon success";
+        icono.innerHTML=esError
+            ? '<i class="bi bi-x-circle" aria-hidden="true"></i>'
+            : '<i class="bi bi-check2-circle" aria-hidden="true"></i>';
+    }
+    if(titulo) titulo.textContent=esError ? "No se pudo registrar" : "Preinscripción registrada";
+    if(subtitulo){
+        subtitulo.textContent=esError
+            ? "Revisa tu conexión e intenta nuevamente. No se guardó ningún registro local."
+            : "Estimado campista, recibimos tus datos. Aparecerás como inscrito cuando tu líder de zona registre el pago.";
     }
 }
 
@@ -1893,3 +2142,4 @@ function cerrarModal(){
 
 </body>
 </html>
+

@@ -32,7 +32,10 @@ const COLUMNAS_INSCRIPCIONES = [
   "Puesto",
   "AplicaDescuento",
   "DescuentoPorcentaje",
-  "EstadoRegistro"
+  "EstadoRegistro",
+  "SeguimientoNota",
+  "SeguimientoFecha",
+  "SeguimientoActualizado"
 ];
 
 const COLUMNAS_PAGOS = [
@@ -110,6 +113,14 @@ function doGet(e) {
     return responderJson_(listarComprobantesPago_(HOJA_COMPROBANTES), params.callback);
   }
 
+  if (accion === "enviarEstadoCuenta") {
+    return responderJson_(enviarEstadoCuenta_(params), params.callback);
+  }
+
+  if (accion === "actualizarEstadoRegistro") {
+    return responderJson_(actualizarEstadoRegistro_(params), params.callback);
+  }
+
   return responderJson_({ resultado: "error", error: "Accion no soportada" }, params.callback);
 }
 
@@ -140,6 +151,10 @@ function doPost(e) {
 
   if (accion === "eliminar") {
     return responderJson_(eliminarInscripcion_(datos));
+  }
+
+  if (accion === "actualizarEstadoRegistro") {
+    return responderJson_(actualizarEstadoRegistro_(datos));
   }
 
   return responderJson_({ resultado: "error", error: "Accion no soportada" });
@@ -734,6 +749,53 @@ function eliminarInscripcion_(datos) {
 
   hoja.deleteRow(fila);
   return { resultado: "ok" };
+}
+
+function actualizarEstadoRegistro_(datos) {
+  const hoja = obtenerHoja_(datos.hoja || datos.HojaDestino || HOJA_INSCRIPCIONES);
+  const documento = String(datos.Documento || datos.documento || "").trim();
+  const codigo = String(datos.Codigo || datos.codigo || "").trim().toLowerCase();
+
+  if (!documento && !codigo) {
+    return { resultado: "error", error: "Documento o codigo requerido" };
+  }
+
+  const encabezados = obtenerEncabezadosActualesInscripciones_(hoja);
+  const indiceDocumento = encabezados.indexOf("Documento");
+  const indiceCodigo = encabezados.indexOf("Codigo");
+  const valores = hoja.getDataRange().getValues();
+
+  for (let i = 1; i < valores.length; i++) {
+    const fila = valores[i];
+    const filaDocumento = indiceDocumento >= 0 ? String(fila[indiceDocumento] || "").trim() : "";
+    const filaCodigo = indiceCodigo >= 0 ? String(fila[indiceCodigo] || "").trim().toLowerCase() : "";
+    const coincideDocumento = documento && filaDocumento === documento;
+    const coincideCodigo = codigo && filaCodigo === codigo;
+
+    if (coincideDocumento || coincideCodigo) {
+      escribirCeldaPorEncabezado_(hoja, encabezados, i + 1, "EstadoRegistro", datos.EstadoRegistro || "");
+      escribirCeldaPorEncabezado_(hoja, encabezados, i + 1, "SeguimientoNota", datos.SeguimientoNota || "");
+      escribirCeldaPorEncabezado_(hoja, encabezados, i + 1, "SeguimientoFecha", parseDateValor(datos.SeguimientoFecha) || datos.SeguimientoFecha || "");
+      escribirCeldaPorEncabezado_(hoja, encabezados, i + 1, "SeguimientoActualizado", new Date());
+      return { resultado: "ok" };
+    }
+  }
+
+  return { resultado: "error", error: "No se encontro el registro para actualizar" };
+}
+
+function obtenerEncabezadosActualesInscripciones_(hoja) {
+  asegurarEncabezados_(hoja);
+  const ultimaColumna = Math.max(hoja.getLastColumn(), COLUMNAS_INSCRIPCIONES.length);
+  return hoja.getRange(1, 1, 1, ultimaColumna).getValues()[0]
+    .map((valor) => String(valor || "").trim());
+}
+
+function escribirCeldaPorEncabezado_(hoja, encabezados, fila, columna, valor) {
+  const indice = encabezados.indexOf(columna);
+  if (indice >= 0) {
+    hoja.getRange(fila, indice + 1).setValue(valor);
+  }
 }
 
 function obtenerHoja_(nombreHoja) {
