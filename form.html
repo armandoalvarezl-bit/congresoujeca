@@ -1859,11 +1859,6 @@ function obtenerValorCamisa(talla) {
     return esTallaGrande(talla) ? 45000 : 35000;
 }
 
-function obtenerDescuentoPuesto(puesto) {
-    const numero = Number(puesto);
-    return numero > 0 && numero <= 80 ? 30000 : 0;
-}
-
 function formatearPrecio(valor) {
     return "$" + Number(valor || 0).toLocaleString("es-CO");
 }
@@ -1872,7 +1867,8 @@ function calcularPagos(datos) {
     const valorCamisa = String(datos.DeseaCamisa || "").toLowerCase() === "si"
         ? obtenerValorCamisa(datos.TallaCamisa)
         : 0;
-    const descuentoAplicado = obtenerDescuentoPuesto(datos.Puesto);
+    // El servidor asigna el beneficio al registrar el primer pago, hasta 80 personas.
+    const descuentoAplicado = 0;
     const valorTotal = Math.max(VALOR_INSCRIPCION_BASE + valorCamisa - descuentoAplicado, 0);
     return { valorCamisa, descuentoAplicado, valorTotal };
 }

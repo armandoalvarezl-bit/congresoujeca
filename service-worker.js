@@ -1,4 +1,4 @@
-const CACHE_NAME = "ujeca-congreso-v7";
+const CACHE_NAME = "ujeca-congreso-v11";
 
 const APP_SHELL = [
   "./",

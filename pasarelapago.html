@@ -3653,6 +3653,11 @@ async function registrarPago(){
     if(!guardadoRemoto){
       throw new Error(respuestaRemota.error || respuestaRemota.raw || "El Apps Script no confirmo el guardado del pago");
     }
+    if(respuestaRemota.pago){
+      Object.assign(pagoPayload, respuestaRemota.pago);
+      participanteActual.DescuentoAplicado = respuestaRemota.pago.DescuentoAplicado;
+      participanteActual.ValorTotal = respuestaRemota.pago.ValorTotal;
+    }
   }catch(error){
     if(pagoEditando){
       ocultarLoaderPago(100);

@@ -1,8 +1,8 @@
 window.UJECA_API = {
-  registro: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec",
-  listado: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec",
-  listadoAlterno: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec",
-  pagos: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec"
+  registro: "https://script.google.com/macros/s/AKfycbx54Rx01ynEcr95JXJdPCxqG8eMGfYtRNjpmeSWiL8Zxrcd5hMlId_nzj3C6PoEXu0e/exec",
+  listado: "https://script.google.com/macros/s/AKfycbx54Rx01ynEcr95JXJdPCxqG8eMGfYtRNjpmeSWiL8Zxrcd5hMlId_nzj3C6PoEXu0e/exec",
+  listadoAlterno: "https://script.google.com/macros/s/AKfycbx54Rx01ynEcr95JXJdPCxqG8eMGfYtRNjpmeSWiL8Zxrcd5hMlId_nzj3C6PoEXu0e/exec",
+  pagos: "https://script.google.com/macros/s/AKfycbx54Rx01ynEcr95JXJdPCxqG8eMGfYtRNjpmeSWiL8Zxrcd5hMlId_nzj3C6PoEXu0e/exec"
 };
 
 window.UJECA_STORAGE_KEY = "ujeca_registros_locales";
@@ -181,7 +181,7 @@ window.cargarPagosRemotosUJECA = async function(baseUrl = window.UJECA_API.pagos
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 7000);
+    const timeout = setTimeout(() => controller.abort(), 20000);
     const respuesta = await fetch(pagosUrl, {
       cache: "no-store",
       signal: controller.signal
@@ -227,7 +227,7 @@ window.cargarPagosRemotosUJECA = async function(baseUrl = window.UJECA_API.pagos
     });
 
     document.body.appendChild(script);
-    setTimeout(() => finalizar([]), 6000);
+    setTimeout(() => finalizar([]), 20000);
   });
 };
 
@@ -261,7 +261,7 @@ window.cargarRegistrosRemotosUJECA = async function(baseUrl = window.UJECA_API.l
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 7000);
+    const timeout = setTimeout(() => controller.abort(), 20000);
     const respuesta = await fetch(listadoUrl, {
       cache: "no-store",
       signal: controller.signal
@@ -308,7 +308,7 @@ window.cargarRegistrosRemotosUJECA = async function(baseUrl = window.UJECA_API.l
     });
 
     document.body.appendChild(script);
-    setTimeout(() => finalizar([]), 6000);
+    setTimeout(() => finalizar([]), 20000);
   });
 };
 

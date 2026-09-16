@@ -3,6 +3,123 @@ const HOJA_INSCRIPCIONES = "Inscripciones2026";
 const HOJA_PAGOS = "PagosIndividuales2026_CORRECTO";
 const HOJA_COMPROBANTES = "ComprobantesPago2026_CORRECTO";
 
+function coincideParticipante80_(persona, pago) {
+  const doc = String(persona.Documento || "").trim();
+  const codigo = String(persona.Codigo || "").trim().toLowerCase();
+  return Boolean((doc && doc === String(pago.Documento || "").trim()) ||
+    (codigo && codigo === String(pago.Codigo || "").trim().toLowerCase()));
+}
+
+function ejecutarConDescuento80_(accion) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    sincronizarDescuento80_();
+    const resultado = accion();
+    enviarPendientesDescuento80_();
+    return resultado;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// Ejecutar una vez en el editor para autorizar correos y asegurar reintentos sin visitas.
+function activarDescuento80() {
+  if (!ScriptApp.getProjectTriggers().some(t => t.getHandlerFunction() === "procesarDescuento80")) {
+    ScriptApp.newTrigger("procesarDescuento80").timeBased().everyMinutes(5).create();
+  }
+  procesarDescuento80();
+}
+
+function procesarDescuento80() {
+  return ejecutarConDescuento80_(() => true);
+}
+
+function sincronizarDescuento80_() {
+  const hoja = obtenerHoja_(HOJA_INSCRIPCIONES);
+  const encabezados = obtenerEncabezadosActualesInscripciones_(hoja);
+  const filas = hoja.getDataRange().getValues().slice(1);
+  const pagos = listarPagos_(HOJA_PAGOS);
+  const props = PropertiesService.getScriptProperties();
+  // El libro de cupos no se borra al eliminar una inscripcion ni se reordena por pagos editados.
+  const cupos = JSON.parse(props.getProperty("DESCUENTO80_CUPOS_V1") || "{}");
+  const personas = filas.map((fila, i) => {
+    const persona = {};
+    encabezados.forEach((col, j) => persona[col] = fila[j]);
+    const key = String(persona.Documento || persona.Codigo || "").trim().toLowerCase();
+    const propios = pagos.filter(p => coincideParticipante80_(persona, p));
+    const positivos = propios.filter(p => Number(p.ValorAbono) > 0);
+    const fecha = positivos.reduce((min, p) => {
+      const d = parseDateValor(p.FechaRegistro) || parseDateValor(p.FechaPago);
+      return Math.min(min, d ? d.getTime() : Number.MAX_SAFE_INTEGER);
+    }, Number.MAX_SAFE_INTEGER);
+    return { persona, key, propios, positivos, fecha, fila: i + 2 };
+  });
+  personas.filter(p => p.key && p.positivos.length).sort((a, b) => a.fecha - b.fecha || a.fila - b.fila)
+    .forEach(p => {
+      if (!Object.prototype.hasOwnProperty.call(cupos, p.key) && Object.keys(cupos).length < 80) {
+        cupos[p.key] = Object.keys(cupos).length + 1;
+      }
+    });
+  props.setProperty("DESCUENTO80_CUPOS_V1", JSON.stringify(cupos));
+  const hojaPagos = obtenerHojaPagos_(HOJA_PAGOS);
+  const encabezadosPagos = obtenerEncabezadosActuales_(hojaPagos, COLUMNAS_PAGOS);
+  const comprobantes = leerFilasComoObjetos_(obtenerHojaComprobantes_(HOJA_COMPROBANTES));
+  personas.forEach(({persona, key, propios, fila}) => {
+    if (!Object.prototype.hasOwnProperty.call(cupos, key)) return;
+    const totalAnterior = obtenerValorTotalParticipante_(persona);
+    const total = Math.max(totalAnterior + Number(persona.DescuentoAplicado || 0) - 30000, 0);
+    const cambios = { DescuentoAplicado: 30000, ValorTotal: total, AplicaDescuento: "Si",
+      DescuentoPorcentaje: 0, CupoDescuento80: cupos[key] };
+    Object.keys(cambios).forEach(col => {
+      if (String(persona[col]) !== String(cambios[col])) {
+        escribirCeldaPorEncabezado_(hoja, encabezados, fila, col, cambios[col]);
+      }
+    });
+    let abonado = 0;
+    propios.forEach(pago => {
+      abonado += Number(pago.ValorAbono || 0);
+      const saldo = Math.max(total - abonado, 0);
+      const datos = Object.assign({}, pago, { DescuentoAplicado: 30000, ValorTotal: total, SaldoPosterior: saldo });
+      const cambiosPago = { DescuentoAplicado: 30000, ValorTotal: total, SaldoPosterior: saldo };
+      const columnasCambiadas = Object.keys(cambiosPago).filter(col => Number(pago[col]) !== cambiosPago[col]);
+      if (columnasCambiadas.length) {
+        const indice = buscarFilaPagoPorIdPago_(hojaPagos, pago.IdPago);
+        if (!String(pago.IdPago || "").trim() || indice < 0) throw new Error("Pago sin identificador: revisar antes de aplicar descuento");
+        // No reescribir la fila completa: puede contener adjuntos base64 o formulas extensas.
+        columnasCambiadas.forEach(col => escribirCeldaPorEncabezado_(hojaPagos, encabezadosPagos, indice, col, cambiosPago[col]));
+      }
+      const comprobante = comprobantes.find(c => String(c.IdPago || c.IdComprobante) === String(pago.IdPago));
+      if (!comprobante || Number(comprobante.ValorTotal) !== total || Number(comprobante.SaldoPosterior) !== saldo) {
+        actualizarComprobantePago_(datos);
+      }
+    });
+  });
+  SpreadsheetApp.flush();
+}
+
+function enviarPendientesDescuento80_() {
+  const hoja = obtenerHoja_(HOJA_INSCRIPCIONES);
+  const encabezados = obtenerEncabezadosActualesInscripciones_(hoja);
+  const filas = hoja.getDataRange().getValues().slice(1);
+  let disponibles;
+  try { disponibles = Math.min(10, MailApp.getRemainingDailyQuota()); }
+  catch (error) { console.error(error); return; }
+  filas.forEach((fila, i) => {
+    const persona = {};
+    encabezados.forEach((col, j) => persona[col] = fila[j]);
+    if (!persona.CupoDescuento80 || persona.CorreoDescuento80 || disponibles <= 0) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(persona.Correo || "").trim())) return;
+    disponibles--;
+    const enviado = enviarCorreoEstadoCuenta_(persona, calcularEstadoCuentaParticipante_(persona),
+      "Aplicamos $30.000 de descuento por estar entre los primeros 80 inscritos con pago o abono. Cupo " + persona.CupoDescuento80 + " de 80.");
+    if (enviado) {
+      escribirCeldaPorEncabezado_(hoja, encabezados, i + 2, "CorreoDescuento80", new Date());
+      SpreadsheetApp.flush();
+    }
+  });
+}
+
 const COLUMNAS_INSCRIPCIONES = [
   "FechaRegistro",
   "Codigo",
@@ -35,7 +152,8 @@ const COLUMNAS_INSCRIPCIONES = [
   "EstadoRegistro",
   "SeguimientoNota",
   "SeguimientoFecha",
-  "SeguimientoActualizado"
+  "SeguimientoActualizado",
+  "DescuentoAplicado", "ValorTotal", "CupoDescuento80", "CorreoDescuento80"
 ];
 
 const COLUMNAS_PAGOS = [
@@ -93,6 +211,15 @@ const COLUMNAS_COMPROBANTES = [
 ];
 
 function doGet(e) {
+  const accion = (e && e.parameter && e.parameter.accion) || "listado";
+  // Las consultas no deben esperar el bloqueo de pagos ni ejecutar correos/migraciones.
+  if (["listado", "listadoConfirmado", "pagos", "comprobantes"].indexOf(accion) >= 0) {
+    return atenderGet_(e);
+  }
+  return ejecutarConDescuento80_(() => atenderGet_(e));
+}
+
+function atenderGet_(e) {
   e = e || {};
   const params = e.parameter || {};
   const accion = params.accion || "listado";
@@ -125,6 +252,10 @@ function doGet(e) {
 }
 
 function doPost(e) {
+  return ejecutarConDescuento80_(() => atenderPost_(e));
+}
+
+function atenderPost_(e) {
   e = e || {};
   const datos = leerBody_(e);
   const accion = datos.accion || "registrar";
@@ -162,8 +293,14 @@ function doPost(e) {
 
 function registrarInscripcion_(datos) {
   const hoja = obtenerHoja_(datos.hoja || datos.HojaDestino || HOJA_INSCRIPCIONES);
+  datos.DescuentoAplicado = 0;
+  datos.AplicaDescuento = "No";
+  datos.DescuentoPorcentaje = 0;
+  datos.CupoDescuento80 = "";
+  datos.CorreoDescuento80 = "";
+  datos.ValorTotal = obtenerValorTotalParticipante_(Object.assign({}, datos, { ValorTotal: 0 }));
   const codigo = datos.Codigo || crearCodigo_(hoja.getLastRow());
-  const fila = COLUMNAS_INSCRIPCIONES.map((columna) => {
+  const fila = obtenerEncabezadosActualesInscripciones_(hoja).map((columna) => {
     if (columna === "Codigo") return codigo;
     if (columna === "EstadoRegistro") return datos[columna] || "Preinscrito pendiente de pago";
     return datos[columna] || "";
@@ -309,9 +446,7 @@ function listarInscripciones_(nombreHoja) {
     .map((fila) => {
       const registro = {};
       encabezados.forEach((encabezado, index) => {
-        registro[encabezado] = fila[index] instanceof Date
-          ? fila[index].toISOString()
-          : fila[index];
+        registro[encabezado] = serializarValorHoja_(fila[index]);
       });
       return registro;
     });
@@ -343,14 +478,18 @@ function listarInscripcionesConPago_(nombreHoja) {
 function registrarPago_(datos) {
   const hoja = obtenerHojaPagos_(HOJA_PAGOS);
   const idPago = datos.IdPago || crearIdPago_();
+  const existente = listarPagos_(HOJA_PAGOS).find(p => String(p.IdPago) === String(idPago));
+  if (existente) return { resultado: "ok", IdPago: idPago, pago: existente, correoEnviado: false };
   const encabezados = obtenerEncabezadosActuales_(hoja, COLUMNAS_PAGOS);
   const datosPago = normalizarDatosPago_(datos, idPago);
   const fila = encabezados.map((columna) => datosPago[columna] || "");
 
   hoja.appendRow(fila);
   registrarComprobantePago_(datosPago);
+  sincronizarDescuento80_();
   const correoEnviado = enviarCorreoEstadoCuentaPorPago_(datosPago);
-  return { resultado: "ok", IdPago: idPago, correoEnviado: correoEnviado };
+  return { resultado: "ok", IdPago: idPago, correoEnviado: correoEnviado,
+    pago: listarPagos_(HOJA_PAGOS).find(p => p.IdPago === idPago) };
 }
 
 function actualizarPago_(datos) {
@@ -371,8 +510,10 @@ function actualizarPago_(datos) {
 
   hoja.getRange(filaIndex, 1, 1, fila.length).setValues([fila]);
   actualizarComprobantePago_(datosPago);
+  sincronizarDescuento80_();
   const correoEnviado = enviarCorreoEstadoCuentaPorPago_(datosPago);
-  return { resultado: "ok", IdPago: idPago, correoEnviado: correoEnviado };
+  return { resultado: "ok", IdPago: idPago, correoEnviado: correoEnviado,
+    pago: listarPagos_(HOJA_PAGOS).find(p => p.IdPago === idPago) };
 }
 
 function buscarFilaPagoPorIdPago_(hoja, idPago) {
@@ -495,7 +636,7 @@ function buscarInscripcionPorDocumentoOCodigo_(datos) {
 
 function calcularEstadoCuentaParticipante_(participante) {
   const pagos = listarPagos_(HOJA_PAGOS).filter((pago) =>
-    String(pago.Documento || "").trim() === String(participante.Documento || "").trim()
+    coincideParticipante80_(participante, pago)
   );
   const total = obtenerValorTotalParticipante_(participante);
   const abonado = pagos.reduce((suma, pago) => suma + Number(pago.ValorAbono || 0), 0);
@@ -505,7 +646,7 @@ function calcularEstadoCuentaParticipante_(participante) {
     abonado: abonado,
     saldo: saldo,
     pagos: pagos,
-    estado: saldo === 0 && abonado > 0 ? "Pago completo" : "Saldo pendiente"
+    estado: abonado > total ? "Saldo a favor: " + formatearMonedaCorreo_(abonado - total) : (saldo === 0 && abonado > 0 ? "Pago completo" : "Saldo pendiente")
   };
 }
 
@@ -586,6 +727,8 @@ function enviarCorreoEstadoCuenta_(participante, resumen, motivo) {
   const cuerpoTexto = `Hola ${nombre},
 
 Estado de cuenta actualizado.
+${motivo || ""}
+Descuento aplicado: ${formatearMonedaCorreo_(participante.DescuentoAplicado)}
 Codigo: ${codigo}
 Valor total: ${totalTexto}
 Abonado: ${abonadoTexto}
@@ -623,7 +766,6 @@ function registrarComprobantePago_(datosPago) {
 
 function listarComprobantesPago_(nombreHoja) {
   const hoja = obtenerHojaComprobantes_(nombreHoja || HOJA_COMPROBANTES);
-  sincronizarComprobantesDesdePagos_();
   const ultimaFila = hoja.getLastRow();
   const ultimaColumna = hoja.getLastColumn();
 
@@ -639,9 +781,7 @@ function listarComprobantesPago_(nombreHoja) {
     .map((fila) => {
       const comprobante = {};
       encabezados.forEach((encabezado, index) => {
-        comprobante[encabezado] = fila[index] instanceof Date
-          ? fila[index].toISOString()
-          : fila[index];
+        comprobante[encabezado] = serializarValorHoja_(fila[index]);
       });
       return comprobante;
     });
@@ -682,9 +822,7 @@ function leerFilasComoObjetos_(hoja) {
     .map((fila) => {
       const item = {};
       encabezados.forEach((encabezado, index) => {
-        item[encabezado] = fila[index] instanceof Date
-          ? fila[index].toISOString()
-          : fila[index];
+        item[encabezado] = serializarValorHoja_(fila[index]);
       });
       return item;
     });
@@ -707,9 +845,7 @@ function listarPagos_(nombreHoja) {
     .map((fila) => {
       const pago = {};
       encabezados.forEach((encabezado, index) => {
-        pago[encabezado] = fila[index] instanceof Date
-          ? fila[index].toISOString()
-          : fila[index];
+        pago[encabezado] = serializarValorHoja_(fila[index]);
       });
       return pago;
     });
@@ -856,19 +992,8 @@ function asegurarEncabezadosPersonalizados_(hoja, columnas) {
 }
 
 function asegurarEncabezadosExactos_(hoja, columnas) {
-  const ancho = Math.max(hoja.getLastColumn(), columnas.length);
-  const encabezadosActuales = hoja.getRange(1, 1, 1, ancho).getValues()[0]
-    .map((valor) => String(valor || "").trim());
-  const encabezadosEsperados = columnas.join("||");
-  const encabezadosHoja = encabezadosActuales.slice(0, columnas.length).join("||");
-
-  if (encabezadosHoja !== encabezadosEsperados || hoja.getLastColumn() !== columnas.length) {
-    hoja.getRange(1, 1, 1, columnas.length).setValues([columnas]);
-    if (hoja.getLastColumn() > columnas.length) {
-      hoja.deleteColumns(columnas.length + 1, hoja.getLastColumn() - columnas.length);
-    }
-  }
-
+  // Conservar orden y columnas existentes, incluidos fragmentos de adjuntos.
+  asegurarEncabezadosPersonalizados_(hoja, columnas);
   hoja.setFrozenRows(1);
 }
 
@@ -876,12 +1001,17 @@ function obtenerEncabezadosActuales_(hoja, columnasBase) {
   asegurarEncabezadosExactos_(hoja, columnasBase);
   const ultimaColumna = Math.max(hoja.getLastColumn(), columnasBase.length);
   return hoja.getRange(1, 1, 1, ultimaColumna).getValues()[0]
-    .map((valor) => String(valor || "").trim())
-    .filter((valor) => valor !== "");
+    .map((valor) => String(valor || "").trim());
+}
+
+function serializarValorHoja_(valor) {
+  if (!(valor instanceof Date)) return valor;
+  // Una fecha invalida no debe impedir consultar todos los registros.
+  return Number.isFinite(valor.getTime()) ? valor.toISOString() : "";
 }
 
 function parseDateValor(valor) {
-  if (valor instanceof Date) return valor;
+  if (valor instanceof Date) return Number.isFinite(valor.getTime()) ? valor : null;
   if (!valor) return null;
   const fecha = new Date(valor);
   return Number.isNaN(fecha.getTime()) ? null : fecha;
