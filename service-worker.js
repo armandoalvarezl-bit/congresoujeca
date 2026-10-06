@@ -1,7 +1,10 @@
-const CACHE_NAME = "ujeca-congreso-v11";
+const CACHE_NAME = "ujeca-congreso-maintenance-v1";
+const MAINTENANCE_MODE = true;
 
 const APP_SHELL = [
   "./",
+  "mantenimiento.html",
+  "maintenance-redirect.js",
   "index.html",
   "home.html",
   "cpanel.html",
@@ -41,6 +44,18 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if(request.method !== "GET") return;
+
+  const url = new URL(request.url);
+  const currentPage = url.pathname.substring(url.pathname.lastIndexOf("/") + 1) || "index.html";
+  const acceptsHtml = request.mode === "navigate" || request.headers.get("accept")?.includes("text/html");
+
+  if(MAINTENANCE_MODE && acceptsHtml && currentPage !== "mantenimiento.html"){
+    event.respondWith(
+      caches.match("mantenimiento.html")
+        .then((cached) => cached || fetch("mantenimiento.html"))
+    );
+    return;
+  }
 
   event.respondWith(
     fetch(request)

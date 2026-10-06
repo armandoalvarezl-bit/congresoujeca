@@ -2,7 +2,7 @@
   "name": "UJECA Congreso 2026",
   "short_name": "UJECA 2026",
   "description": "App movil del Congreso Trascendentales 2026.",
-  "start_url": "app.html",
+  "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
