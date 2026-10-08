@@ -1,8 +1,10 @@
-const CACHE_NAME = "ujeca-congreso-maintenance-v1";
+const CACHE_NAME = "ujeca-congreso-cancelado-v2";
 const MAINTENANCE_MODE = true;
+const LOCK_PAGE = "evento-cancelado.html";
 
 const APP_SHELL = [
   "./",
+  "evento-cancelado.html",
   "mantenimiento.html",
   "maintenance-redirect.js",
   "index.html",
@@ -49,10 +51,10 @@ self.addEventListener("fetch", (event) => {
   const currentPage = url.pathname.substring(url.pathname.lastIndexOf("/") + 1) || "index.html";
   const acceptsHtml = request.mode === "navigate" || request.headers.get("accept")?.includes("text/html");
 
-  if(MAINTENANCE_MODE && acceptsHtml && currentPage !== "mantenimiento.html"){
+  if(MAINTENANCE_MODE && acceptsHtml && currentPage !== LOCK_PAGE){
     event.respondWith(
-      caches.match("mantenimiento.html")
-        .then((cached) => cached || fetch("mantenimiento.html"))
+      caches.match(LOCK_PAGE)
+        .then((cached) => cached || fetch(LOCK_PAGE))
     );
     return;
   }
@@ -64,6 +66,6 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
         return response;
       })
-      .catch(() => caches.match(request).then((cached) => cached || caches.match("home.html")))
+      .catch(() => caches.match(request).then((cached) => cached || caches.match(LOCK_PAGE)))
   );
 });

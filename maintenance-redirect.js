@@ -1,6 +1,6 @@
 (function(){
   var MAINTENANCE_MODE = true;
-  var MAINTENANCE_PAGE = "mantenimiento.html";
+  var MAINTENANCE_PAGE = "evento-cancelado.html";
 
   if (!MAINTENANCE_MODE) return;
 
