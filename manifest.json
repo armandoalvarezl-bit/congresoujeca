@@ -2,7 +2,7 @@
   "name": "UJECA Congreso 2026",
   "short_name": "UJECA 2026",
   "description": "App movil del Congreso Trascendentales 2026.",
-  "start_url": "evento-cancelado.html",
+  "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -26,19 +26,19 @@
     {
       "name": "Inscripcion",
       "short_name": "Registro",
-      "url": "evento-cancelado.html",
+      "url": "form.html",
       "icons": [{ "src": "img/logo.png", "sizes": "192x192" }]
     },
     {
       "name": "Consultar deuda",
       "short_name": "Deuda",
-      "url": "evento-cancelado.html",
+      "url": "consulta-deuda.html",
       "icons": [{ "src": "img/logo.png", "sizes": "192x192" }]
     },
     {
       "name": "Pagos",
       "short_name": "Pagos",
-      "url": "evento-cancelado.html",
+      "url": "pasarelapago.html",
       "icons": [{ "src": "img/logo.png", "sizes": "192x192" }]
     }
   ]

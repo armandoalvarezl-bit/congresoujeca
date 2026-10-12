@@ -1,8 +1,8 @@
 window.UJECA_API = {
-  registro: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec",
-  listado: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec",
-  listadoAlterno: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec",
-  pagos: "https://script.google.com/macros/s/AKfycbzTS3Eo1nSj49ZxEk651AiZlnGwjYPcM162oc_1rb0dX4diIWGrjbYBQpey8rvt9KZ7/exec"
+  registro: "https://script.google.com/macros/s/AKfycbzp0s-n1V8zn2PcqeSsKdCrdkARNmib2Jg_G1NwX_XrKrvrwdRwQCSJCTnMzNoMgmHR/exec",
+  listado: "https://script.google.com/macros/s/AKfycbzp0s-n1V8zn2PcqeSsKdCrdkARNmib2Jg_G1NwX_XrKrvrwdRwQCSJCTnMzNoMgmHR/exec",
+  listadoAlterno: "https://script.google.com/macros/s/AKfycbzp0s-n1V8zn2PcqeSsKdCrdkARNmib2Jg_G1NwX_XrKrvrwdRwQCSJCTnMzNoMgmHR/exec",
+  pagos: "https://script.google.com/macros/s/AKfycbzp0s-n1V8zn2PcqeSsKdCrdkARNmib2Jg_G1NwX_XrKrvrwdRwQCSJCTnMzNoMgmHR/exec"
 };
 
 window.UJECA_STORAGE_KEY = "ujeca_registros_locales";
@@ -31,8 +31,6 @@ window.UJECA_COLUMNAS_INSCRITOS = [
   "TipoCamiseta",
   "TallaCamisa",
   "ColorCamisa",
-  "AplicaDescuento",
-  "DescuentoPorcentaje",
   "EstadoRegistro",
   "SeguimientoNota",
   "SeguimientoFecha",
@@ -60,8 +58,6 @@ window.UJECA_ETIQUETAS_INSCRITOS = {
   TipoCamiseta: "Corte",
   TallaCamisa: "Talla",
   ColorCamisa: "Color",
-  AplicaDescuento: "Descuento",
-  DescuentoPorcentaje: "%",
   EstadoRegistro: "Estado",
   SeguimientoNota: "Seguimiento",
   SeguimientoFecha: "Proximo contacto",

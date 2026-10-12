@@ -154,7 +154,7 @@ function valorTotal(persona){
   const camisa = normalizar(persona?.DeseaCamisa) === "si";
   const talla = String(persona?.TallaCamisa || "").trim().toUpperCase().replace(/\s+/g,"");
   const valorCamisa = camisa ? (["XXL","2XL","3XL","XXXL","4XL","5XL"].includes(talla) ? 45000 : 35000) : 0;
-  return Math.max(500000 + valorCamisa - Number(persona?.DescuentoAplicado || 0),0);
+  return Math.max(500000 + valorCamisa,0);
 }
 
 function renderPerfil(persona){

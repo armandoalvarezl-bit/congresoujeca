@@ -2607,7 +2607,6 @@ function normalizarPago(pago){
     TallaCamisa:pago.TallaCamisa || pago.tallaCamisa || "",
     ColorCamisa:pago.ColorCamisa || pago.colorCamisa || "",
     ValorCamisa:numeroPago(pago.ValorCamisa || pago.valorCamisa || 0),
-    DescuentoAplicado:numeroPago(pago.DescuentoAplicado || pago.descuentoAplicado || 0),
     ValorTotal:numeroPago(pago.ValorTotal || pago.valorTotal || 0),
     ValorAbono:numeroPago(pago.ValorAbono || pago.abono || pago.valor || 0),
     FechaPago:fechaInputPago(pago.FechaPago || pago.fechaPago || ""),
@@ -2703,28 +2702,6 @@ function valorNumericoCampo(objeto, campos){
   return 0;
 }
 
-function porcentajeDescuentoParticipante(){
-  return valorNumericoCampo(participanteActual,[
-    "DescuentoPorcentaje",
-    "descuentoPorcentaje",
-    "PorcentajeDescuento",
-    "porcentajeDescuento",
-    "%",
-    "Descuento %"
-  ]);
-}
-
-function participanteAplicaDescuento(){
-  const valor=normalizarTextoPago(
-    participanteActual?.AplicaDescuento ||
-    participanteActual?.aplicaDescuento ||
-    participanteActual?.Descuento ||
-    participanteActual?.descuento ||
-    ""
-  );
-  return ["si","s","yes","true","1","aplica"].includes(valor) || porcentajeDescuentoParticipante() > 0;
-}
-
 function valorCongresoBaseParticipante(){
   return valorNumericoCampo(participanteActual,[
     "ValorCongreso",
@@ -2736,21 +2713,6 @@ function valorCongresoBaseParticipante(){
     "Valor Congreso",
     "Precio Congreso"
   ]) || PRECIO_CONGRESO;
-}
-
-function descuentoParticipante(){
-  const descuentoDirecto=valorNumericoCampo(participanteActual,[
-    "DescuentoAplicado",
-    "descuentoAplicado",
-    "ValorDescuento",
-    "valorDescuento",
-    "DescuentoValor",
-    "descuentoValor"
-  ]);
-  if(descuentoDirecto > 0) return descuentoDirecto;
-  if(!participanteAplicaDescuento()) return 0;
-  const porcentaje=Math.min(Math.max(porcentajeDescuentoParticipante(),0),100);
-  return Math.round(valorCongresoBaseParticipante() * porcentaje / 100);
 }
 
 function valorTotalGuardadoParticipante(){
@@ -2783,11 +2745,7 @@ function valorCongresoParticipante(){
     "Valor Congreso",
     "Precio Congreso"
   ]);
-  const totalGuardado=valorTotalGuardadoParticipante();
-  if(totalGuardado > 0 && valorCongresoGuardado === 0){
-    return Math.max(totalGuardado - valorCamisaParticipante(),0);
-  }
-  return Math.max(valorCongresoBaseParticipante() - descuentoParticipante(),0);
+  return Math.max(valorCongresoBaseParticipante(),0);
 }
 
 function obtenerValorCamisaPorTalla(talla) {
@@ -2802,8 +2760,7 @@ function valorCamisaParticipante(){
 }
 
 function valorTotalParticipante(){
-  const totalGuardado=valorTotalGuardadoParticipante();
-  return totalGuardado > 0 ? totalGuardado : valorCongresoParticipante() + valorCamisaParticipante();
+  return valorCongresoParticipante() + valorCamisaParticipante();
 }
 
 function actualizarResumenPago(){
@@ -3502,7 +3459,6 @@ async function registrarPago(){
   }
 
   const valorCongreso = valorCongresoParticipante();
-  const descuentoAplicado = descuentoParticipante();
   const valorCamisa = valorCamisaParticipante();
   const totalActual = valorTotalParticipante();
   const abonadoPrevio = totalPagadoDocumento(participanteActual.Documento);
@@ -3600,7 +3556,6 @@ async function registrarPago(){
     TallaCamisa:participanteActual.TallaCamisa || participanteActual.tallaCamisa || "",
     ColorCamisa:participanteActual.ColorCamisa || participanteActual.colorCamisa || "",
     ValorCamisa:valorCamisa,
-    DescuentoAplicado:descuentoAplicado,
     ValorTotal:totalActual,
     ValorAbono:valorAbono,
     FechaPago:fechaPago,

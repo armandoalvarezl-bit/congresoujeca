@@ -1,5 +1,5 @@
-const CACHE_NAME = "ujeca-congreso-cancelado-v2";
-const MAINTENANCE_MODE = true;
+const CACHE_NAME = "ujeca-congreso-open-v3";
+const MAINTENANCE_MODE = false;
 const LOCK_PAGE = "evento-cancelado.html";
 
 const APP_SHELL = [
@@ -66,6 +66,6 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
         return response;
       })
-      .catch(() => caches.match(request).then((cached) => cached || caches.match(LOCK_PAGE)))
+      .catch(() => caches.match(request).then((cached) => cached || caches.match("home.html")))
   );
 });

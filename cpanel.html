@@ -1033,15 +1033,9 @@ function valorCamisa(p){
   return ["XXL","2XL","3XL","XXXL","4XL","5XL"].includes(talla) ? 45000 : 35000;
 }
 
-function descuento(p){
-  return numero(p?.DescuentoAplicado || p?.descuentoAplicado || p?.ValorDescuento || p?.valorDescuento);
-}
-
 function valorTotal(p){
-  const guardado=numero(p?.ValorTotal || p?.valorTotal || p?.Total || p?.total);
-  if(guardado > 0) return guardado;
   const congreso=numero(p?.ValorCongreso || p?.valorCongreso) || PRECIO_CONGRESO;
-  return Math.max(congreso + valorCamisa(p) - descuento(p), 0);
+  return Math.max(congreso + valorCamisa(p), 0);
 }
 
 function totalPagado(p){

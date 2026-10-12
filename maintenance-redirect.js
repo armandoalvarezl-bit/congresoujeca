@@ -1,5 +1,5 @@
 (function(){
-  var MAINTENANCE_MODE = true;
+  var MAINTENANCE_MODE = false;
   var MAINTENANCE_PAGE = "evento-cancelado.html";
 
   if (!MAINTENANCE_MODE) return;

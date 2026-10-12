@@ -1,14 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#4b0003">
+<meta name="theme-color" content="#1b0506">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="img/logo.png">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="apple-touch-icon" href="img/logo.png">
 <title>Acceso | Congreso Trascendentales 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,385 +14,385 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#080304;
-  --panel:#ffffff;
-  --text:#111111;
-  --muted:#686868;
-  --red:#ff3b30;
-  --red-deep:#c20d0d;
-  --red-soft:rgba(255,59,48,.14);
-  --line:rgba(255,255,255,.14);
-  --shadow:0 28px 90px rgba(0,0,0,.32);
+  --wine:#210405;
+  --wine-2:#4b0003;
+  --red:#d71920;
+  --gold:#e9b95d;
+  --cream:#fff7ef;
+  --ink:#241416;
+  --muted:#765f5d;
+  --shadow:0 30px 90px rgba(0,0,0,.34);
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
 
+html{
+  min-height:100%;
+  text-size-adjust:100%;
+}
+
 body{
   min-height:100vh;
-  font-family:'Outfit',sans-serif;
-  background:
-    linear-gradient(135deg, rgba(255,59,48,.16), transparent 34%),
-    linear-gradient(135deg,rgba(10,3,4,.94),rgba(47,4,6,.92)),
-    url("img/afiche-oficial-congreso-2026.jpeg") center/cover no-repeat fixed;
+  font-family:"Outfit",Arial,sans-serif;
   color:white;
+  background:
+    linear-gradient(90deg,rgba(14,3,4,.94),rgba(38,5,7,.72) 46%,rgba(12,3,4,.94)),
+    url("img/afiche-oficial-congreso-2026.jpeg") center/cover fixed no-repeat;
+  overflow-x:hidden;
 }
 
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:
-    linear-gradient(90deg, rgba(0,0,0,.18) 1px, transparent 1px),
-    linear-gradient(rgba(0,0,0,.12) 1px, transparent 1px);
-  background-size:34px 34px;
-  opacity:.18;
   pointer-events:none;
-}
-
-.shell{
-  min-height:100vh;
-  height:100vh;
-  overflow:hidden;
-  padding:18px;
-}
-
-.layout{
-  width:min(1160px,100%);
-  margin:0 auto;
-  display:grid;
-  grid-template-columns:minmax(0,1.32fr) minmax(340px,.78fr);
-  gap:18px;
-  align-items:start;
-}
-
-.hero{
-  position:relative;
-  height:calc(100vh - 36px);
-  border-radius:24px;
-  overflow:hidden;
-  padding:24px 26px 0;
   background:
-    linear-gradient(180deg, rgba(20,5,6,.36), rgba(20,5,6,.74)),
-    url("img/afiche-oficial-congreso-2026.jpeg") center/cover no-repeat;
+    linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:44px 44px;
+  opacity:.16;
+}
+
+.gateway{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:clamp(14px,3vw,38px);
+}
+
+.frame{
+  width:min(1180px,100%);
+  min-height:min(720px,calc(100vh - 28px));
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(340px,.74fr);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:18px;
+  background:rgba(31,5,7,.72);
   box-shadow:var(--shadow);
+}
+
+.visual{
+  position:relative;
+  min-width:0;
+  padding:clamp(24px,4vw,54px);
   display:flex;
   flex-direction:column;
-  justify-content:flex-start;
+  justify-content:space-between;
+  background:
+    linear-gradient(180deg,rgba(22,4,5,.18),rgba(22,4,5,.72)),
+    url("img/banner.jpg") center/cover no-repeat;
 }
 
-.hero::after{
+.visual::before{
   content:"";
   position:absolute;
   inset:0;
   background:
-    linear-gradient(180deg, rgba(255,68,56,.18), transparent 32%),
-    linear-gradient(180deg, rgba(11,4,5,.16), rgba(11,4,5,.55) 60%, rgba(11,4,5,.92));
+    radial-gradient(circle at 24% 20%,rgba(233,185,93,.22),transparent 15rem),
+    linear-gradient(90deg,rgba(16,3,4,.28),rgba(16,3,4,.78));
   pointer-events:none;
 }
 
-.hero-top,
-.hero-main,
-.hero-bottom{
+.visual > *{
   position:relative;
   z-index:1;
 }
 
-.hero-top{
+.brand{
   display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:18px;
-}
-
-.logo{
-  width:108px;
-  object-fit:contain;
-  filter:drop-shadow(0 10px 24px rgba(0,0,0,.28));
-}
-
-.zone-pill{
-  display:inline-flex;
   align-items:center;
-  gap:12px;
-  padding:10px 16px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(26,10,12,.46);
-  backdrop-filter:blur(8px);
-  font-weight:800;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  font-size:.9rem;
+  gap:16px;
 }
 
-.zone-pill::before{
-  content:"";
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:var(--red);
-  box-shadow:0 0 20px rgba(255,59,48,.7);
+.brand-mark{
+  width:clamp(74px,7vw,104px);
+  height:clamp(58px,5.2vw,74px);
+  display:grid;
+  place-items:center;
+  border-radius:16px;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);
+  backdrop-filter:blur(10px);
+  box-shadow:0 20px 42px rgba(0,0,0,.24);
 }
 
-.hero-main{
-  padding:20px 0 0;
-  text-align:center;
+.brand-mark img{
+  width:82%;
+  height:82%;
+  object-fit:contain;
 }
 
-.hero-main .overline{
-  color:#ff5f51;
-  font-size:1.72rem;
-  font-weight:700;
-}
-
-.hero-main h1{
-  margin-top:8px;
-  font-size:4.25rem;
-  line-height:.92;
+.brand-text strong{
+  display:block;
+  font-size:clamp(1.2rem,2vw,1.7rem);
+  line-height:1;
   font-weight:900;
-  letter-spacing:0;
-  text-transform:uppercase;
-  text-shadow:0 14px 30px rgba(0,0,0,.38);
+  letter-spacing:.02em;
 }
 
-.hero-accent{
-  width:92px;
-  height:6px;
-  border-radius:999px;
-  background:linear-gradient(90deg,var(--red),#ff6053);
-  margin:16px auto 18px;
-  box-shadow:0 0 22px rgba(255,59,48,.45);
+.brand-text span{
+  display:block;
+  margin-top:6px;
+  color:rgba(255,247,239,.76);
+  font-size:.98rem;
+  font-weight:700;
 }
 
 .hero-copy{
-  max-width:580px;
-  margin:0 auto;
-  font-size:.98rem;
-  line-height:1.45;
-  color:rgba(255,244,241,.92);
+  max-width:720px;
+  padding-block:44px;
 }
 
-.feature-grid{
-  display:none;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:16px;
-  max-width:660px;
-  margin:30px auto 0;
-}
-
-.feature-card{
-  text-align:left;
-  padding:20px 18px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(41,11,13,.34);
-  backdrop-filter:blur(6px);
-  min-height:136px;
-}
-
-.feature-icon{
-  font-size:2rem;
-  line-height:1;
-}
-
-.feature-card span{
-  display:block;
-  margin-top:12px;
-  color:#ffb3aa;
-  font-size:.94rem;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-}
-
-.feature-card strong{
-  display:block;
-  margin-top:8px;
-  font-size:1.15rem;
-  line-height:1.45;
-}
-
-.cta{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  margin-top:20px;
-}
-
-.cta-button{
-  min-width:min(380px,100%);
+.kicker{
+  width:max-content;
+  max-width:100%;
   display:inline-flex;
   align-items:center;
-  justify-content:center;
-  gap:14px;
-  padding:18px 24px;
-  border-radius:16px;
-  text-decoration:none;
-  color:white;
-  font-size:1.08rem;
+  gap:12px;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.11);
+  border:1px solid rgba(255,255,255,.22);
+  color:#ffe2a5;
+  font-size:.86rem;
   font-weight:900;
-  background:linear-gradient(180deg,#ff4034,#d90f0f);
-  box-shadow:0 22px 46px rgba(255,59,48,.28);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  backdrop-filter:blur(8px);
 }
 
-.cta-note{
-  margin-top:10px;
-  color:rgba(255,241,237,.9);
-  font-size:.94rem;
+.kicker::before{
+  content:"";
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 0 7px rgba(233,185,93,.14);
 }
 
-.hero-bottom{
-  margin:22px -26px 0;
-  padding:16px 26px 18px;
-  border-top:1px solid rgba(255,90,80,.36);
-  background:linear-gradient(180deg,rgba(36,11,13,.72),rgba(20,8,9,.9));
+h1{
+  margin:22px 0 16px;
+  max-width:12.6ch;
+  font-size:clamp(2.75rem,6.4vw,5.6rem);
+  line-height:.9;
+  font-weight:900;
+  letter-spacing:0;
+  text-transform:uppercase;
+  text-shadow:0 22px 50px rgba(0,0,0,.42);
 }
 
-.bottom-grid{
+.hero-copy p{
+  max-width:55ch;
+  color:rgba(255,247,239,.88);
+  font-size:clamp(1rem,1.4vw,1.2rem);
+  line-height:1.48;
+  font-weight:500;
+}
+
+.facts{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:14px;
+  gap:12px;
 }
 
-.bottom-item{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:10px;
-  align-items:start;
+.fact{
+  min-height:92px;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(12,4,5,.44);
+  backdrop-filter:blur(8px);
 }
 
-.bottom-icon{
-  color:#ff473a;
-  font-size:1.3rem;
-}
-
-.bottom-item span{
+.fact span{
   display:block;
-  color:#ffb9b1;
+  margin-bottom:8px;
+  color:#ffcfc8;
   font-size:.78rem;
+  font-weight:900;
+  letter-spacing:.1em;
   text-transform:uppercase;
-  letter-spacing:.08em;
-  margin-bottom:4px;
 }
 
-.bottom-item strong{
+.fact strong{
   display:block;
-  font-size:.92rem;
-  line-height:1.3;
+  color:white;
+  font-size:1rem;
+  line-height:1.24;
+  font-weight:800;
 }
 
-.status-panel{
-  min-height:calc(100vh - 36px);
-  max-height:calc(100vh - 36px);
-  overflow:auto;
-  background:rgba(255,255,255,.96);
-  border-radius:24px;
-  box-shadow:var(--shadow);
-  padding:28px 28px 24px;
-  color:var(--text);
+.panel{
+  position:relative;
+  padding:clamp(24px,3vw,42px);
+  background:
+    linear-gradient(180deg,rgba(255,250,246,.98),rgba(255,247,239,.96)),
+    radial-gradient(circle at 78% 18%,rgba(215,25,32,.12),transparent 12rem);
+  color:var(--ink);
   display:flex;
   flex-direction:column;
   justify-content:space-between;
+  gap:28px;
+  border-left:1px solid rgba(255,255,255,.18);
 }
 
-.status-panel::-webkit-scrollbar{
-  width:8px;
-}
-
-.status-panel::-webkit-scrollbar-thumb{
-  background:#ead8d5;
-  border-radius:999px;
-}
-
-.status-head{
+.panel-head{
   display:flex;
   align-items:flex-start;
   justify-content:space-between;
-  gap:18px;
+  gap:16px;
 }
 
-.status-logo{
+.access-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  padding:10px 12px;
+  border-radius:999px;
+  color:var(--wine-2);
+  background:white;
+  border:1px solid rgba(75,0,3,.1);
+  box-shadow:0 12px 26px rgba(75,0,3,.08);
+  font-size:.78rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.access-badge svg{
+  width:17px;
+  height:17px;
+  stroke:currentColor;
+  stroke-width:2.4;
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.mini-logo{
   width:58px;
   height:58px;
+  flex:none;
+  display:grid;
+  place-items:center;
   border-radius:16px;
-  background:linear-gradient(180deg,#fff,#fff7f4);
-  box-shadow:0 14px 30px rgba(0,0,0,.08);
-  padding:12px;
+  background:white;
+  box-shadow:0 16px 32px rgba(75,0,3,.1);
 }
 
-.status-logo img{
-  width:100%;
-  height:100%;
+.mini-logo img{
+  width:78%;
+  height:78%;
   object-fit:contain;
 }
 
-.access-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  padding:11px 14px;
-  border-radius:14px;
-  background:#fff;
-  box-shadow:0 10px 26px rgba(0,0,0,.08);
-  color:var(--red-deep);
-  font-weight:800;
-  text-transform:uppercase;
+.panel-title{
+  margin-top:30px;
 }
 
-.status-copy h2{
-  margin:20px 0 10px;
-  font-size:2.05rem;
-  line-height:1.05;
+.panel-title h2{
+  margin:0;
+  font-size:clamp(2rem,3vw,3.15rem);
+  line-height:1;
+  font-weight:900;
+  letter-spacing:0;
 }
 
-.status-copy p{
+.panel-title p{
+  margin-top:14px;
   color:var(--muted);
-  font-size:.98rem;
-  line-height:1.55;
+  font-size:1rem;
+  line-height:1.5;
+  font-weight:600;
 }
 
-.system-box{
-  margin-top:18px;
-  padding:18px;
-  border-radius:20px;
-  background:linear-gradient(180deg,#fff,#fcfaf9);
-  box-shadow:0 12px 34px rgba(0,0,0,.08);
+.loader-card{
+  margin-top:26px;
+  padding:20px;
+  border-radius:14px;
+  background:white;
+  border:1px solid rgba(75,0,3,.08);
+  box-shadow:0 18px 44px rgba(75,0,3,.1);
 }
 
-.system-box small{
-  display:block;
-  color:#8a8a8a;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  font-weight:700;
+.loader-symbol{
+  width:86px;
+  height:86px;
+  margin:0 auto 16px;
+  position:relative;
+  display:grid;
+  place-items:center;
+}
+
+.loader-symbol::before,
+.loader-symbol::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:3px solid rgba(215,25,32,.12);
+}
+
+.loader-symbol::after{
+  border-top-color:var(--red);
+  border-right-color:var(--gold);
+  animation:spin 1s linear infinite;
+}
+
+.loader-symbol img{
+  width:48px;
+  height:48px;
+  object-fit:contain;
+  position:relative;
+  z-index:1;
+}
+
+.loader-state{
+  min-height:58px;
+  text-align:center;
 }
 
 #texto{
-  margin-top:10px;
-  font-size:1.04rem;
-  line-height:1.22;
-  min-height:2.6rem;
-  font-weight:800;
+  color:var(--ink);
+  font-size:1.08rem;
+  line-height:1.28;
+  font-weight:900;
 }
 
 #estado{
-  margin-top:8px;
-  color:#6f6f6f;
-  font-size:1rem;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:.94rem;
+  font-weight:700;
 }
 
-.progress-line{
-  margin-top:14px;
-  height:10px;
-  background:#ededed;
+.progress-track{
+  margin-top:16px;
+  height:12px;
   border-radius:999px;
   overflow:hidden;
+  background:#f0e6df;
 }
 
 .progress-fill{
   width:0;
   height:100%;
-  border-radius:999px;
-  background:linear-gradient(90deg,var(--red-deep),#ff5a4f);
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--wine-2),var(--red),var(--gold));
+  transition:width .18s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.progress-fill::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:translateX(-100%);
+  animation:shine 1.15s ease-in-out infinite;
 }
 
 .progress-meta{
@@ -402,297 +400,244 @@ body::before{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:14px;
+  gap:12px;
+  color:var(--muted);
+  font-size:.92rem;
+  font-weight:800;
 }
 
-.sync-line{
+.live-dot{
   display:inline-flex;
   align-items:center;
-  gap:10px;
-  color:#575757;
-  font-size:1rem;
+  gap:9px;
 }
 
-.sync-line::before{
+.live-dot::before{
   content:"";
-  width:14px;
-  height:14px;
+  width:10px;
+  height:10px;
   border-radius:50%;
   background:var(--red);
+  box-shadow:0 0 0 6px rgba(215,25,32,.12);
+  animation:pulse 1.1s ease-in-out infinite;
 }
 
 #porcentaje{
-  font-weight:800;
-  font-size:1.2rem;
-}
-
-.steps{
-  margin-top:18px;
-  display:grid;
-  gap:12px;
-}
-
-.step{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:12px;
-  align-items:start;
-  padding-bottom:12px;
-  border-bottom:1px solid #ece9e7;
-}
-
-.step:last-child{
-  padding-bottom:0;
-  border-bottom:none;
-}
-
-.step-num{
-  width:34px;
-  height:34px;
-  border-radius:12px;
-  background:#ffe7e4;
-  color:var(--red-deep);
-  display:grid;
-  place-items:center;
+  color:var(--wine-2);
+  font-size:1.12rem;
   font-weight:900;
 }
 
-.step strong{
-  display:block;
-  font-size:1rem;
-  margin-bottom:4px;
+.quick-list{
+  display:grid;
+  gap:10px;
 }
 
-.step span{
+.quick-item{
+  display:grid;
+  grid-template-columns:34px 1fr;
+  gap:12px;
+  align-items:center;
   color:var(--muted);
-  line-height:1.45;
-  font-size:.94rem;
+  font-size:.95rem;
+  font-weight:700;
 }
 
-.help{
-  margin-top:18px;
-  padding-top:14px;
-  border-top:1px solid #ece9e7;
-  color:var(--muted);
+.quick-item span{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  color:var(--wine-2);
+  background:#fff0ec;
+  font-weight:900;
 }
 
-.help strong{
-  display:block;
-  color:var(--text);
+.enter-link{
+  min-height:50px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:14px 18px;
+  border-radius:12px;
+  color:white;
+  text-decoration:none;
+  background:linear-gradient(180deg,#d71920,#8e060a);
+  box-shadow:0 18px 34px rgba(215,25,32,.24);
   font-size:1rem;
-  margin-bottom:6px;
+  font-weight:900;
+}
+
+.enter-link svg{
+  width:20px;
+  height:20px;
+  stroke:currentColor;
+  stroke-width:2.4;
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
 
 .fade-out{
-  animation:fadeOut .8s forwards;
+  animation:fadeOut .72s ease forwards;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes shine{
+  to{transform:translateX(165%)}
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(.82);opacity:.72}
+  50%{transform:scale(1);opacity:1}
 }
 
 @keyframes fadeOut{
   to{
     opacity:0;
-    transform:translateY(18px);
+    transform:translateY(18px) scale(.985);
   }
 }
 
-@media(max-width:1180px){
-  .shell{
-    height:auto;
-    overflow:visible;
-  }
-  .layout{
+@media(max-width:980px){
+  .frame{
     grid-template-columns:1fr;
+    min-height:0;
   }
-  .hero,
-  .status-panel{
-    height:auto;
-    min-height:auto;
-    max-height:none;
+
+  .visual{
+    min-height:560px;
   }
-  .feature-grid{display:grid}
+
+  .panel{
+    border-left:0;
+    border-top:1px solid rgba(255,255,255,.18);
+  }
 }
 
-@media(max-width:760px){
-  .shell{padding:12px}
-  .hero,
-  .status-panel{
-    border-radius:26px;
+@media(max-width:680px){
+  .gateway{
+    padding:10px;
   }
-  .hero{
-    padding:22px 22px 0;
+
+  .frame{
+    border-radius:14px;
   }
-  .hero-bottom{
-    margin:28px -22px 0;
+
+  .visual,
+  .panel{
     padding:22px;
   }
-  .hero-top{
-    flex-direction:column;
+
+  .visual{
+    min-height:560px;
+  }
+
+  .brand{
     align-items:flex-start;
   }
-  .hero-main{
-    text-align:left;
+
+  .brand-mark{
+    width:70px;
+    height:58px;
   }
-  .hero-accent{
-    margin:18px 0 22px;
+
+  h1{
+    font-size:clamp(2.35rem,12vw,3.45rem);
+    max-width:100%;
   }
-  .feature-grid,
-  .bottom-grid{
+
+  .facts{
     grid-template-columns:1fr;
   }
-  .cta{
-    align-items:stretch;
+
+  .panel-head{
+    flex-direction:column-reverse;
   }
-  .cta-button{
-    min-width:100%;
-  }
-  .status-panel{
-    padding:22px;
-  }
-  .status-copy h2{
-    font-size:2.3rem;
-  }
-  .hero-main .overline{
-    font-size:1.85rem;
-  }
-  .hero-main h1{
-    font-size:3.35rem;
-  }
-  .hero-copy{
-    font-size:1.05rem;
+
+  .access-badge{
+    width:100%;
+    justify-content:center;
   }
 }
 </style>
-<link rel="stylesheet" href="responsive-fixes.css">
 <script src="maintenance-redirect.js"></script>
 </head>
 <body>
-<main class="shell">
-  <section class="layout" id="loader">
-    <article class="hero">
-      <div class="hero-top">
-        <img src="img/logo.png" alt="Logo UJECA" class="logo">
-        <div class="zone-pill">Circuito 2 · Zona 6</div>
+<main class="gateway">
+  <section class="frame" id="loader" aria-label="Acceso al Congreso Trascendentales 2026">
+    <article class="visual">
+      <div class="brand">
+        <div class="brand-mark"><img src="img/logo.png" alt="Logo UJECA"></div>
+        <div class="brand-text">
+          <strong>UJECA</strong>
+          <span>Circuito 2 - Zona 6</span>
+        </div>
       </div>
 
-      <div class="hero-main">
-        <div class="overline">Congreso Juvenil 2026</div>
+      <div class="hero-copy">
+        <div class="kicker">Congreso Juvenil 2026</div>
         <h1>Trascendentales</h1>
-        <div class="hero-accent"></div>
-        <p class="hero-copy">Una apertura visual pensada para marcar el tono del congreso desde el primer segundo: más carácter, más identidad y una experiencia mejor cuidada para recibir a cada inscrito.</p>
+        <p>Una entrada renovada para abrir la plataforma oficial del congreso con una presencia m&aacute;s elegante, clara y alineada con la identidad del evento.</p>
+      </div>
 
-        <div class="feature-grid">
-          <div class="feature-card">
-            <div class="feature-icon">ðŸ—“ï¸</div>
-            <span>Fecha</span>
-            <strong>5 al 8 de diciembre de 2026</strong>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">ðŸ“</div>
-            <span>Lugar</span>
-            <strong>Gerizim - Sincelejo</strong>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">✝</div>
-            <span>Lema</span>
-            <strong>Fe + Acción</strong>
-          </div>
+      <div class="facts" aria-label="Datos principales">
+        <div class="fact">
+          <span>Fecha</span>
+          <strong>5 al 8 de diciembre de 2026</strong>
         </div>
-
-        <div class="cta">
-          <a href="form.html" class="cta-button">INSCRÍBETE HOY</a>
-          <div class="cta-note">Únete a cientos de jóvenes que vivirán esta experiencia única</div>
+        <div class="fact">
+          <span>Lugar</span>
+          <strong>Gerizim - Sincelejo</strong>
+        </div>
+        <div class="fact">
+          <span>Lema</span>
+          <strong>Fe + Acci&oacute;n</strong>
         </div>
       </div>
-
-      <div class="hero-bottom">
-  <div class="bottom-grid">
-
-    <div class="bottom-item">
-      <div class="bottom-icon">
-        <!-- Calendar -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-      </div>
-      <div>
-        <span>Fecha</span>
-        <strong>5 al 8 de diciembre de 2026</strong>
-      </div>
-    </div>
-
-    <div class="bottom-item">
-      <div class="bottom-icon">
-        <!-- Location -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg>
-      </div>
-      <div>
-        <span>Lugar</span>
-        <strong>Gerizim - Sincelejo</strong>
-      </div>
-    </div>
-
-    <div class="bottom-item">
-      <div class="bottom-icon">
-        <!-- Users -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M9 21v-2a4 4 0 0 1 3-3.87"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-      </div>
-      <div>
-        <span>Invita</span>
-        <strong>Circuito 2 - Zona 6</strong>
-      </div>
-    </div>
-
-  </div>
-</div>
     </article>
 
-    <aside class="status-panel">
+    <aside class="panel">
       <div>
-        <div class="status-head">
-          <div class="status-logo"><img src="img/logo.png" alt="Logo"></div>
-          <div class="access-pill">ðŸ›¡ Acceso oficial</div>
+        <div class="panel-head">
+          <div class="mini-logo"><img src="img/logo.png" alt="Logo UJECA"></div>
+          <div class="access-badge">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 3 8 7 10 4-2 7-5.4 7-10V6l-7-3Z"></path><path d="M9 12l2 2 4-5"></path></svg>
+            Acceso oficial
+          </div>
         </div>
 
-        <div class="status-copy">
-          <h2>Preparando la plataforma del congreso</h2>
-          <p>Estamos cargando la experiencia de registro, informacion y acceso general del evento. Todo se esta organizando para que el ingreso sea rapido y claro.</p>
+        <div class="panel-title">
+          <h2>Preparando tu ingreso</h2>
+          <p>La plataforma est&aacute; organizando los m&oacute;dulos principales antes de llevarte al inicio.</p>
         </div>
 
-        <div class="system-box">
-          <small>Estado del sistema</small>
-          <div id="texto"></div>
-          <div id="estado">Iniciando...</div>
-          <div class="progress-line"><div class="progress-fill" id="fill"></div></div>
+        <div class="loader-card" aria-live="polite">
+          <div class="loader-symbol" aria-hidden="true"><img src="img/logo.png" alt=""></div>
+          <div class="loader-state">
+            <div id="texto"></div>
+            <div id="estado">Iniciando...</div>
+          </div>
+          <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="fill"></div></div>
           <div class="progress-meta">
-            <span class="sync-line">Sincronizando módulos</span>
+            <span class="live-dot">Cargando sistema</span>
             <strong id="porcentaje">0%</strong>
           </div>
         </div>
-
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">01</div>
-            <div>
-              <strong>Identidad del congreso</strong>
-              <span>Se carga el entorno visual oficial para conservar coherencia con el afiche y el lema del evento.</span>
-            </div>
-          </div>
-          
-        </div>
       </div>
 
-      <div class="help">
-        <strong>¿Necesitas ayuda?</strong>
-        <span>Escríbenos y te asistimos en el proceso.</span>
+      <div class="quick-list">
+        <div class="quick-item"><span>01</span><strong>Registro, pagos e informaci&oacute;n del evento.</strong></div>
+        <div class="quick-item"><span>02</span><strong>Dise&ntilde;o visual oficial del Congreso 2026.</strong></div>
+        <a class="enter-link" href="home.html">
+          Entrar ahora
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        </a>
       </div>
     </aside>
   </section>
@@ -701,63 +646,64 @@ body::before{
 <script>
 const mensajes=[
   "Cargando identidad del congreso",
-  "Preparando participantes y registros",
-  "Preparando consultas y registros",
-  "Verificando configuración general",
-  "Abriendo plataforma principal"
+  "Preparando rutas de inscripcion",
+  "Sincronizando pagos y consultas",
+  "Verificando acceso principal",
+  "Abriendo plataforma"
 ];
 
 let i=0;
 let j=0;
+let progreso=0;
 const texto=document.getElementById("texto");
 const estado=document.getElementById("estado");
 const fill=document.getElementById("fill");
 const porcentaje=document.getElementById("porcentaje");
-const sound=document.getElementById("startupSound");
 
 function escribir(){
   if(i<mensajes.length){
     if(j<mensajes[i].length){
-      texto.innerHTML+=mensajes[i][j];
+      texto.textContent+=mensajes[i][j];
       j++;
-      setTimeout(escribir,20);
-    }else{
-      estado.innerText="Paso "+(i+1)+" de "+mensajes.length;
-      i++;
-      j=0;
-      setTimeout(()=>{
-        texto.innerHTML="";
-        escribir();
-      },420);
+      setTimeout(escribir,18);
+      return;
     }
-  }else{
-    texto.innerHTML="Todo listo para ingresar";
-    estado.innerText="Redirigiendo al inicio";
-    finalizar();
-  }
-}
-escribir();
 
-let progreso=0;
-const intervalo=setInterval(()=>{
-  progreso=Math.min(progreso+(100/(mensajes.length*12)),100);
+    estado.textContent="Paso "+(i+1)+" de "+mensajes.length;
+    i++;
+    j=0;
+    setTimeout(function(){
+      texto.textContent="";
+      escribir();
+    },360);
+    return;
+  }
+
+  texto.textContent="Todo listo";
+  estado.textContent="Entrando al inicio...";
+  finalizar();
+}
+
+const intervalo=setInterval(function(){
+  progreso=Math.min(progreso+(100/(mensajes.length*14)),100);
   fill.style.width=progreso+"%";
-  porcentaje.innerText=Math.round(progreso)+"%";
-},70);
+  porcentaje.textContent=Math.round(progreso)+"%";
+},55);
 
 function finalizar(){
   clearInterval(intervalo);
   fill.style.width="100%";
-  porcentaje.innerText="100%";
-  setTimeout(()=>{
-    if(sound) sound.play().catch(()=>{});
+  porcentaje.textContent="100%";
+  setTimeout(function(){
     document.getElementById("loader").classList.add("fade-out");
-    setTimeout(()=>location.href="home.html",800);
-  },520);
+    setTimeout(function(){
+      location.href="home.html";
+    },760);
+  },620);
 }
+
+escribir();
 </script>
 <script src="pwa.js"></script>
 </body>
 </html>
-
-

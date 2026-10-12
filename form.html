@@ -1860,11 +1860,6 @@ function obtenerValorCamisa(talla) {
     return esTallaGrande(talla) ? 45000 : 35000;
 }
 
-function obtenerDescuentoPuesto(puesto) {
-    const numero = Number(puesto);
-    return numero > 0 && numero <= 80 ? 30000 : 0;
-}
-
 function formatearPrecio(valor) {
     return "$" + Number(valor || 0).toLocaleString("es-CO");
 }
@@ -1873,9 +1868,8 @@ function calcularPagos(datos) {
     const valorCamisa = String(datos.DeseaCamisa || "").toLowerCase() === "si"
         ? obtenerValorCamisa(datos.TallaCamisa)
         : 0;
-    const descuentoAplicado = obtenerDescuentoPuesto(datos.Puesto);
-    const valorTotal = Math.max(VALOR_INSCRIPCION_BASE + valorCamisa - descuentoAplicado, 0);
-    return { valorCamisa, descuentoAplicado, valorTotal };
+    const valorTotal = Math.max(VALOR_INSCRIPCION_BASE + valorCamisa, 0);
+    return { valorCamisa, valorTotal };
 }
 
 async function cargarCupos(){
@@ -1932,10 +1926,7 @@ function prepararEnvio(){
     datos.Puesto=totalInscritosActual+1;
     const pagos = calcularPagos(datos);
     datos.ValorCamisa = pagos.valorCamisa;
-    datos.DescuentoAplicado = pagos.descuentoAplicado;
     datos.ValorTotal = pagos.valorTotal;
-    datos.AplicaDescuento = pagos.descuentoAplicado > 0 ? "Si" : "No";
-    datos.DescuentoPorcentaje = 0;
     datos.EstadoRegistro = "Preinscrito pendiente de pago";
     datos.ZonaAsignada=datos.ZonaAsignada || document.getElementById("zonaAsignada").value || "Zona general";
     datos.LiderAsignado=datos.LiderAsignado || document.getElementById("liderAsignado").value || "Coordinacion General Zona 6";
@@ -1956,7 +1947,7 @@ function mostrarConfirmacion(datos){
     datosFormulario=datos;
     let html="";
     const escapar=(valor)=>window.escaparHtmlUJECA ? window.escaparHtmlUJECA(valor) : String(valor ?? "");
-    const camposOcultos=["token","accion","hoja","HojaDestino","FechaRegistro","Puesto","AplicaDescuento","DescuentoPorcentaje"];
+    const camposOcultos=["token","accion","hoja","HojaDestino","FechaRegistro","Puesto"];
     const etiquetas={
         Nombre:"Nombre",
         Documento:"Documento",
@@ -2126,7 +2117,6 @@ function mostrarResumenPago(datos, codigo){
                 <div class="ticket-label">Lider para pago</div><div class="ticket-value">${datos.LiderAsignado || "Coordinacion General Zona 6"}</div>
                 <div class="ticket-label">Valor congreso</div><div class="ticket-value">${formatearPrecio(VALOR_INSCRIPCION_BASE)}</div>
                 <div class="ticket-label">Valor camiseta</div><div class="ticket-value">${formatearPrecio(pagos.valorCamisa)}</div>
-                ${pagos.descuentoAplicado ? '<div class="ticket-label">Descuento aplicado</div><div class="ticket-value">-' + formatearPrecio(pagos.descuentoAplicado) + '</div>' : ''}
                 <div class="ticket-label ticket-total">Total a pagar</div><div class="ticket-value ticket-total">${formatearPrecio(pagos.valorTotal)}</div>
             </div>
         `;

@@ -296,7 +296,6 @@
               <div class="field"><strong>Nombre</strong><span id="r_nombre">-</span></div>
               <div class="field"><strong>Documento</strong><span id="r_documento">-</span></div>
               <div class="field"><strong>Valor total</strong><span id="r_valor">-</span></div>
-              <div class="field"><strong>Descuento</strong><span id="r_descuento">-</span></div>
               <div class="field"><strong>Valor camisa</strong><span id="r_camisa">-</span></div>
               <div class="field"><strong>Abonado</strong><span id="r_abonado">-</span></div>
               <div class="field"><strong>Responsable/Líder</strong><span id="r_lider">-</span></div>
@@ -373,10 +372,9 @@
 
       function valorTotalParticipante(p){
         if(!p) return PRECIO_CONGRESO;
-        const vt = Number(p.ValorTotal || p.valorTotal || p.Total || p.total || 0);
-        if(vt > 0) return vt;
         const vc = Number(p.ValorCongreso || p.valorCongreso || 0);
-        return vc > 0 ? vc : PRECIO_CONGRESO;
+        const congreso = vc > 0 ? vc : PRECIO_CONGRESO;
+        return congreso + valorCamisaParticipante(p);
       }
 
       function valorNumericoCampo(objeto, campos){
@@ -406,34 +404,6 @@
         return participanteTieneCamisa(p) ? obtenerValorCamisaPorTalla(p?.TallaCamisa || p?.tallaCamisa) : 0;
       }
 
-      function porcentajeDescuentoParticipante(p){
-        return valorNumericoCampo(p, [
-          "DescuentoPorcentaje",
-          "descuentoPorcentaje",
-          "PorcentajeDescuento",
-          "porcentajeDescuento",
-          "%",
-          "Descuento %"
-        ]);
-      }
-
-      function participanteAplicaDescuento(p){
-        const valor = String(
-          p?.AplicaDescuento || p?.aplicaDescuento || p?.Descuento || p?.descuento || ""
-        );
-        const norm = valor.trim().toLowerCase();
-        return ["si","s","yes","true","1","aplica"].includes(norm) || porcentajeDescuentoParticipante(p) > 0;
-      }
-
-      function descuentoParticipante(p){
-        const descuentoDirecto = valorNumericoCampo(p,["DescuentoAplicado","descuentoAplicado","ValorDescuento","valorDescuento","DescuentoValor","descuentoValor"]);
-        if(descuentoDirecto > 0) return descuentoDirecto;
-        if(!participanteAplicaDescuento(p)) return 0;
-        const porcentaje = Math.min(Math.max(porcentajeDescuentoParticipante(p),0),100);
-        const base = Number(p?.ValorCongreso || p?.valorCongreso || PRECIO_CONGRESO) || PRECIO_CONGRESO;
-        return Math.round(base * porcentaje / 100);
-      }
-
       function mostrar(participante){
         if(!participante){
           document.getElementById('resultado').hidden=true;
@@ -443,7 +413,6 @@
         const nombre = participante.Nombre || participante.nombre || 'No registrado';
         const documento = participante.Documento || participante.documento || participante.cedula || '';
         const valorTotal = valorTotalParticipante(participante);
-        const descuento = descuentoParticipante(participante);
         const valorCamisa = valorCamisaParticipante(participante);
         const abonado = totalPagadoDocumento(documento);
         const saldo = Math.max(valorTotal - abonado,0);
@@ -453,7 +422,6 @@
         document.getElementById('r_nombre').innerText = nombre;
         document.getElementById('r_documento').innerText = documento || '-';
         document.getElementById('r_valor').innerText = money(valorTotal);
-        document.getElementById('r_descuento').innerText = money(descuento);
         document.getElementById('r_camisa').innerText = money(valorCamisa);
         document.getElementById('r_abonado').innerText = money(abonado);
         document.getElementById('r_saldo').innerText = money(saldo);
