@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#001b46">
+<meta name="theme-color" content="#0753bd">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="img/logo.png">
@@ -14,11 +14,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --blue-950:#001332;
-  --blue-900:#001f52;
-  --blue-500:#1f72ff;
-  --orange:#ffad1f;
-  --orange-dark:#fb8c00;
+  --blue-950:#062452;
+  --blue-900:#07449b;
+  --blue-500:#0866e8;
+  --orange:#ffbf26;
+  --orange-dark:#ff8a00;
+  --aqua:#54eedc;
   --ink:#06183d;
   --muted:#1f3f73;
   --line:#cfe0f6;
@@ -28,14 +29,14 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 
-html{min-height:100%;text-size-adjust:100%}
+html{min-height:100%;text-size-adjust:100%;-webkit-text-size-adjust:100%}
 
 body{
   min-height:100vh;
   font-family:"Outfit",Arial,sans-serif;
   color:var(--ink);
   background:
-    linear-gradient(90deg,rgba(0,17,46,.9),rgba(0,35,86,.66) 48%,rgba(0,17,46,.92)),
+    linear-gradient(120deg,rgba(5,58,149,.76),rgba(0,107,149,.48) 48%,rgba(8,39,106,.8)),
     url("img/WhatsApp Image 2026-02-19 at 18.27.17.jpeg") center/cover fixed no-repeat;
   display:grid;
   place-items:center;
@@ -60,6 +61,7 @@ body::before{top:32px;left:-88px}
 body::after{right:-88px;bottom:34px}
 
 .gateway{
+  min-width:0;
   width:min(1280px,100%);
   min-height:min(720px,calc(100vh - 24px));
   position:relative;
@@ -81,8 +83,8 @@ body::after{right:-88px;bottom:34px}
   flex-direction:column;
   justify-content:center;
   background:
-    radial-gradient(circle at 82% 40%,rgba(31,114,255,.13),transparent 15rem),
-    linear-gradient(135deg,#fff 0%,#fff 63%,#eff6ff 100%);
+    radial-gradient(circle at 82% 40%,rgba(0,190,218,.18),transparent 15rem),
+    linear-gradient(135deg,#fff 0%,#fff 63%,#e8faff 100%);
 }
 
 .main-panel::after{
@@ -357,12 +359,13 @@ h1 span{display:block;color:var(--blue-500)}
 }
 
 .side-panel{
+  min-width:0;
   position:relative;
   padding:clamp(26px,3vw,48px) clamp(22px,2.6vw,40px);
   color:white;
   background:
-    radial-gradient(circle at 18% 16%,rgba(49,152,255,.24),transparent 18rem),
-    linear-gradient(180deg,#001d4a 0%,#000d2a 100%);
+    radial-gradient(circle at 18% 16%,rgba(84,238,220,.25),transparent 18rem),
+    linear-gradient(155deg,#0753bd 0%,#063b91 58%,#052c68 100%);
   display:flex;
   flex-direction:column;
   justify-content:space-between;
@@ -376,7 +379,7 @@ h1 span{display:block;color:var(--blue-500)}
   inset:0;
   background:
     linear-gradient(90deg,rgba(0,16,43,.18),rgba(0,16,43,.72)),
-    url("img/afiche-oficial-congreso-2026.jpeg") center/cover no-repeat;
+    url("img/WhatsApp Image 2026-02-19 at 18.27.17.jpeg") center/cover no-repeat;
   opacity:.16;
   pointer-events:none;
 }
@@ -393,7 +396,7 @@ h1 span{display:block;color:var(--blue-500)}
   display:flex;
   align-items:center;
   gap:16px;
-  color:var(--blue-500);
+  color:var(--aqua);
   font-size:.84rem;
   font-weight:900;
   letter-spacing:.08em;
@@ -430,8 +433,8 @@ h1 span{display:block;color:var(--blue-500)}
 .loader-card{
   padding:20px;
   border-radius:8px;
-  background:rgba(0,61,144,.42);
-  border:1px solid rgba(49,152,255,.72);
+  background:rgba(3,30,82,.62);
+  border:1px solid rgba(84,238,220,.65);
   box-shadow:0 18px 42px rgba(0,9,34,.2);
 }
 
@@ -486,7 +489,7 @@ h1 span{display:block;color:var(--blue-500)}
   width:0;
   height:100%;
   border-radius:inherit;
-  background:linear-gradient(90deg,var(--orange),#ffd55e);
+  background:linear-gradient(90deg,var(--orange-dark),var(--orange),#ffe475);
   box-shadow:0 0 20px rgba(255,173,31,.34);
   transition:width .18s ease;
   position:relative;
@@ -548,19 +551,22 @@ h1 span{display:block;color:var(--blue-500)}
 .enter-link{
   display:flex;
   justify-content:center;
-  background:linear-gradient(180deg,#247dff,#115ce6);
-  border-color:rgba(127,185,255,.7);
-  box-shadow:0 18px 34px rgba(18,103,255,.22);
+  color:var(--blue-950);
+  background:linear-gradient(180deg,#ffd65a,var(--orange));
+  border-color:#ffe475;
+  box-shadow:0 12px 28px rgba(255,173,31,.24);
 }
 
-.enter-link svg{stroke:white}
+.enter-link svg{stroke:currentColor}
+.enter-link:hover{background:#ffe475}
+.enter-link:focus-visible{outline:3px solid var(--aqua);outline-offset:4px}
 
 .signature{
   display:flex;
   align-items:center;
   justify-content:center;
   gap:16px;
-  color:#8cc7ff;
+  color:var(--aqua);
   font-size:1rem;
   font-style:italic;
   font-weight:600;
@@ -571,7 +577,7 @@ h1 span{display:block;color:var(--blue-500)}
   content:"";
   width:34px;
   height:2px;
-  background:var(--blue-500);
+  background:var(--aqua);
   border-radius:999px;
 }
 
@@ -597,54 +603,51 @@ h1 span{display:block;color:var(--blue-500)}
 }
 
 @media(max-width:720px){
-  body::before,
-  body::after{
-    width:170px;
-    height:26px;
-    box-shadow:0 0 0 12px rgba(0,58,136,.78);
+  body{
+    min-height:100svh;
+    padding:10px;
+    place-items:center;
+    background-attachment:scroll;
   }
 
-  .main-panel,
-  .side-panel{
-    padding:clamp(20px,6vw,28px);
-  }
+  body::before,body::after{display:none}
+  .gateway{width:100%;min-height:0}
+  .gateway p,.gateway strong,.gateway span,#texto,#estado{overflow-wrap:anywhere}
+  .main-panel,.side-panel{padding:18px}
 
-  .brand{
-    align-items:flex-start;
-    gap:12px;
-    margin-bottom:26px;
-  }
+  .brand{gap:10px;margin-bottom:12px;align-items:center}
+  .brand img{width:48px;height:40px;flex:0 0 48px}
+  .brand > div{min-width:0}
+  .brand strong{font-size:1.2rem}
+  .brand span{margin-top:4px;font-size:.8rem}
+  .brand-line,.illustration,.lead{display:none}
 
-  .brand img{
-    width:76px;
-    height:58px;
-  }
+  .status-pill{min-height:30px;padding:4px 10px 4px 6px;gap:8px;font-size:.7rem;letter-spacing:.06em}
+  .status-icon{width:22px;height:22px;font-size:.8rem;flex-shrink:0}
+  .headline-row{grid-template-columns:minmax(0,1fr);margin-top:14px}
+  h1{max-width:100%;font-size:clamp(1.9rem,8vw,2.6rem);line-height:1.05}
+  .underline{width:44px;height:4px;margin-top:10px}
 
-  .brand-line{display:none}
+  .info-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}
+  .info-card:first-child{display:none}
+  .info-card{min-height:0;padding:10px;box-shadow:none}
+  .info-icon{display:none}
+  .info-card span{margin-bottom:4px;font-size:.7rem}
+  .info-card strong{font-size:.82rem;line-height:1.3}
 
-  .headline-row,
-  .info-grid{
-    grid-template-columns:1fr;
-  }
-
-  .illustration{
-    order:-1;
-    min-height:165px;
-  }
-
-  h1{
-    max-width:100%;
-    font-size:clamp(2.45rem,12vw,3.25rem);
-  }
-
-  .side-kicker{
-    align-items:flex-start;
-    flex-direction:column;
-    gap:12px;
-  }
-
-  .loader-head{grid-template-columns:auto 1fr}
-  #porcentaje{grid-column:1 / -1}
+  .side-panel{min-height:0;gap:12px;justify-content:flex-start}
+  .side-content,.quick-item,.signature,.loader-meta{display:none}
+  .loader-card{padding:14px}
+  .loader-head{grid-template-columns:30px minmax(0,1fr) auto;gap:10px;margin-bottom:12px}
+  .loader-head > div{min-width:0}
+  .loader-symbol{width:30px;height:30px}
+  .loader-symbol img{width:20px;height:20px}
+  #texto{min-height:2.5em;font-size:.82rem;line-height:1.25}
+  #estado{font-size:.75rem}
+  #porcentaje{font-size:.85rem}
+  .progress{height:10px}
+  .quick-list{gap:0}
+  .enter-link{min-height:44px;padding:10px 14px;font-size:.94rem}
 }
 </style>
 <script src="maintenance-redirect.js"></script>

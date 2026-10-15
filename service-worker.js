@@ -1,4 +1,4 @@
-const CACHE_NAME = "ujeca-congreso-open-v3";
+const CACHE_NAME = "ujeca-congreso-open-v4";
 const MAINTENANCE_MODE = false;
 const LOCK_PAGE = "evento-cancelado.html";
 
@@ -23,6 +23,7 @@ const APP_SHELL = [
   "manifest.json",
   "img/logo.png",
   "img/banner.jpg",
+  "img/WhatsApp Image 2026-02-19 at 18.27.17.jpeg",
   "img/afiche-oficial-congreso-2026.jpeg"
 ];
 
