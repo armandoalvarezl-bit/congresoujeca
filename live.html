@@ -905,10 +905,11 @@
     </footer>
   </div>
 
+  <script src="api-config.js"></script>
+  <script src="live-config.js"></script>
   <script>
     const LIVE_URL = "https://www.youtube.com/watch?v=FmAd3Ljn42A";
     const paramsLive = new URLSearchParams(window.location.search);
-    const LIVE_URL_PUBLICADA = paramsLive.get("live") || paramsLive.get("url") || paramsLive.get("link") || LIVE_URL;
     const LIVE_TITULO = "Congreso Juvenil Trascendentales 2026";
     const FECHA_EVENTO = new Date("2026-12-05T00:00:00-05:00");
 
@@ -924,79 +925,26 @@
     const shareBtnHtml = shareBtn.innerHTML;
 
     function extraerUrl(texto) {
-      const raw = String(texto || "").trim();
-      if (!raw) return "";
-
-      const iframeSrc = raw.match(/src=["']([^"']+)["']/i);
-      if (iframeSrc && iframeSrc[1]) return iframeSrc[1].trim();
-
-      const urlMatch = raw.match(/https?:\/\/[^\s"'<>]+/i);
-      return urlMatch ? urlMatch[0].trim() : raw;
+      return window.normalizarLiveUJECA(texto)?.url || "";
     }
 
     function obtenerEmbedUrl(url) {
-      const texto = extraerUrl(url);
-      if (!texto) return "";
-
-      try {
-        const parsed = new URL(texto);
-        const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
-        const partes = parsed.pathname.split("/").filter(Boolean);
-        const params = new URLSearchParams(parsed.search);
-
-        if (host === "youtu.be") {
-          const id = partes[0];
-          return id ? "https://www.youtube.com/embed/" + id + "?autoplay=0&rel=0" : "";
-        }
-
-        if (host.includes("youtube-nocookie.com")) {
-          return texto;
-        }
-
-        if (host.includes("youtube.com")) {
-          const videoId = params.get("v");
-          if (videoId) return "https://www.youtube.com/embed/" + videoId + "?autoplay=0&rel=0";
-
-          if (partes[0] === "embed" && partes[1]) {
-            if (partes[1] === "live_stream") return texto;
-            return "https://www.youtube.com/embed/" + partes[1] + "?autoplay=0&rel=0";
-          }
-
-          if ((partes[0] === "live" || partes[0] === "shorts") && partes[1]) {
-            return "https://www.youtube.com/embed/" + partes[1] + "?autoplay=0&rel=0";
-          }
-
-          if (partes[0] === "watch") {
-            const id = params.get("v");
-            return id ? "https://www.youtube.com/embed/" + id + "?autoplay=0&rel=0" : "";
-          }
-
-          if (partes[0] === "embed" && parsed.search.includes("channel=")) {
-            return texto;
-          }
-        }
-
-        return texto;
-      } catch {
-        return "";
-      }
+      return window.normalizarLiveUJECA(url)?.embed || "";
     }
 
     function obtenerCanal(url) {
-      try {
-        return new URL(extraerUrl(url)).hostname.replace(/^www\./, "");
-      } catch {
-        return "Enlace externo";
-      }
+      return window.normalizarLiveUJECA(url)?.canal || "Pendiente";
     }
 
     function activarLive(url) {
+      player.querySelectorAll("iframe").forEach((iframe) => iframe.remove());
       const embedUrl = obtenerEmbedUrl(url);
       if (!embedUrl) {
         openLiveBtn.href = "#";
         openLiveBtn.setAttribute("aria-disabled", "true");
         liveStatus.textContent = "Esperando enlace oficial";
-        liveChannel.textContent = "YouTube";
+        liveChannel.textContent = "Pendiente";
+        if (playerOverlay) playerOverlay.style.display = "";
         if (playerHint) playerHint.textContent = "Enlace oficial pendiente";
         return false;
       }
@@ -1068,7 +1016,24 @@
       }
     });
 
-    activarLive(LIVE_URL_PUBLICADA);
+    async function cargarTransmision() {
+      const enlaceManual = paramsLive.get("live") || paramsLive.get("url") || paramsLive.get("link");
+      if (enlaceManual) {
+        activarLive(enlaceManual);
+        return;
+      }
+      try {
+        const data = await window.cargarLiveUJECA();
+        activarLive(data.url);
+      } catch {
+        activarLive(LIVE_URL);
+        if (playerHint) playerHint.textContent = "No se pudo actualizar el enlace. Mostrando transmisión predeterminada.";
+      }
+    }
+    openLiveBtn.addEventListener("click", (event) => {
+      if (openLiveBtn.getAttribute("aria-disabled") === "true") event.preventDefault();
+    });
+    cargarTransmision();
     actualizarCuentaRegresiva();
     setInterval(actualizarCuentaRegresiva, 1000);
   </script>
