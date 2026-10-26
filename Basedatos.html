@@ -107,6 +107,7 @@
 </div>
 
 <script src="api-config.js"></script>
+<script src="editar-inscrito.js"></script>
 <script>
 window.addEventListener("unhandledrejection", (event) => {
   const mensaje = String(event.reason?.message || event.reason || "");
@@ -166,7 +167,7 @@ function renderTabla(data){
   let headers=COLUMNAS_LISTADO.filter((columna)=>data.some((row)=>row[columna]));
   let html='<div class="ui-table-wrap"><table class="ui-table"><thead><tr>';
   headers.forEach(h=>html+=`<th>${escaparHtmlUJECA(obtenerEtiquetaInscritoUJECA(h))}</th>`);
-  if(adminActivo) html+="<th>Eliminar</th>";
+  if(adminActivo) html+="<th>Acciones</th>";
   html+="</tr></thead><tbody>";
 
   for(let i=0;i<data.length;i++){
@@ -180,7 +181,8 @@ function renderTabla(data){
       html+=`<td>${escaparHtmlUJECA(valor)}</td>`;
     });
     if(adminActivo){
-      html+=`<td><button class="ui-btn primary" style="padding:10px 14px;" onclick="eliminarRegistro(${i})">Eliminar</button></td>`;
+      const indice=datosGlobal.indexOf(row);
+      html+=`<td><button class="ui-btn primary" onclick="editarRegistro(${indice})">Editar</button> <button class="ui-btn soft" style="padding:10px 14px;" onclick="eliminarRegistro(${indice})">Eliminar</button></td>`;
     }
     html+="</tr>";
   }
@@ -215,6 +217,11 @@ document.getElementById("descargar").addEventListener("click",()=>{
   link.download="inscritos_2026.csv";
   link.click();
 });
+
+function editarRegistro(index){
+  if(!adminActivo) return;
+  editarInscritoUJECA(datosGlobal[index], async()=>{ await cargarListado(); });
+}
 
 function eliminarRegistro(index){
   if(!confirm("¿Eliminar este registro?")) return;

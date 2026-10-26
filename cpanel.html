@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -609,15 +609,6 @@ body.ui-body{
   min-height:0 !important;
 }
 
-.cp-panel .cp-live-card{
-  height:auto !important;
-  max-height:none !important;
-  padding:18px 22px;
-  margin-bottom:20px;
-}
-.cp-live-card h3{margin:0 0 8px;}
-.cp-live-card p{margin:8px 0 12px;}
-.cp-live-card #estadoLive{margin-bottom:0;overflow-wrap:anywhere;}
 
 .cp-panel .cp-table-wrap{
   height:calc(100% - 58px) !important;
@@ -786,6 +777,61 @@ body.ui-body{
     padding:10px !important;
   }
 }
+/* Mantener accesibles todos los datos de la ficha en pantallas bajas. */
+.cp-panel .cp-detail{overflow-y:auto !important;overflow-x:hidden !important;}
+.cp-panel .cp-detail-body{min-width:0;}
+.cp-panel .cp-detail h3{overflow-wrap:anywhere;}
+.cp-panel .cp-detail-row{grid-template-columns:minmax(80px,.7fr) minmax(0,1.3fr);}
+.cp-panel .cp-detail-row span{white-space:normal !important;overflow:visible !important;}
+.cp-detail-primary-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px;}
+.cp-detail-primary-actions .cp-btn{flex:1 1 150px;justify-content:center;white-space:normal;}
+@media(max-width:1500px){.cp-panel .cp-detail{max-height:none !important;overflow:visible !important;}}
+/* Vista de datos a todo el ancho, sin menú lateral. */
+.cp-panel:not([hidden]){grid-template-columns:minmax(0,1fr) !important;}
+.cp-panel:not([hidden]) > header.ui-topbar{display:none !important;}
+.cp-panel-bar{position:fixed;inset:0 0 auto;z-index:1301;height:64px;display:flex;align-items:center;gap:12px;padding:10px 24px;background:#fff;border-bottom:1px solid #ebe7e7;}
+.cp-panel-bar img{width:36px;height:36px;object-fit:contain;}
+.cp-panel-bar strong{font-size:.95rem;color:#351b20;letter-spacing:-.02em;}
+.cp-panel-bar small{display:block;color:#85777a;font-size:.73rem;font-weight:400;margin-top:2px;letter-spacing:0;}
+.cp-panel-bar .cp-menu-toggle{margin-left:auto;min-height:36px;padding:8px 12px;gap:8px;border-radius:7px;border:1px solid #e5dddd;background:#fff;color:#58202b;box-shadow:none;font-size:.85rem;}
+.cp-panel-bar .cp-menu-toggle:hover{background:#faf5f5;}
+.cp-panel-bar .cp-menu-toggle[aria-expanded="true"]{background:#f5e9ec;border-color:#dbc3c9;}
+.cp-panel.menu-abierto:not([hidden]) > header.ui-topbar{
+  display:flex !important;position:fixed !important;inset:64px 0 auto !important;
+  width:100% !important;height:58px !important;min-height:0 !important;max-height:none !important;
+  margin:0 !important;padding:8px 24px !important;border-radius:0 !important;
+  background:#fff !important;box-shadow:none !important;border:0 !important;border-bottom:1px solid #ebe7e7 !important;
+  flex-direction:row !important;flex-wrap:nowrap !important;overflow:hidden !important;z-index:1300;
+}
+.cp-panel.menu-abierto header.ui-topbar .ui-nav{flex-direction:row !important;flex-wrap:nowrap !important;overflow-x:auto !important;overflow-y:hidden !important;gap:8px !important;align-items:center !important;}
+.cp-panel.menu-abierto header.ui-topbar .ui-nav a{width:auto !important;min-height:38px !important;flex:none !important;background:transparent !important;color:#63555a !important;border:0 !important;border-radius:6px !important;padding:10px 14px !important;font-size:.85rem !important;}
+.cp-panel.menu-abierto header.ui-topbar .ui-nav a:last-child{margin-left:auto;color:#9b3443 !important;}
+.cp-panel.menu-abierto header.ui-topbar .ui-nav a:hover,.cp-panel.menu-abierto header.ui-topbar .ui-nav a.is-current{background:#f7eded !important;color:#69030a !important;}
+.cp-panel.menu-abierto header.ui-topbar .ui-brand{display:none !important;}
+.cp-panel:not([hidden]) > .cp-shell{grid-column:1 !important;width:calc(100% - 32px) !important;max-width:none !important;padding-top:84px !important;}
+.cp-panel.menu-abierto:not([hidden]) > .cp-shell{padding-top:142px !important;}
+.cp-panel .cp-title h2{font-size:clamp(1.65rem,2.5vw,2.6rem) !important;line-height:1.12 !important;}
+@media(max-width:620px){.cp-panel-bar{padding:10px 12px;gap:10px;}.cp-panel.menu-abierto:not([hidden]) > header.ui-topbar{padding:8px 12px !important;}}
+@media(max-width:620px){.cp-panel:not([hidden]) > .cp-shell{width:calc(100% - 16px) !important;}}
+.cp-full-dialog{width:min(900px,calc(100vw - 28px));max-height:88dvh;padding:0;border:1px solid #e9e0e2;border-radius:14px;color:#27303d;box-shadow:0 24px 90px #21000b45;overflow:auto;}
+.cp-full-dialog::backdrop{background:rgba(25,15,20,.5);}
+.cp-full-heading{position:sticky;top:0;display:flex;align-items:flex-start;gap:16px;padding:22px 24px;background:#fff;border-bottom:1px solid #eee6e8;z-index:1;}
+.cp-full-heading h2{margin:4px 0 0;font-size:1.35rem;overflow-wrap:anywhere;}
+.cp-full-heading small{color:#8b3445;}
+.cp-full-heading button{margin-left:auto;flex:none;border:1px solid #e5dadd;background:#fff;color:#672533;border-radius:8px;padding:9px 14px;cursor:pointer;}
+.cp-full-content{padding:4px 24px 24px;}
+.cp-full-section{margin-top:22px;}
+.cp-full-section h3{font-size:1rem;color:#652332;margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid #eee6e8;}
+.cp-full-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 28px;margin:0;}
+.cp-full-fields dt{font-size:.78rem;color:#7c7075;margin-bottom:5px;}
+.cp-full-fields dd{font-size:.95rem;margin:0;white-space:pre-wrap;overflow-wrap:anywhere;}
+.cp-full-totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:20px 0;}
+.cp-full-totals div{padding:14px;background:#f8f3f4;border-radius:8px;}
+.cp-full-totals span{display:block;font-size:.75rem;color:#77666d;margin-bottom:6px;}
+.cp-full-totals strong{font-size:1.15rem;overflow-wrap:anywhere;}
+.cp-full-payment{padding:14px 0;border-bottom:1px solid #eee6e8;}
+@media(max-width:550px){.cp-full-heading{padding:16px;}.cp-full-content{padding:0 16px 20px;}.cp-full-fields{grid-template-columns:1fr;}.cp-full-totals{grid-template-columns:1fr;}}
+.cp-panel .cp-content{grid-template-columns:minmax(0,1fr) !important;}
 </style>
 <script src="maintenance-redirect.js"></script>
 </head>
@@ -809,7 +855,12 @@ body.ui-body{
 </section>
 
 <div id="cpanel" class="cp-panel" hidden>
-  <header class="ui-topbar">
+  <div class="cp-panel-bar">
+    <img src="img/logo.png" alt="UJECA">
+    <strong>Panel de inscritos<small>Congreso Trascendentales 2026</small></strong>
+    <button type="button" id="btnMenuPanel" class="cp-btn cp-menu-toggle" aria-controls="menuPanel" aria-expanded="false"><i class="bi bi-list" aria-hidden="true"></i><span>Menú</span></button>
+  </div>
+  <header id="menuPanel" class="ui-topbar" inert>
     <div class="ui-brand">
       <div class="ui-brand-mark"><img src="img/logo.png" alt="Logo"></div>
       <div class="ui-brand-copy">
@@ -818,8 +869,7 @@ body.ui-body{
       </div>
     </div>
     <nav class="ui-nav">
-      <a href="#dashboard" data-page="dashboard" class="is-current"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Dashboard</a>
-      <a href="home.html" data-page="home"><i class="bi bi-house-door" aria-hidden="true"></i>Inicio</a>
+      <a href="#dashboard" data-page="dashboard" class="is-current"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Seguimiento</a>
       <a href="Basedatos.html" data-page="inscritos"><i class="bi bi-people" aria-hidden="true"></i>Inscritos</a>
       <a href="pasarelapago.html" data-page="pagos"><i class="bi bi-credit-card" aria-hidden="true"></i>Pagos</a>
       <a href="consulta-deuda.html" data-page="deuda"><i class="bi bi-search" aria-hidden="true"></i>Deuda</a>
@@ -837,21 +887,6 @@ body.ui-body{
       <div class="cp-status"><span>Estado de sincronización</span><div id="syncStatus">Preparando datos...</div></div>
     </section>
 
-    <section class="cp-table-card cp-live-card" aria-labelledby="tituloLive">
-      <h3 id="tituloLive">Transmisión en vivo</h3>
-      <p class="cp-muted">Pega el enlace del video de Facebook o YouTube que verán los visitantes en Live.</p>
-      <form id="formLive">
-        <div class="cp-field">
-          <label for="enlaceLive">Enlace de la transmisión</label>
-          <input id="enlaceLive" type="url" maxlength="2000" placeholder="https://www.youtube.com/watch?v=..." aria-describedby="estadoLive">
-        </div>
-        <p class="cp-muted">Para Facebook, usa un video público. Si el reproductor no aparece, los visitantes podrán abrir el enlace directamente. Deja el campo vacío para retirar la transmisión.</p>
-        <button class="cp-btn primary" id="btnGuardarLive" type="submit" disabled>Guardar transmisión</button>
-        <button class="cp-btn soft" id="btnCargarLive" type="button">Consultar enlace</button>
-        <a class="cp-btn soft" href="live.html" target="_blank" rel="noopener">Ver página Live</a>
-        <p id="estadoLive" class="cp-muted" role="status">Consultando transmisión...</p>
-      </form>
-    </section>
 
     <section class="cp-grid" aria-label="Indicadores">
       <div class="cp-metric"><span>Total base</span><strong id="mTotal">0</strong><small>Preinscritos cargados</small></div>
@@ -906,12 +941,6 @@ body.ui-body{
         <div id="tablaPanel" class="cp-table-wrap"><div class="cp-empty">Sincronizando base...</div></div>
       </article>
 
-      <aside class="cp-detail" aria-live="polite">
-        <div class="cp-detail-body" id="detallePanel">
-          <h3>Detalle</h3>
-          <p class="cp-muted">Selecciona un registro para ver el seguimiento, saldo y acciones rápidas.</p>
-        </div>
-      </aside>
     </section>
   </main>
 
@@ -921,7 +950,7 @@ body.ui-body{
         <h2 id="pageTitle">Página del sistema</h2>
         <p id="pageDescription">Contenido abierto dentro del CPanel.</p>
       </div>
-      <button type="button" class="cp-btn soft" id="btnDashboard"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Dashboard</button>
+      <button type="button" class="cp-btn soft" id="btnDashboard"><i class="bi bi-arrow-left" aria-hidden="true"></i>Volver a seguimiento</button>
     </div>
     <div class="cp-page-frame">
       <iframe id="pageFrame" title="Contenido del CPanel" loading="lazy"></iframe>
@@ -962,7 +991,8 @@ body.ui-body{
 </div>
 
 <script src="api-config.js"></script>
-<script src="live-config.js"></script>
+<script src="editar-inscrito.js"></script>
+<script src="ficha-inscrito.js"></script>
 <script>
 const PANEL_PASSWORD="admin2026";
 const TRACKING_KEY="ujeca_cpanel_seguimiento_v1";
@@ -1207,6 +1237,8 @@ function render(){
         <div class="cp-muted">Abonado ${money(row.abonado)}</div>
       </div>
       <div class="cp-row-actions">
+        <button type="button" class="cp-icon-btn is-primary" data-action="editar" data-key="${html(row.key)}"><i class="bi bi-pencil" aria-hidden="true"></i><span>Editar</span></button>
+        <button type="button" class="cp-icon-btn is-primary" data-action="ficha" data-key="${html(row.key)}"><i class="bi bi-file-earmark-pdf" aria-hidden="true"></i><span>Ficha PDF</span></button>
         <button type="button" class="cp-icon-btn is-dark" data-action="ver" data-key="${html(row.key)}"><i class="bi bi-eye" aria-hidden="true"></i><span>Ver</span></button>
         <button type="button" class="cp-icon-btn is-primary" data-action="nota" data-key="${html(row.key)}"><i class="bi bi-clipboard-plus" aria-hidden="true"></i><span>Nota</span></button>
         <button type="button" class="cp-icon-btn is-success" data-action="validar" data-key="${html(row.key)}"><i class="bi bi-shield-check" aria-hidden="true"></i><span>Validar</span></button>
@@ -1221,41 +1253,74 @@ function render(){
   if(!seleccionado && data[0]) seleccionar(data[0].key, false);
 }
 
-function seleccionar(key, scroll=true){
+function seleccionar(key){
   seleccionado=filas.find(r=>r.key === key) || null;
-  if(!seleccionado) return;
-  const row=seleccionado;
-  $("detallePanel").innerHTML=`
-    <h3>${html(row.nombre)}</h3>
-    <p><span class="cp-badge ${claseEstado(row.estado)}"><i class="bi ${iconoEstado(row.estado)}" aria-hidden="true"></i>${etiquetaEstado(row.estado)}</span></p>
-    <div class="cp-detail-row"><strong>Documento</strong><span>${html(row.documento || "-")}</span></div>
-    <div class="cp-detail-row"><strong>Código</strong><span>${html(row.codigo || "-")}</span></div>
-    <div class="cp-detail-row"><strong>Total</strong><span>${money(row.total)}</span></div>
-    <div class="cp-detail-row"><strong>Abonado</strong><span>${money(row.abonado)}</span></div>
-    <div class="cp-detail-row"><strong>Saldo</strong><span>${money(row.saldo)}</span></div>
-    <div class="cp-detail-row"><strong>Líder</strong><span>${html(row.lider || "-")}</span></div>
-    <div class="cp-detail-row"><strong>Contacto</strong><span>${html(row.telefono || row.correo || "-")}</span></div>
-    <div class="cp-note">${html(row.seguimiento?.nota || "Sin seguimiento registrado.")}</div>
-    <div class="cp-actions" style="margin-top:14px;">
-      <button type="button" class="cp-btn primary" data-action="nota" data-key="${html(row.key)}"><i class="bi bi-clipboard-plus" aria-hidden="true"></i>Seguimiento</button>
-      <button type="button" class="cp-btn success" data-action="validar" data-key="${html(row.key)}"><i class="bi bi-shield-check" aria-hidden="true"></i>Validar</button>
-      <button type="button" class="cp-btn soft" data-action="pago" data-key="${html(row.key)}"><i class="bi bi-credit-card" aria-hidden="true"></i>Pago</button>
-      <button type="button" class="cp-btn soft" data-action="wa" data-key="${html(row.key)}"><i class="bi bi-whatsapp" aria-hidden="true"></i>WhatsApp</button>
-      <button type="button" class="cp-btn warn" data-action="inactivo" data-key="${html(row.key)}"><i class="bi bi-slash-circle" aria-hidden="true"></i>${row.estado === "inactivo" ? "Activar" : "Inactivar"}</button>
-    </div>
-  `;
-  if(scroll && window.innerWidth <= 1180) $("detallePanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 async function ejecutarAccionPanel(action,key){
   if(!action || !key) return;
-  if(action === "ver") return seleccionar(key);
+  if(action === "ficha") return descargarFichaInscrito(key);
+  if(action === "editar") {
+    const row=filas.find(r=>r.key === key);
+    if(!row) return;
+    return editarInscritoUJECA(row.raw, async actualizado=>{
+      const tracking=cargarTracking();
+      const nuevaKey=keyRegistro(actualizado);
+      if(nuevaKey !== key && tracking[key]) {
+        tracking[nuevaKey]=tracking[key];
+        delete tracking[key];
+        guardarTracking(tracking);
+      }
+      await cargar();
+      seleccionar(nuevaKey,false);
+      notificar("Datos del campista guardados.");
+    });
+  }
+  if(action === "ver") return abrirInformacionInscrito(key);
   if(action === "nota") return abrirSeguimiento(key);
   if(action === "validar") return validarRegistro(key);
   if(action === "inactivo") return alternarInactivo(key);
   if(action === "pago") return abrirPagos(key);
   if(action === "wa") return abrirWhatsApp(key);
   if(action === "correo") return enviarEstadoCuenta(key);
+}
+
+function abrirInformacionInscrito(key){
+  const row=filas.find(r=>r.key === key);
+  if(!row) return;
+  seleccionar(key,false);
+  const p={...row.raw,SeguimientoNota:row.seguimiento?.nota ?? row.raw.SeguimientoNota,
+    SeguimientoFecha:row.seguimiento?.fecha ?? row.raw.SeguimientoFecha};
+  const grupos=[
+    ["Datos personales",["Codigo","FechaRegistro","Nombre","Documento","Edad","Sexo","Telefono","Correo"]],
+    ["Procedencia y congregación",["Pais","Departamento","Municipio","Iglesia","Pastor","TipoZona","ZonaAsignada","LiderAsignado","tipo"]],
+    ["Emergencia y salud",["Emergencia_nombre","Emergencia_telefono","Alergias"]],
+    ["Camiseta",["DeseaCamisa","TipoCamiseta","TallaCamisa","ColorCamisa"]],
+    ["Observaciones y seguimiento",["Observaciones","Puesto","EstadoRegistro","SeguimientoNota","SeguimientoFecha","SeguimientoActualizado"]]
+  ];
+  const etiquetas={Codigo:"Código",FechaRegistro:"Fecha de inscripción",Telefono:"Teléfono",Pais:"País",Emergencia_nombre:"Contacto de emergencia",Emergencia_telefono:"Teléfono de emergencia",Alergias:"Alergias",Observaciones:"Observaciones",Puesto:"Puesto",ValorTotal:"Valor total guardado"};
+  const conocidos=new Set(grupos.flatMap(([,campos])=>campos));
+  const adicionales=Object.keys(p).filter(c=>!conocidos.has(c));
+  if(adicionales.length)grupos.push(["Información adicional",adicionales]);
+  const valor=c=>{
+    let v=p[c];
+    if(v===null || v===undefined || v==="")return "Sin registrar";
+    if(c.includes("Fecha") || c==="SeguimientoActualizado"){
+      const fecha=new Date(v);
+      if(Number.isFinite(fecha.getTime()))v=fecha.toLocaleString("es-CO",{timeZone:"America/Bogota"});
+    }
+    return typeof v==="object" ? JSON.stringify(v) : String(v);
+  };
+  const secciones=grupos.map(([titulo,campos])=>`<section class="cp-full-section"><h3>${html(titulo)}</h3><dl class="cp-full-fields">${campos.map(c=>`<div><dt>${html(etiquetas[c] || window.obtenerEtiquetaInscritoUJECA(c))}</dt><dd>${html(valor(c))}</dd></div>`).join("")}</dl></section>`).join("");
+  const movimientos=pagos.filter(pago=>(row.documento && docNorm(pago.Documento)===docNorm(row.documento)) || (row.codigo && textoNorm(pago.Codigo)===textoNorm(row.codigo)));
+  const dialog=document.createElement("dialog");
+  dialog.className="cp-full-dialog";
+  dialog.setAttribute("aria-labelledby","tituloInformacionInscrito");
+  dialog.innerHTML=`<div class="cp-full-heading"><div><small>INFORMACIÓN DEL INSCRITO · ${html(etiquetaEstado(row.estado))}</small><h2 id="tituloInformacionInscrito">${html(row.nombre)}</h2></div><button type="button" autofocus>Cerrar</button></div><div class="cp-full-content"><div class="cp-full-totals"><div><span>Total</span><strong>${html(money(row.total))}</strong></div><div><span>Abonado</span><strong>${html(money(row.abonado))}</strong></div><div><span>Saldo pendiente</span><strong>${html(money(row.saldo))}</strong></div></div>${secciones}<section class="cp-full-section"><h3>Pagos registrados (${movimientos.length})</h3>${movimientos.length ? movimientos.map(pago=>`<div class="cp-full-payment"><dl class="cp-full-fields"><div><dt>Fecha de pago</dt><dd>${html(pago.FechaPago || pago.FechaRegistro || "Sin registrar")}</dd></div><div><dt>Abono</dt><dd>${html(money(numero(pago.ValorAbono)))}</dd></div><div><dt>Medio de pago</dt><dd>${html(pago.MedioPago || "Sin registrar")}</dd></div><div><dt>Referencia</dt><dd>${html(pago.ReferenciaPago || "Sin registrar")}</dd></div></dl></div>`).join("") : "<p>Sin pagos registrados.</p>"}</section></div>`;
+  dialog.querySelector("button").addEventListener("click",()=>dialog.close());
+  dialog.addEventListener("close",()=>dialog.remove(),{once:true});
+  document.body.appendChild(dialog);
+  dialog.showModal();
 }
 
 function actualizarFiltros(){
@@ -1425,7 +1490,6 @@ function entrar(){
   $("authError").style.display=ok ? "none" : "block";
   if(!ok) return;
   sessionStorage.setItem("ujeca_cpanel_auth","1");
-  cargarConfiguracionLive();
   $("authPanel").hidden=true;
   $("cpanel").hidden=false;
   cargar();
@@ -1436,66 +1500,7 @@ function cerrarSesionPanel(){
   location.reload();
 }
 
-let versionEdicionLive=0;
-$("enlaceLive").addEventListener("input",()=>{
-  versionEdicionLive++;
-  $("btnGuardarLive").disabled=false;
-  $("estadoLive").textContent="Enlace listo para guardar.";
-});
-
-async function cargarConfiguracionLive(){
-  const versionConsulta=versionEdicionLive;
-  $("btnCargarLive").disabled=true;
-  try{
-    const data=await window.cargarLiveUJECA();
-    if(versionConsulta !== versionEdicionLive) return;
-    $("enlaceLive").value=data.url;
-    $("btnGuardarLive").disabled=false;
-    $("estadoLive").textContent=data.url ? "Enlace publicado cargado." : "No hay una transmisión publicada.";
-  }catch(error){
-    if(versionConsulta === versionEdicionLive) $("estadoLive").textContent="No se pudo consultar el enlace actual. Puedes pegar uno y guardarlo. " + error.message;
-  }finally{
-    $("btnCargarLive").disabled=false;
-  }
-}
-
-$("btnCargarLive").addEventListener("click",cargarConfiguracionLive);
-$("formLive").addEventListener("submit",async(event)=>{
-  event.preventDefault();
-  const texto=$("enlaceLive").value.trim();
-  const live=window.normalizarLiveUJECA(texto);
-  if(texto && !live){
-    $("estadoLive").textContent="Ingresa el enlace de un video de Facebook o YouTube válido (https://).";
-    return;
-  }
-  versionEdicionLive++;
-  $("enlaceLive").disabled=true;
-  $("btnGuardarLive").disabled=true;
-  $("btnCargarLive").disabled=true;
-  $("estadoLive").textContent="Guardando transmisión...";
-  try{
-    const response=await fetch(window.UJECA_API.registro,{
-      method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
-      body:JSON.stringify({accion:"guardarLive",url:live ? live.url : "",clave:PANEL_PASSWORD}),
-      signal:AbortSignal.timeout(15000)
-    });
-    const data=await response.json();
-    if(!response.ok || data.resultado !== "ok" || typeof data.url !== "string") throw new Error(data.error || "No se confirmó el guardado. Consulta el enlace e intenta de nuevo.");
-    $("enlaceLive").value=data.url;
-    $("estadoLive").textContent=data.url ? "Transmisión guardada para todos los visitantes." : "Transmisión retirada.";
-    notificar("Configuración de transmisión guardada.");
-  }catch(error){
-    $("estadoLive").textContent="No se confirmó el guardado. Consulta el enlace para verificar. " + error.message;
-  }finally{
-    $("enlaceLive").disabled=false;
-    $("btnGuardarLive").disabled=false;
-    $("btnCargarLive").disabled=false;
-  }
-});
-if(sessionStorage.getItem("ujeca_cpanel_auth") === "1") cargarConfiguracionLive();
-
 const paginasPanel={
-  home:{titulo:"Inicio",descripcion:"Vista pública del Congreso abierta dentro del CPanel.",url:"home.html"},
   inscritos:{titulo:"Inscritos",descripcion:"Consulta y gestión de la base de inscritos.",url:"Basedatos.html"},
   pagos:{titulo:"Pagos",descripcion:"Registro y consulta de pagos del Congreso.",url:"pasarelapago.html"},
   deuda:{titulo:"Consulta de deuda",descripcion:"Consulta de saldos y estados de cuenta.",url:"consulta-deuda.html"}
@@ -1552,6 +1557,15 @@ document.querySelectorAll(".ui-nav a[data-page]").forEach((link)=>{
     nombre === "dashboard" ? mostrarDashboard() : abrirPaginaPanel(nombre);
   });
 });
+function alternarMenuPanel(abierto){
+  $("cpanel").classList.toggle("menu-abierto",abierto);
+  $("menuPanel").inert=!abierto;
+  $("btnMenuPanel").setAttribute("aria-expanded",String(abierto));
+  $("btnMenuPanel").querySelector("span").textContent=abierto ? "Ocultar menú" : "Menú";
+}
+$("btnMenuPanel").addEventListener("click",()=>alternarMenuPanel(!$("cpanel").classList.contains("menu-abierto")));
+$("menuPanel").addEventListener("click",event=>{if(event.target.closest("a"))alternarMenuPanel(false);});
+document.addEventListener("keydown",event=>{if(event.key === "Escape")alternarMenuPanel(false);});
 $("btnDashboard").addEventListener("click",mostrarDashboard);
 window.addEventListener("popstate",()=>{
   const nombre=location.hash.slice(1);
@@ -1567,11 +1581,6 @@ $("liderFiltro").addEventListener("change",render);
 $("zonaFiltro").addEventListener("change",render);
 $("ordenFiltro").addEventListener("change",render);
 $("tablaPanel").addEventListener("click",(event)=>{
-  const button=event.target.closest("[data-action]");
-  if(!button) return;
-  ejecutarAccionPanel(button.dataset.action,button.dataset.key);
-});
-$("detallePanel").addEventListener("click",(event)=>{
   const button=event.target.closest("[data-action]");
   if(!button) return;
   ejecutarAccionPanel(button.dataset.action,button.dataset.key);

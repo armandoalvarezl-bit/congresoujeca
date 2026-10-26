@@ -169,6 +169,10 @@ function atenderPost_(e) {
     return responderJson_(actualizarPago_(datos));
   }
 
+  if (accion === "actualizarInscripcion") {
+    return responderJson_(actualizarInscripcion_(datos));
+  }
+
   if (accion === "reenviarCorreoInscripcion") {
     return responderJson_(reenviarCorreoInscripcion_(datos));
   }
@@ -763,6 +767,52 @@ function eliminarInscripcion_(datos) {
 
   hoja.deleteRow(fila);
   return { resultado: "ok" };
+}
+
+function actualizarInscripcion_(datos) {
+  const hoja = obtenerHoja_(HOJA_INSCRIPCIONES);
+  const encabezados = obtenerEncabezadosActualesInscripciones_(hoja);
+  const filas = hoja.getDataRange().getValues();
+  const cambios = datos.cambios || {};
+  const doc = String(datos.DocumentoOriginal || "").trim();
+  const codigo = String(datos.CodigoOriginal || "").trim().toLowerCase();
+  const di = encabezados.indexOf("Documento");
+  const ci = encabezados.indexOf("Codigo");
+  const coincide = (fila) => codigo
+    ? String(fila[ci] || "").trim().toLowerCase() === codigo && (!doc || String(fila[di] || "").trim() === doc)
+    : doc && String(fila[di] || "").trim() === doc;
+  const indices = filas.map((fila, i) => i > 0 && coincide(fila) ? i : -1).filter(i => i >= 0);
+  if (indices.length !== 1) return { resultado: "error", error: "No se encontro un registro unico. Recarga el listado." };
+  const indice = indices[0];
+  const registro = {};
+  encabezados.forEach((columna, i) => registro[columna] = filas[indice][i]);
+  COLUMNAS_INSCRIPCIONES.forEach(columna => {
+    if (Object.prototype.hasOwnProperty.call(cambios, columna)) registro[columna] = String(cambios[columna]).trim();
+  });
+  if (!registro.Nombre || !registro.Documento || !registro.Codigo) return { resultado: "error", error: "Nombre, documento y codigo son obligatorios" };
+  if (filas.some((fila, i) => i > 0 && i !== indice &&
+    (String(fila[di] || "").trim() === registro.Documento || String(fila[ci] || "").trim().toLowerCase() === registro.Codigo.toLowerCase()))) {
+    return { resultado: "error", error: "El documento o codigo ya pertenece a otro campista" };
+  }
+  // Mantener las referencias de pagos y comprobantes al corregir la identidad.
+  [HOJA_PAGOS, HOJA_COMPROBANTES].forEach(nombre => {
+    const relacionada = obtenerHoja_(nombre);
+    const valores = relacionada.getDataRange().getValues();
+    const columnas = valores[0];
+    for (let i = 1; i < valores.length; i++) {
+      const persona = {};
+      columnas.forEach((columna, j) => persona[columna] = valores[i][j]);
+      if (!coincideParticipante_({ Documento: doc, Codigo: codigo }, persona)) continue;
+      ["Documento", "Codigo", "Nombre"].forEach(columna => escribirCeldaPorEncabezado_(relacionada, columnas, i + 1, columna, registro[columna]));
+      if (columnas.indexOf("CampistaKey") >= 0 && [doc, codigo].indexOf(String(persona.CampistaKey || "").trim().toLowerCase()) >= 0) {
+        escribirCeldaPorEncabezado_(relacionada, columnas, i + 1, "CampistaKey", registro.Documento);
+      }
+    }
+  });
+  COLUMNAS_INSCRIPCIONES.forEach(columna => {
+    if (Object.prototype.hasOwnProperty.call(cambios, columna)) escribirCeldaPorEncabezado_(hoja, encabezados, indice + 1, columna, registro[columna]);
+  });
+  return { resultado: "ok", registro: registro };
 }
 
 function actualizarEstadoRegistro_(datos) {
