@@ -41,10 +41,6 @@ body{
 
 body::before,body::after{display:none}
 
-.locked{
- overflow:hidden;
-}
-
 .shell{
  max-width:1320px;
  margin:0 auto;
@@ -129,373 +125,6 @@ body::before,body::after{display:none}
  color:white;
  background:linear-gradient(180deg,#e22025,#b80710);
  box-shadow:0 12px 24px rgba(200,20,29,.25);
-}
-
-.logout-link{
- text-decoration:none;
- color:white;
- background:rgba(255,255,255,.12);
- border:1px solid rgba(255,255,255,.18);
- min-width:112px;
- padding:12px 16px;
- border-radius:10px;
- font-weight:800;
- text-align:center;
- transition:.2s ease;
-}
-
-.logout-link:hover{
- background:linear-gradient(180deg,#e22025,#b80710);
- box-shadow:0 12px 24px rgba(200,20,29,.25);
-}
-
-.locked .shell{
- display:none;
-}
-
-.auth-screen{
- height:100vh;
- display:flex;
- flex-direction:column;
- justify-content:space-between;
- padding:42px 72px 34px;
- overflow:hidden;
- color:white;
- background:#030101;
- position:relative;
-}
-
-.auth-screen::before{
- content:"";
- position:absolute;
- inset:0;
- background:
-  radial-gradient(circle at 72% 52%,rgba(236,29,32,.22),transparent 24%),
-  linear-gradient(90deg,rgba(0,0,0,.08),rgba(0,0,0,.2) 48%,#030101 74%),
-  url("img/WhatsApp Image 2026-02-19 at 18.27.17.jpeg") left center/auto 112% no-repeat;
- filter:saturate(1.08) contrast(1.08);
-}
-
-.auth-screen::after{
- content:"";
- position:absolute;
- inset:0;
- background:
-  linear-gradient(90deg,transparent 0 43%,rgba(0,0,0,.76) 59%,#030101 100%),
-  radial-gradient(circle at 16% 42%,rgba(236,29,32,.2),transparent 28%);
- pointer-events:none;
-}
-
-.auth-layout{
- width:min(1500px,100%);
- margin:0 auto;
- display:grid;
- grid-template-columns:minmax(460px,1fr) minmax(460px,600px);
- gap:78px;
- align-items:center;
- flex:0 1 auto;
- min-height:0;
- position:relative;
- z-index:1;
-}
-
-.auth-brand{
- margin:0 auto 24px;
- padding:12px 18px;
- display:flex;
- align-items:center;
- gap:16px;
- position:relative;
- z-index:1;
- width:100%;
- max-width:100%;
- border-radius:16px;
- background:linear-gradient(90deg,rgba(0,0,0,.86),rgba(35,5,6,.72));
- border:1px solid rgba(255,255,255,.18);
- box-shadow:0 18px 42px rgba(0,0,0,.48),0 0 32px rgba(236,29,32,.18);
- backdrop-filter:blur(10px);
-}
-
-.auth-brand img{
- width:82px;
- height:48px;
- object-fit:contain;
- filter:drop-shadow(0 12px 24px rgba(0,0,0,.55));
-}
-
-.auth-brand h2{
- margin:0;
- color:white;
- font-size:1.22rem;
- letter-spacing:.02em;
- text-transform:uppercase;
- font-weight:900;
- text-shadow:0 4px 14px rgba(0,0,0,1),0 0 18px rgba(236,29,32,.45);
-}
-
-.auth-brand span{
- display:block;
- margin-top:4px;
- color:#ffffff;
- letter-spacing:.24em;
- text-transform:uppercase;
- font-size:.78rem;
- font-weight:800;
- text-shadow:0 3px 12px rgba(0,0,0,1);
-}
-
-.auth-copy{
- min-height:640px;
- align-self:stretch;
- border-radius:0;
- position:relative;
-}
-
-.auth-copy > *{
- display:none;
-}
-
-.auth-copy .welcome{
- display:block;
- font-size:3rem;
- line-height:1.08;
- font-weight:300;
-}
-
-.auth-copy h1{
- margin:8px 0 22px;
- color:#f1c45f;
- font-size:3.55rem;
- line-height:1;
-}
-
-.auth-line{
- width:92px;
- height:4px;
- border-radius:999px;
- background:#f1c45f;
- margin-bottom:32px;
-}
-
-.auth-copy p{
- max-width:420px;
- color:rgba(255,255,255,.88);
- font-size:1.35rem;
- line-height:1.55;
-}
-
-.auth-copy .welcome,
-.auth-copy h1,
-.auth-copy .auth-line,
-.auth-copy > p{
- display:none;
-}
-
-.auth-secure{
- position:absolute;
- left:calc(100% + 78px);
- bottom:22px;
- width:min(440px,100vw - 96px);
- margin:0 0 0 54px;
- padding:14px 16px;
- display:grid;
- grid-template-columns:auto 1fr;
- gap:16px;
- align-items:center;
- max-width:440px;
- border-radius:16px;
- background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(18,5,6,.5));
- border:1px solid rgba(255,255,255,.1);
- box-shadow:0 18px 42px rgba(0,0,0,.38);
- backdrop-filter:blur(8px);
-}
-
-.secure-icon,
-.auth-lock{
- display:grid;
- place-items:center;
- border-radius:50%;
- background:rgba(236,29,32,.12);
- color:#ff3237;
-}
-
-.secure-icon{
- width:58px;
- height:58px;
- border:1px solid #ef292d;
- box-shadow:0 0 34px rgba(236,29,32,.22);
-}
-
-.auth-secure strong{
- display:block;
- font-size:1.1rem;
- color:white;
- text-shadow:0 2px 10px rgba(0,0,0,.9);
-}
-
-.auth-secure span{
- display:block;
- margin-top:6px;
- color:rgba(255,255,255,.95);
- font-size:.95rem;
- line-height:1.45;
- text-shadow:0 2px 8px rgba(0,0,0,.85);
-}
-
-.auth-panel{
- display:flex;
- flex-direction:column;
- align-items:stretch;
-}
-
-.auth-card{
- padding:50px 54px 44px;
- border-radius:18px;
- background:linear-gradient(145deg,rgba(31,13,14,.94),rgba(8,5,5,.96));
- border:1px solid rgba(239,41,45,.82);
- box-shadow:
-  0 0 70px rgba(236,29,32,.32),
-  0 30px 90px rgba(0,0,0,.72);
- backdrop-filter:blur(18px);
-}
-
-.auth-lock{
- width:108px;
- height:108px;
- margin:4px auto 26px;
- background:rgba(236,29,32,.14);
- box-shadow:0 0 42px rgba(236,29,32,.12);
-}
-
-.auth-card h3{
- margin:0;
- text-align:center;
- color:white;
- font-size:2.35rem;
- line-height:1.05;
- font-weight:900;
- text-shadow:0 8px 18px rgba(0,0,0,.45);
-}
-
-.auth-card .auth-subtitle{
- margin:16px 0 32px;
- text-align:center;
- color:rgba(255,255,255,.86);
- font-size:1.05rem;
-}
-
-.auth-card label{
- color:white;
- font-weight:800;
- font-size:1rem;
-}
-
-.password-box{
- margin-top:14px;
- display:grid;
- grid-template-columns:auto 1fr auto;
- align-items:center;
- gap:16px;
- min-height:68px;
- padding:0 22px;
- border-radius:14px;
- border:1px solid rgba(239,41,45,.72);
- background:rgba(50,13,14,.5);
- color:rgba(255,255,255,.78);
-}
-
-.password-box input{
- width:100%;
- min-height:66px;
- padding:0;
- border:0;
- border-radius:0;
- background:transparent;
- color:white;
- box-shadow:none;
-}
-
-.password-box input:focus{
- box-shadow:none;
- transform:none;
-}
-
-.password-box button{
- width:34px;
- height:34px;
- padding:0;
- margin:0;
- display:grid;
- place-items:center;
- border-radius:8px;
- background:transparent;
- color:rgba(255,255,255,.82);
- box-shadow:none;
-}
-
-.auth-actions{
- display:grid;
- gap:22px;
- margin-top:34px;
-}
-
-.auth-actions button,
-.auth-actions a{
- min-height:68px;
- display:grid;
- place-items:center;
- border-radius:14px;
- text-decoration:none;
- font:inherit;
- font-weight:800;
-}
-
-.auth-actions button{
- width:100%;
- margin:0;
- color:white;
- background:linear-gradient(180deg,#ff3338,#d91418);
- box-shadow:0 18px 32px rgba(236,29,32,.28);
-}
-
-.home-link{
- color:white;
- background:transparent;
- border:1px solid rgba(239,41,45,.88);
-}
-
-.auth-error{
- margin-top:14px;
- padding:12px 14px;
- border-radius:12px;
- background:rgba(236,29,32,.12);
- color:#ff7478;
- font-weight:800;
- display:none;
-}
-
-.auth-note{
- margin:30px 0 0;
- font-size:.96rem;
- color:rgba(255,255,255,.78);
- text-align:center;
-}
-
-.auth-footer{
- display:none;
- width:min(1320px,100%);
- margin:18px auto 0;
- padding-top:18px;
- border-top:1px solid rgba(255,255,255,.14);
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:18px;
- color:rgba(255,255,255,.72);
-}
-
-.auth-footer strong{
- color:white;
 }
 
 .hero{
@@ -1258,138 +887,26 @@ tr:hover td{
  .section-card h3{
   font-size:1.18rem;
  }
- .auth-screen{
-  height:auto;
-  min-height:100vh;
-  padding:24px 16px 30px;
-  overflow:auto;
- }
- .auth-screen::before{
-  background:
-   linear-gradient(180deg,rgba(0,0,0,.34),rgba(0,0,0,.84) 58%,#030101),
-   url("img/WhatsApp Image 2026-02-19 at 18.27.17.jpeg") top center/cover no-repeat;
- }
- .auth-screen::after{
-  background:linear-gradient(180deg,rgba(0,0,0,.08),#030101 62%);
- }
- .auth-brand{align-items:flex-start}
- .auth-brand img{width:98px;height:54px}
- .auth-brand h2{font-size:1.05rem}
- .auth-brand span{letter-spacing:.22em;font-size:.72rem}
- .auth-layout{grid-template-columns:1fr;gap:24px}
- .auth-copy{
-  min-height:430px;
- }
- .auth-copy .welcome{font-size:2rem}
- .auth-copy h1{font-size:2.55rem}
- .auth-copy p{font-size:1.08rem}
- .auth-secure{
-  position:static;
-  width:auto;
-  margin:24px 4px 0;
- }
- .auth-card{
-  padding:30px 20px;
-  border-radius:18px;
- }
- .auth-lock{
-  width:88px;
-  height:88px;
- }
- .auth-card h3{
-  font-size:2rem;
- }
- .auth-actions button,
- .auth-actions a,
- .password-box{
-  min-height:60px;
- }
- .password-box input{
-  min-height:58px;
- }
- .auth-footer{flex-direction:column;align-items:flex-start}
+
 }
 </style>
-<link rel="stylesheet" href="responsive-fixes.css">
+<link rel="stylesheet" href="pagos.css?v=20261029-4">
+<script>
+// El acceso al módulo utiliza la sesión existente del panel.
+if(window.self !== window.top){
+  document.documentElement.classList.add("payments-embedded");
+}
+if(window.self === window.top || sessionStorage.getItem("ujeca_cpanel_auth") !== "1"){
+  const busqueda=new URLSearchParams(location.search).get("buscar");
+  if(busqueda) sessionStorage.setItem("ujeca_pago_busqueda",busqueda);
+  location.replace("cpanel.html#pagos");
+}
+</script>
 <script src="maintenance-redirect.js"></script>
 </head>
 
-<body class="locked">
-<div id="authScreen" class="auth-screen">
-  <main class="auth-layout">
-    <section class="auth-copy">
-      <span class="welcome">Bienvenido a la</span>
-      <h1>Pasarela de Pagos</h1>
-      <div class="auth-line"></div>
-      <p>Este acceso es exclusivo para el equipo autorizado de pagos.</p>
-
-      <div class="auth-secure">
-        <div class="secure-icon">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="1.8"/>
-            <rect x="8.5" y="10.5" width="7" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M10 10.5V8.8a2 2 0 0 1 4 0v1.7" stroke="currentColor" stroke-width="1.8"/>
-          </svg>
-        </div>
-        <div>
-          <strong>Acceso seguro</strong>
-          <span>Los registros y comprobantes quedan reservados para el equipo autorizado.</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="auth-card">
-      <header class="auth-brand">
-        <img src="img/logo.png" alt="Logo UJECA">
-        <div>
-          <h2>Pasarela de pagos</h2>
-          <span>Acceso autorizado</span>
-        </div>
-      </header>
-
-      <div class="auth-lock">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M12 14v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <h3>Iniciar sesión</h3>
-      <p class="auth-subtitle">Ingresa tu clave de acceso para continuar</p>
-
-      <form id="authForm">
-        <label for="authPassword">Clave de acceso</label>
-        <div class="password-box">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M8 10V8a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.8"/>
-          </svg>
-          <input id="authPassword" type="password" autocomplete="current-password" placeholder="Ingresa tu contraseña" required>
-          <button type="button" onclick="alternarClavePagos()" aria-label="Mostrar u ocultar contraseña">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M3 3l18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" stroke="currentColor" stroke-width="1.8"/>
-              <path d="M7.5 7.8C5.7 8.8 4.2 10.2 3 12c2.2 3.3 5.2 5 9 5 1.2 0 2.4-.2 3.4-.7" stroke="currentColor" stroke-width="1.8"/>
-              <path d="M12 7c3.8 0 6.8 1.7 9 5-.5.8-1.1 1.5-1.8 2.1" stroke="currentColor" stroke-width="1.8"/>
-            </svg>
-          </button>
-        </div>
-        <div class="auth-actions">
-          <button type="submit">Ingresar</button>
-          <a class="home-link" href="index.html">Volver al inicio</a>
-        </div>
-        <div id="authError" class="auth-error">Acceso restringido</div>
-      </form>
-      <p class="auth-note">Acceso restringido solo para personal autorizado</p>
-    </section>
-  </main>
-
-  <footer class="auth-footer">
-    <strong>Sistema seguro y cifrado</strong>
-    <span>Hay poder en dar</span>
-  </footer>
-</div>
-
+<body class="payments-page">
+<a class="skip-link" href="#consulta">Ir a la consulta de pagos</a>
 <div id="paymentLoader" class="payment-loader" aria-live="polite" aria-hidden="true">
   <div class="payment-loader-card">
     <div class="payment-loader-head">
@@ -1448,68 +965,53 @@ tr:hover td{
   </div>
 </div>
 
-<div class="shell">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-badge" style="background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,247,241,.92));padding:8px;">
-        <img src="img/logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;">
-      </div>
-      <div class="brand-copy">
-        <h1>Centro de pagos del congreso</h1>
-        <p>Trascendentales · panel de pagos, consulta de inscritos y control de comprobantes.</p>
-      </div>
-    </div>
-    <nav class="nav">
-      <a href="index.html"><i class="bi bi-house-door" aria-hidden="true"></i>Inicio</a>
-      <a href="Basedatos.html"><i class="bi bi-people" aria-hidden="true"></i>Inscritos</a>
-      <a href="cpanel.html"><i class="bi bi-speedometer2" aria-hidden="true"></i>CPanel</a>
-      <a href="form.html"><i class="bi bi-person-plus" aria-hidden="true"></i>Registro</a>
-      <a href="live.html"><i class="bi bi-broadcast" aria-hidden="true"></i>Live</a>
-    </nav>
-    <a class="logout-link" href="#" onclick="cerrarSesionPagos();return false;"><i class="bi bi-box-arrow-right" aria-hidden="true"></i>Cerrar sesión</a>
-  </header>
-
-  <section class="hero">
+<main class="shell">
+  <div class="page-heading">
+    <div><span class="page-kicker">TESORERÍA / CONGRESO 2026</span><h2>Control de pagos</h2><p>Consulta saldos, registra abonos y gestiona los comprobantes.</p></div>
+    <div class="connection-tools"><span id="conexionPagos" class="connection-status" role="status" data-state="loading">Conectando con la base…</span><button id="btnActualizarBase" class="btn-muted" type="button" onclick="cargar()"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i>Actualizar</button></div>
+  </div>
+  <div class="payment-workspace">
+  <section class="hero" id="consulta" aria-label="Consulta y saldo del participante">
     <article class="hero-main">
-      <span class="eyebrow">Control operativo</span>
-      <h2>Consulta, registra y confirma pagos en un solo panel.</h2>
-      <p>Busca al campista por documento, revisa su estado actual y registra abonos con soporte de comprobantes sin salir de la misma pantalla.</p>
+      <span class="eyebrow">01 · Consulta</span>
+      <h2>Encuentra al participante</h2>
+      <p>Busca por documento, nombre o código para consultar su cuenta.</p>
 
       <div class="search-card">
-        <div class="search-row">
+        <form class="search-row" id="buscarParticipanteForm">
           <div>
             <label for="cedula">Documento, nombre o código del participante</label>
-            <input id="cedula" placeholder="Ingrese documento, nombre o código">
+            <input id="cedula" type="search" autocomplete="off" placeholder="Ej. documento, nombre o código" aria-describedby="estadoPago">
           </div>
-          <button class="btn-primary" onclick="buscarParticipante()"><i class="bi bi-search" aria-hidden="true"></i>Buscar participante</button>
-        </div>
+          <button class="btn-primary" type="submit"><i class="bi bi-search" aria-hidden="true"></i>Buscar</button>
+        </form>
 
         <div class="stats-grid">
-          <div class="metric"><span>Valor congreso</span><strong id="metricValor">$500.000</strong></div>
-          <div class="metric"><span>Camiseta</span><strong id="metricCamisa">$0</strong></div>
-          <div class="metric"><span>Total abonado</span><strong id="metricAbonado">$0</strong></div>
-          <div class="metric"><span>Saldo actual</span><strong id="metricSaldo">$0</strong></div>
+          <div class="metric"><span>Valor congreso</span><strong id="metricValor">—</strong></div>
+          <div class="metric"><span>Camiseta</span><strong id="metricCamisa">—</strong></div>
+          <div class="metric"><span>Total abonado</span><strong id="metricAbonado">—</strong></div>
+          <div class="metric"><span>Saldo actual</span><strong id="metricSaldo">—</strong></div>
         </div>
 
-        <div id="estadoPago" class="status-line"></div>
+        <div id="estadoPago" class="status-line" role="status"></div>
       </div>
     </article>
 
     <aside class="hero-side">
-      <h3 class="side-title">Resumen del inscrito</h3>
+      <h3 class="side-title">Ficha del participante</h3>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span class="small">La información se actualiza al consultar documento, nombre o código.</span>
+        <span class="small">Los datos aparecerán después de la consulta.</span>
         <span id="badgeEstado" class="badge pendiente">Sin consulta</span>
       </div>
 
       <div class="summary-grid">
-        <div class="summary-item"><span>Nombre</span><strong id="nombreLabel">No registrado</strong><input id="nombre" readonly hidden></div>
+        <div class="summary-item"><span>Nombre</span><strong id="nombreLabel">Sin participante seleccionado</strong><input id="nombre" readonly hidden></div>
         <div class="summary-item"><span>Documento</span><strong id="docLabel">-</strong><input id="doc" readonly hidden></div>
         <div class="summary-item"><span>Iglesia</span><strong id="iglesiaLabel">-</strong><input id="iglesia" readonly hidden></div>
         <div class="summary-item"><span>Ciudad</span><strong id="ciudadLabel">-</strong><input id="ciudad" readonly hidden></div>
         <div class="summary-item"><span>Zona</span><strong id="zonaLabel">-</strong><input id="zona" readonly hidden></div>
-        <div class="summary-item"><span>Lider asignado</span><strong id="liderLabel">-</strong><input id="lider" readonly hidden></div>
-        <div class="summary-item"><span>Codigo</span><strong id="codigoLabel">-</strong><input id="codigo" readonly hidden></div>
+        <div class="summary-item"><span>Líder asignado</span><strong id="liderLabel">-</strong><input id="lider" readonly hidden></div>
+        <div class="summary-item"><span>Código</span><strong id="codigoLabel">-</strong><input id="codigo" readonly hidden></div>
         <div class="summary-item"><span>Consulta</span><strong id="fechaLabel">-</strong><input id="fecha" readonly hidden></div>
       </div>
 
@@ -1523,11 +1025,15 @@ tr:hover td{
   </section>
 
   <div class="sections">
-    <section class="section-card registro-card">
+    <div class="workspace-tabs" role="tablist" aria-label="Gestión del pago">
+      <button id="tabRegistro" type="button" role="tab" aria-selected="true" aria-controls="registro" onclick="mostrarVistaPago('registro')">Registrar abono</button>
+      <button id="tabHistorial" type="button" role="tab" aria-selected="false" aria-controls="historial" onclick="mostrarVistaPago('historial')">Historial y anulaciones</button>
+    </div>
+    <section class="section-card registro-card" id="registro" role="tabpanel" aria-labelledby="tabRegistro">
       <div class="section-head">
         <div>
-          <h3>Registrar pago</h3>
-          <p>Ingresa el responsable, el valor abonado y el comprobante. El formulario está optimizado para trabajar rápido desde celular o escritorio.</p>
+          <span class="section-kicker">02 · Registro</span><h3 id="registroTitulo">Registrar abono</h3>
+          <p>Completa los datos del pago y revisa el soporte antes de guardar.</p>
         </div>
       </div>
 
@@ -1541,7 +1047,7 @@ tr:hover td{
           <select id="medioPago" onchange="actualizarReferenciaEfectivo(); actualizarRevisionManual()">
             <option value="Transferencia">Transferencia</option>
             <option value="Efectivo">Efectivo</option>
-            <option value="Consignacion">Consignacion</option>
+            <option value="Consignacion">Consignación</option>
             <option value="Nequi">Nequi</option>
             <option value="Daviplata">Daviplata</option>
             <option value="Meta Pay">Meta Pay</option>
@@ -1557,7 +1063,7 @@ tr:hover td{
           <input id="fechaPago" type="date">
         </div>
         <div>
-          <label for="referenciaPago">Referencia o numero de comprobante</label>
+          <label for="referenciaPago">Referencia o número de comprobante</label>
           <input id="referenciaPago" placeholder="Ej: TXN-12345">
           <div class="field-note">Si seleccionas <strong>Efectivo</strong>, se generará automáticamente un número de referencia si no escribes uno.</div>
         </div>
@@ -1567,7 +1073,7 @@ tr:hover td{
         </div>
         <div class="field-span">
           <label for="observacionPago">Observaciones</label>
-          <textarea id="observacionPago" rows="3" placeholder="Notas internas del organizador"></textarea>
+          <textarea id="observacionPago" rows="2" placeholder="Notas internas del organizador"></textarea>
         </div>
       </div>
 
@@ -1582,97 +1088,55 @@ tr:hover td{
         <button class="btn-primary" onclick="window.print()"><i class="bi bi-printer" aria-hidden="true"></i>Imprimir resumen</button>
       </div>
 
-      <div id="mensajePago" class="status-line"></div>
+      <div id="mensajePago" class="status-line" role="status"></div>
     </section>
 
-    <section class="section-card">
+    <section class="section-card" id="historial" role="tabpanel" aria-labelledby="tabHistorial" hidden>
       <div class="section-head">
         <div>
-          <h3>Historial de pagos</h3>
-          <p>Consulta los pagos registrados para el campista seleccionado, identifica si vienen del sistema en línea o del respaldo local y abre sus comprobantes desde la misma tabla.</p>
+          <span class="section-kicker">03 · Movimientos</span><h3 id="historialTitulo">Historial de pagos</h3>
+          <p>Consulta, edita o anula un pago registrado por error. Las anulaciones conservan el historial.</p>
         </div>
       </div>
 
-      <div class="table-wrap">
+      <div class="table-wrap" role="region" aria-label="Historial de pagos, desplaza horizontalmente para ver todas las columnas" tabindex="0">
         <table>
           <thead>
             <tr>
-              <th>Fecha</th>
-              <th>Abono</th>
-              <th>Medio</th>
-              <th>Referencia</th>
-              <th>Organizador</th>
-              <th>Comprobante</th>
-              <th>Comprobante pago</th>
-              <th>Observaciones</th>
-              <th>Acción</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Abono</th>
+              <th scope="col">Referencia</th>
+              <th scope="col">Soporte</th>
+              <th scope="col">Acción</th>
             </tr>
           </thead>
           <tbody id="tablaPagos">
-            <tr><td colspan="9" class="empty">Busca un participante para consultar su historial.</td></tr>
+            <tr><td colspan="5" class="empty">Busca un participante para consultar su historial.</td></tr>
           </tbody>
         </table>
       </div>
     </section>
   </div>
-</div>
+  </div>
+</main>
 
-<script>
-const AUTH_PAGOS_HASH="03d1048c73d0219c114fd3d93ccf6509b5a98b040e875f7deec52798021dfe81";
-const AUTH_PAGOS_SESSION="ujeca_pasarela_pagos_ok";
+<dialog id="dialogAnularPago" class="annul-dialog" aria-labelledby="tituloAnularPago">
+  <form id="formAnularPago">
+    <h2 id="tituloAnularPago">Anular pago por error</h2>
+    <p id="resumenAnularPago"></p>
+    <p>El abono dejará de contar en el saldo. Se conservarán el importe original, el soporte y el motivo en el historial.</p>
+    <label for="responsableAnulacion">Responsable de la anulación</label>
+    <input id="responsableAnulacion" required maxlength="150" autocomplete="name">
+    <label for="motivoAnulacion">Motivo del error</label>
+    <textarea id="motivoAnulacion" required minlength="5" maxlength="1000" rows="3" placeholder="Explica por qué se debe anular este pago"></textarea>
+    <p id="errorAnulacion" role="alert"></p>
+    <div class="annul-actions">
+      <button id="btnCerrarAnulacion" type="button" class="btn-muted" onclick="document.getElementById('dialogAnularPago').close()">Volver</button>
+      <button id="btnConfirmarAnulacion" type="submit" class="btn-danger">Confirmar anulación</button>
+    </div>
+  </form>
+</dialog>
 
-async function sha256Texto(valor){
-  const data=new TextEncoder().encode(valor);
-  const hash=await crypto.subtle.digest("SHA-256",data);
-  return Array.from(new Uint8Array(hash)).map(byte=>byte.toString(16).padStart(2,"0")).join("");
-}
-
-function mostrarPasarelaPagos(){
-  document.body.classList.remove("locked");
-  document.getElementById("authScreen").style.display="none";
-}
-
-function prepararLoginPagos(){
-  window.scrollTo(0,0);
-  document.body.classList.add("locked");
-  document.getElementById("authScreen").style.display="flex";
-}
-
-function cerrarSesionPagos(){
-  sessionStorage.removeItem(AUTH_PAGOS_SESSION);
-  prepararLoginPagos();
-  document.getElementById("authPassword").value="";
-  document.getElementById("authPassword").focus();
-}
-
-function alternarClavePagos(){
-  const input=document.getElementById("authPassword");
-  input.type=input.type==="password" ? "text" : "password";
-  input.focus();
-}
-
-document.getElementById("authForm").addEventListener("submit",async (event)=>{
-  event.preventDefault();
-  const password=document.getElementById("authPassword").value;
-  const error=document.getElementById("authError");
-  const hash=await sha256Texto(password);
-
-  if(hash===AUTH_PAGOS_HASH){
-    sessionStorage.setItem(AUTH_PAGOS_SESSION,"1");
-    error.style.display="none";
-    mostrarPasarelaPagos();
-    return;
-  }
-
-  error.style.display="block";
-});
-
-if(sessionStorage.getItem(AUTH_PAGOS_SESSION)==="1"){
-  mostrarPasarelaPagos();
-}else{
-  prepararLoginPagos();
-}
-</script>
 <script src="api-config.js"></script>
 <script>
 const API=window.UJECA_API.pagos;
@@ -1688,7 +1152,7 @@ const STORAGE_PAGOS_PENDIENTES="ujeca_pagos_pendientes_sincronizar_2026";
 let BD=[];
 let cargada=false;
 let busquedaInicialAplicada=false;
-const PRECIO_CONGRESO=500000;
+const PRECIO_CONGRESO=250000;
 const PRECIO_CAMISA=35000;
 const LIDER_KATE="Katherine Bermudez - Coordinadora General - UJECA - +57 319 4480759";
 const LIDER_ANDRES="Andres Miranda";
@@ -1736,6 +1200,7 @@ let comprobanteTemporal=null;
 let pagosRemotos=[];
 let comprobantesRemotos=[];
 let pagosHistorialActual=[];
+let pagoEditando=null;
 let promesaOCRPagos=null;
 let participantesPorDocumento=new Map();
 let guardandoPago=false;
@@ -2356,7 +1821,7 @@ function pagoTieneMismaReferencia(pago,referencia){
 function todosLosPagosRegistrados(){
   return [].concat(pagosRemotos || []).concat(obtenerPagosPendientesSincronizar())
     .map(normalizarPago)
-    .filter(Boolean);
+    .filter(pago=>pago && !pagoEstaAnulado(pago));
 }
 
 function buscarPagoPorReferencia(referencia){
@@ -2378,10 +1843,10 @@ function fechaInputPago(valor){
 }
 
 function clavePagoComprobante(item){
-  const ref=normalizarReferenciaPago(item?.ReferenciaPago || item?.referenciaPago || "");
-  if(ref) return `ref::${ref}`;
   const id=normalizarReferenciaPago(item?.IdPago || item?.idPago || item?.IdComprobante || item?.idComprobante || "");
   if(id) return `id::${id}`;
+  const ref=normalizarReferenciaPago(item?.ReferenciaPago || item?.referenciaPago || "");
+  if(ref) return `ref::${ref}`;
   const doc=normalizarDocumento(item?.Documento || item?.documento || item?.cedula || "");
   const valor=numeroPago(item?.ValorAbono || item?.abono || item?.valor || 0);
   const fecha=fechaInputPago(item?.FechaPago || item?.fechaPago || "");
@@ -2405,12 +1870,12 @@ function fusionarPagosConComprobantes(pagos,comprobantes){
     const comp=mapaComprobantes.get(clavePagoComprobante(pago))
       || (pago.IdPago ? mapaComprobantes.get(`id::${normalizarReferenciaPago(pago.IdPago)}`) : null)
       || (pago.ReferenciaPago ? mapaComprobantes.get(`ref::${normalizarReferenciaPago(pago.ReferenciaPago)}`) : null);
-    if(!comp) return pago;
+    if(!comp || (pago.IdPago && comp.IdPago && String(pago.IdPago) !== String(comp.IdPago))) return pago;
     return {
       ...pago,
       FechaPago:fechaInputPago(comp.FechaPago || pago.FechaPago),
       ReferenciaPago:pago.ReferenciaPago || comp.ReferenciaPago,
-      ValorAbono:pago.ValorAbono || comp.ValorAbono,
+      ValorAbono:pagoEstaAnulado(pago) ? 0 : pago.ValorAbono || comp.ValorAbono,
       SaldoPosterior:pago.SaldoPosterior || comp.SaldoPosterior
     };
   }).filter(Boolean);
@@ -2505,7 +1970,7 @@ function limpiarResumenParticipantePago(){
     if(input) input.value="";
   });
   const labels={
-    nombreLabel:"No registrado",
+    nombreLabel:"Sin participante seleccionado",
     docLabel:"-",
     iglesiaLabel:"-",
     ciudadLabel:"-",
@@ -2514,10 +1979,10 @@ function limpiarResumenParticipantePago(){
     codigoLabel:"-",
     fechaLabel:"-",
     estadoVisible:"Pendiente de consulta",
-    metricValor:money(PRECIO_CONGRESO),
-    metricCamisa:money(0),
-    metricAbonado:money(0),
-    metricSaldo:money(0)
+    metricValor:"—",
+    metricCamisa:"—",
+    metricAbonado:"—",
+    metricSaldo:"—"
   };
   Object.entries(labels).forEach(([id,valor])=>{
     const el=document.getElementById(id);
@@ -2608,7 +2073,12 @@ function normalizarPago(pago){
     ColorCamisa:pago.ColorCamisa || pago.colorCamisa || "",
     ValorCamisa:numeroPago(pago.ValorCamisa || pago.valorCamisa || 0),
     ValorTotal:numeroPago(pago.ValorTotal || pago.valorTotal || 0),
-    ValorAbono:numeroPago(pago.ValorAbono || pago.abono || pago.valor || 0),
+    EstadoPago:pago.EstadoPago || (pago.EstadoComprobante === "Anulado" ? "Anulado" : "Activo"),
+    ValorAbonoOriginal:numeroPago(pago.ValorAbonoOriginal ?? pago.ValorAbono ?? 0),
+    MotivoAnulacion:pago.MotivoAnulacion || "",
+    AnuladoPor:pago.AnuladoPor || "",
+    FechaAnulacion:pago.FechaAnulacion || "",
+    ValorAbono:pagoEstaAnulado(pago) ? 0 : numeroPago(pago.ValorAbono || pago.abono || pago.valor || 0),
     FechaPago:fechaInputPago(pago.FechaPago || pago.fechaPago || ""),
     ReferenciaPago:pago.ReferenciaPago || pago.referenciaPago || "",
     ObservacionPago:pago.ObservacionPago || pago.ObservacionPag || pago.observacionPago || "",
@@ -2683,8 +2153,70 @@ function pagosDeDocumento(documento){
 }
 
 function totalPagadoDocumento(documento){
-  return pagosDeDocumento(documento).reduce((acc,item)=>acc + Number(item.ValorAbono || 0),0);
+  return pagosDeDocumento(documento).filter(item=>!pagoEstaAnulado(item)).reduce((acc,item)=>acc + Number(item.ValorAbono || 0),0);
 }
+
+function pagoEstaAnulado(pago){
+  return String(pago?.EstadoPago || pago?.EstadoComprobante || "").toLowerCase() === "anulado";
+}
+
+function mostrarVistaPago(vista){
+  for(const [id,tab] of [["registro","tabRegistro"],["historial","tabHistorial"]]){
+    document.getElementById(id).hidden=id !== vista;
+    document.getElementById(tab).setAttribute("aria-selected",String(id === vista));
+  }
+}
+
+let pagoPorAnular=null;
+let anulandoPago=false;
+function abrirAnulacionPago(index){
+  const pago=pagosHistorialActual[index];
+  if(guardandoPago || anulandoPago || !pago || pagoEstaAnulado(pago)) return;
+  if(!pago.IdPago || pago.Fuente !== "remoto"){
+    mostrarAviso("Solo se pueden anular pagos confirmados en la base oficial.","Pago no disponible");
+    return;
+  }
+  pagoPorAnular=pago;
+  document.getElementById("resumenAnularPago").textContent=`${pago.Nombre || participanteActual?.Nombre || "Participante"} · ${money(pago.ValorAbono)} · Ref. ${pago.ReferenciaPago || pago.IdPago}`;
+  document.getElementById("responsableAnulacion").value=document.getElementById("organizador").value || "";
+  document.getElementById("motivoAnulacion").value="";
+  document.getElementById("errorAnulacion").textContent="";
+  document.getElementById("dialogAnularPago").showModal();
+}
+
+document.getElementById("dialogAnularPago").addEventListener("cancel",event=>{
+  if(anulandoPago) event.preventDefault();
+});
+document.getElementById("formAnularPago").addEventListener("submit",async event=>{
+  event.preventDefault();
+  if(!pagoPorAnular || anulandoPago || guardandoPago) return;
+  const motivo=document.getElementById("motivoAnulacion").value.trim();
+  const responsable=document.getElementById("responsableAnulacion").value.trim();
+  const error=document.getElementById("errorAnulacion");
+  if(motivo.length < 5 || !responsable){error.textContent="Indica el responsable y un motivo de al menos 5 caracteres.";return;}
+  anulandoPago=true;
+  for(const id of ["btnCerrarAnulacion","btnConfirmarAnulacion"]) document.getElementById(id).disabled=true;
+  error.textContent="Confirmando la anulación en la base oficial…";
+  try{
+    const respuesta=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({accion:"anularPago",IdPago:pagoPorAnular.IdPago,MotivoAnulacion:motivo,AnuladoPor:responsable})});
+    const json=await respuesta.json();
+    if(!respuesta.ok || json.resultado !== "ok" || !pagoEstaAnulado(json.pago)) throw new Error(json.error || "El servidor no confirmó la anulación. Verifica que Apps Script esté actualizado.");
+    const id=String(pagoPorAnular.IdPago);
+    const confirmado=normalizarPago({...pagoPorAnular,...json.pago,Fuente:"remoto"});
+    pagosRemotos=pagosRemotos.map(pago=>String(pago.IdPago) === id ? confirmado : pago);
+    comprobantesRemotos=comprobantesRemotos.map(pago=>String(pago.IdPago || pago.IdComprobante) === id ? {...pago,...json.pago,EstadoComprobante:"Anulado"} : pago);
+    if(String(pagoEditando?.IdPago || "") === id) cancelarEdicionPago();
+    actualizarResumenPago();
+    renderHistorialPagos();
+    document.getElementById("dialogAnularPago").close();
+    document.getElementById("mensajePago").textContent="Pago anulado. El saldo fue actualizado y el registro se conserva en el historial.";
+    pagoPorAnular=null;
+  }catch(e){error.textContent=e.message || "No se pudo confirmar la anulación. Reintenta con conexión.";}
+  finally{
+    anulandoPago=false;
+    for(const id of ["btnCerrarAnulacion","btnConfirmarAnulacion"]) document.getElementById(id).disabled=false;
+  }
+});
 
 function participanteTieneCamisa(persona){
   return String(persona?.DeseaCamisa || persona?.deseaCamisa || "").trim().toLowerCase() === "si";
@@ -2765,10 +2297,10 @@ function valorTotalParticipante(){
 
 function actualizarResumenPago(){
   if(!participanteActual){
-    document.getElementById("metricValor").innerText=money(PRECIO_CONGRESO);
-    document.getElementById("metricCamisa").innerText=money(0);
-    document.getElementById("metricAbonado").innerText=money(0);
-    document.getElementById("metricSaldo").innerText=money(0);
+    document.getElementById("metricValor").innerText="—";
+    document.getElementById("metricCamisa").innerText="—";
+    document.getElementById("metricAbonado").innerText="—";
+    document.getElementById("metricSaldo").innerText="—";
     document.getElementById("estadoPago").innerHTML="";
     document.getElementById("badgeEstado").className="badge pendiente";
     document.getElementById("badgeEstado").innerText="Sin consulta";
@@ -2797,35 +2329,32 @@ function renderHistorialPagos(){
   const tabla=document.getElementById("tablaPagos");
   if(!participanteActual){
     pagosHistorialActual=[];
-    tabla.innerHTML='<tr><td colspan="8" class="empty">Busca un participante para consultar solo sus pagos.</td></tr>';
+    tabla.innerHTML='<tr><td colspan="5" class="empty">Busca un participante para consultar solo sus pagos.</td></tr>';
     return;
   }
 
   const pagos=pagosDeDocumento(participanteActual.Documento);
   pagosHistorialActual=pagos;
   if(!pagos.length){
-    tabla.innerHTML='<tr><td colspan="8" class="empty">Este participante aun no tiene pagos registrados.</td></tr>';
+    tabla.innerHTML='<tr><td colspan="5" class="empty">Este participante aun no tiene pagos registrados.</td></tr>';
     return;
   }
 
   let html="";
   pagos.forEach((pago,index)=>{
+    const anulado=pagoEstaAnulado(pago);
     const link = pago.ComprobanteNombre
       ? `<a class="comprobante-link" href="${escaparPagoHtml(pago.ComprobanteData || "#")}" target="_blank" rel="noopener">${escaparPagoHtml(pago.ComprobanteNombre)}</a>`
       : "Sin archivo";
     const fuente = pago.Fuente === "remoto" ? "En linea" : "Local";
     const fechaHistorial = formatoFechaHistorial(pago.FechaPago || pago.FechaRegistro || "");
 
-    html+=`<tr>
+    html+=`<tr class="${anulado ? "pago-anulado" : ""}">
       <td>${escaparPagoHtml(fechaHistorial)}</td>
-      <td>${money(pago.ValorAbono)}</td>
-      <td>${escaparPagoHtml(pago.MedioPago || "")}</td>
-      <td>${escaparPagoHtml(pago.ReferenciaPago || "")}<br><span class="small">${escaparPagoHtml(fuente)}</span></td>
-      <td>${escaparPagoHtml(pago.Organizador || "")}</td>
-      <td>${link}</td>
-      <td><button class="receipt-link" type="button" onclick="descargarComprobanteHistorial(${index})">Descargar</button></td>
-      <td>${escaparPagoHtml(pago.ObservacionPago || "")}</td>
-      <td><button class="receipt-link" type="button" onclick="editarPago(${index})">Editar</button></td>
+      <td>${money(anulado ? pago.ValorAbonoOriginal : pago.ValorAbono)}${anulado ? '<br><span class="annul-badge">Anulado</span>' : ""}</td>
+      <td>${escaparPagoHtml(pago.ReferenciaPago || "Sin referencia")}<br><span class="small">${escaparPagoHtml(pago.MedioPago || "")} · ${escaparPagoHtml(fuente)}</span><details><summary>Ver detalles</summary><strong>Registró:</strong> ${escaparPagoHtml(pago.Organizador || "—")}<br>${escaparPagoHtml(pago.ObservacionPago || "Sin observaciones")}</details>${anulado ? `<strong>Motivo:</strong> ${escaparPagoHtml(pago.MotivoAnulacion)}<br>${escaparPagoHtml(pago.AnuladoPor)} · ${escaparPagoHtml(formatoFechaHistorial(pago.FechaAnulacion))}` : ""}</td>
+      <td>${link}<br>${anulado ? "Sin validez" : `<button class="receipt-link" type="button" onclick="descargarComprobanteHistorial(${index})">Descargar</button>`}</td>
+      <td>${anulado ? "Anulado" : `<div class="row-actions"><button class="receipt-link" type="button" onclick="editarPago(${index})">Editar</button><button class="btn-danger" type="button" onclick="abrirAnulacionPago(${index})">Anular</button></div>`}</td>
     </tr>`;
   });
 
@@ -2834,6 +2363,7 @@ function renderHistorialPagos(){
 
 function editarPago(index){
   const pago = pagosHistorialActual[index];
+  if(pagoEstaAnulado(pago) || guardandoPago || anulandoPago) return;
   if(!pago){
     mostrarAviso("No se encontro el pago para editar.","Pago no disponible");
     return;
@@ -2853,6 +2383,7 @@ function editarPago(index){
 
   pagoEditando = pago;
   setModoEdicionPago(true);
+  mostrarVistaPago("registro");
   calcularVistaPrevia();
 }
 
@@ -2898,6 +2429,7 @@ function formatoFechaInput(valor){
 
 async function descargarComprobanteHistorial(index){
   const pago=pagosHistorialActual[index];
+  if(pagoEstaAnulado(pago)) return;
   if(!pago){
     mostrarAviso("No se encontro el comprobante de este pago.","Comprobante no disponible");
     return;
@@ -3311,7 +2843,24 @@ function aplicarBusquedaInicialPago(){
   setTimeout(()=>buscarParticipante(),80);
 }
 
+function estadoConexionPagos(estado,texto){
+  const indicador=document.getElementById("conexionPagos");
+  indicador.dataset.state=estado;
+  indicador.textContent=texto;
+  document.getElementById("btnActualizarBase").disabled=estado === "loading";
+}
+
+document.getElementById("buscarParticipanteForm").addEventListener("submit",event=>{
+  event.preventDefault();
+  buscarParticipante();
+});
+
 async function cargar(){
+  if(guardandoPago || anulandoPago) return;
+  estadoConexionPagos("loading","Sincronizando base…");
+  limpiarResumenParticipantePago();
+  cancelarEdicionPago();
+  renderHistorialPagos();
   borrarPagosAnterioresLocales();
   limpiarCacheConsultaPagos();
   document.getElementById("fechaPago").value=new Date().toISOString().split("T")[0];
@@ -3321,8 +2870,14 @@ async function cargar(){
   try{
     const [registros, jsonPagos, jsonComprobantes] = await Promise.all([
       cargarRegistrosRemotosUJECA(window.UJECA_API.listado),
-      fetch(API_PAGOS,{cache:"no-store"}).then(r=>r.ok ? r.json() : []),
-      fetch(API_COMPROBANTES,{cache:"no-store"}).then(r=>r.ok ? r.json() : [])
+      fetch(API_PAGOS,{cache:"no-store"}).then(r=>{
+        if(!r.ok) throw new Error("No se pudo consultar la base de pagos");
+        return r.json();
+      }),
+      fetch(API_COMPROBANTES,{cache:"no-store"}).then(r=>{
+        if(!r.ok) throw new Error("No se pudo consultar la base de comprobantes");
+        return r.json();
+      })
     ]);
 
     BD = Array.isArray(registros)
@@ -3335,10 +2890,12 @@ async function cargar(){
       comprobantesRemotos
     );
     cargada=true;
+    estadoConexionPagos("ready",`${BD.length} participantes · Base actualizada`);
     document.getElementById("mensajePago").innerHTML="";
     renderHistorialPagos();
     aplicarBusquedaInicialPago();
   }catch(e){
+    estadoConexionPagos("error","Sin conexión · Reintenta actualizar");
     BD = [];
     indexarParticipantes();
     pagosRemotos = [];
@@ -3353,6 +2910,7 @@ async function cargar(){
 }
 
 function buscarParticipante(){
+  if(anulandoPago) return;
   if(!cargada){
     mostrarAviso("La base oficial aun se esta sincronizando. Intenta nuevamente en un momento.","Base en proceso");
     return;
@@ -3406,6 +2964,7 @@ function buscarParticipante(){
 }
 
 async function registrarPago(){
+  if(anulandoPago) return;
   if(guardandoPago){
     mostrarAviso("Ya hay un pago en proceso. Espera la confirmacion antes de intentar de nuevo.","Pago en proceso");
     return;

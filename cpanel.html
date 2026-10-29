@@ -810,6 +810,10 @@ body.ui-body{
 .cp-panel.menu-abierto header.ui-topbar .ui-brand{display:none !important;}
 .cp-panel:not([hidden]) > .cp-shell{grid-column:1 !important;width:calc(100% - 32px) !important;max-width:none !important;padding-top:84px !important;}
 .cp-panel.menu-abierto:not([hidden]) > .cp-shell{padding-top:142px !important;}
+.cp-panel #pageView[data-page="pagos"] .cp-page-heading{display:none;}
+.cp-panel:not([hidden]) > #pageView[data-page="pagos"]{padding-bottom:12px !important;}
+.cp-panel #pageView[data-page="pagos"] .cp-page-frame iframe{height:calc(100dvh - 98px);min-height:0;}
+.cp-panel.menu-abierto #pageView[data-page="pagos"] .cp-page-frame iframe{height:calc(100dvh - 156px);}
 .cp-panel .cp-title h2{font-size:clamp(1.65rem,2.5vw,2.6rem) !important;line-height:1.12 !important;}
 @media(max-width:620px){.cp-panel-bar{padding:10px 12px;gap:10px;}.cp-panel.menu-abierto:not([hidden]) > header.ui-topbar{padding:8px 12px !important;}}
 @media(max-width:620px){.cp-panel:not([hidden]) > .cp-shell{width:calc(100% - 16px) !important;}}
@@ -832,6 +836,35 @@ body.ui-body{
 .cp-full-payment{padding:14px 0;border-bottom:1px solid #eee6e8;}
 @media(max-width:550px){.cp-full-heading{padding:16px;}.cp-full-content{padding:0 16px 20px;}.cp-full-fields{grid-template-columns:1fr;}.cp-full-totals{grid-template-columns:1fr;}}
 .cp-panel .cp-content{grid-template-columns:minmax(0,1fr) !important;}
+@media screen and (max-width:760px){
+  .cp-panel-bar{height:64px;padding:8px 12px;gap:8px;}
+  .cp-panel-bar>div{min-width:0;}
+  .cp-panel-bar strong{font-size:.85rem;overflow-wrap:anywhere;}
+  .cp-panel-bar small{font-size:.68rem;line-height:1.3;}
+  .cp-panel-bar img{width:30px;height:30px;flex:none;}
+  .cp-panel-bar .cp-menu-toggle{min-height:44px;flex:none;padding:10px 12px;}
+  .cp-panel.menu-abierto header.ui-topbar .ui-nav{width:100% !important;gap:4px !important;}
+  .cp-panel.menu-abierto header.ui-topbar .ui-nav a{min-height:44px !important;padding:10px 12px !important;font-size:.85rem !important;}
+  .cp-panel:not([hidden])>.cp-shell{width:calc(100% - 16px) !important;padding-top:76px !important;padding-bottom:12px !important;}
+  .cp-panel.menu-abierto:not([hidden])>.cp-shell{padding-top:134px !important;}
+  .cp-panel #pageView[data-page="pagos"] .cp-page-heading{display:none !important;}
+  .cp-panel #pageView[data-page="pagos"] .cp-page-frame iframe{height:calc(100dvh - 90px);min-height:0;}
+  .cp-panel.menu-abierto #pageView[data-page="pagos"] .cp-page-frame iframe{height:calc(100dvh - 148px);}
+  .cp-panel .cp-tools input,.cp-panel .cp-tools select,.cp-auth-row input,.cp-panel .cp-detail input,.cp-panel .cp-detail textarea{font-size:16px !important;min-height:46px;min-width:0;max-width:100%;}
+  .cp-panel .cp-btn,.cp-panel .cp-icon-btn,.cp-panel .cp-tab{min-height:44px !important;white-space:normal;}
+  .cp-panel .cp-title h2{font-size:1.5rem !important;line-height:1.2 !important;}
+  .cp-panel .cp-title p{font-size:.88rem;line-height:1.5;}
+  .cp-panel .cp-row-card{min-width:0;padding:14px !important;gap:12px !important;}
+  .cp-panel .cp-row-card>div{min-width:0;overflow-wrap:anywhere;}
+  .cp-panel .cp-row-actions{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:8px !important;}
+  .cp-panel .cp-row-actions button{width:100%;min-width:0;font-size:.8rem !important;}
+  .cp-full-dialog{width:calc(100% - 20px);max-height:calc(100dvh - 20px);}
+  .cp-full-heading{padding:14px;gap:10px;}
+  .cp-full-heading h2{font-size:1.1rem;}
+  .cp-full-heading button{min-height:44px;padding:10px;}
+  .cp-full-content{padding:0 14px 18px;}
+  .cp-full-fields{grid-template-columns:1fr;gap:14px;}
+}
 </style>
 <script src="maintenance-redirect.js"></script>
 </head>
@@ -871,7 +904,7 @@ body.ui-body{
     <nav class="ui-nav">
       <a href="#dashboard" data-page="dashboard" class="is-current"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Seguimiento</a>
       <a href="Basedatos.html" data-page="inscritos"><i class="bi bi-people" aria-hidden="true"></i>Inscritos</a>
-      <a href="pasarelapago.html" data-page="pagos"><i class="bi bi-credit-card" aria-hidden="true"></i>Pagos</a>
+      <a href="#pagos" data-page="pagos"><i class="bi bi-credit-card" aria-hidden="true"></i>Pagos</a>
       <a href="consulta-deuda.html" data-page="deuda"><i class="bi bi-search" aria-hidden="true"></i>Deuda</a>
       <a href="#" onclick="cerrarSesionPanel();return false;"><i class="bi bi-box-arrow-right" aria-hidden="true"></i>Salir</a>
     </nav>
@@ -996,7 +1029,7 @@ body.ui-body{
 <script>
 const PANEL_PASSWORD="admin2026";
 const TRACKING_KEY="ujeca_cpanel_seguimiento_v1";
-const PRECIO_CONGRESO=500000;
+const PRECIO_CONGRESO=250000;
 let registros=[];
 let pagos=[];
 let filas=[];
@@ -1099,6 +1132,7 @@ function totalPagado(p){
   const doc=docNorm(p?.Documento || p?.documento || p?.cedula);
   const codigo=textoNorm(p?.Codigo || p?.codigo || p?.ID);
   return pagos.reduce((acc,pago)=>{
+    if(String(pago.EstadoPago || "").toLowerCase() === "anulado") return acc;
     const pagoDoc=docNorm(pago.Documento || pago.documento || pago.cedula);
     const pagoCodigo=textoNorm(pago.Codigo || pago.codigo || pago.ID);
     const mismaPersona=(doc && pagoDoc === doc) || (codigo && pagoCodigo === codigo);
@@ -1411,7 +1445,7 @@ function abrirPagos(key){
   const busqueda=row.documento || row.codigo || row.nombre;
   sessionStorage.setItem("ujeca_pago_busqueda",busqueda);
   notificar("Abriendo panel de pagos con el inscrito seleccionado.","ok");
-  location.href=`pasarelapago.html?buscar=${encodeURIComponent(busqueda)}`;
+  abrirPaginaPanel("pagos",busqueda);
 }
 
 function abrirWhatsApp(key){
@@ -1493,6 +1527,8 @@ function entrar(){
   $("authPanel").hidden=true;
   $("cpanel").hidden=false;
   cargar();
+  const paginaInicial=location.hash.slice(1);
+  if(paginaInicial && paginasPanel[paginaInicial]) abrirPaginaPanel(paginaInicial);
 }
 
 function cerrarSesionPanel(){
@@ -1502,7 +1538,7 @@ function cerrarSesionPanel(){
 
 const paginasPanel={
   inscritos:{titulo:"Inscritos",descripcion:"Consulta y gestión de la base de inscritos.",url:"Basedatos.html"},
-  pagos:{titulo:"Pagos",descripcion:"Registro y consulta de pagos del Congreso.",url:"pasarelapago.html"},
+  pagos:{titulo:"Pagos",descripcion:"Registro y consulta de pagos del Congreso.",url:"pasarelapago.html?v=20261029-3"},
   deuda:{titulo:"Consulta de deuda",descripcion:"Consulta de saldos y estados de cuenta.",url:"consulta-deuda.html"}
 };
 
@@ -1513,15 +1549,20 @@ function mostrarDashboard(){
   $("pageView").classList.remove("is-active");
   document.querySelectorAll(".ui-nav a[data-page]").forEach((link)=>link.classList.toggle("is-current",link.dataset.page === "dashboard"));
   history.replaceState(null,"",location.pathname);
+  cargar();
 }
 
-function abrirPaginaPanel(nombre){
+function abrirPaginaPanel(nombre,busqueda=""){
   const pagina=paginasPanel[nombre];
   if(!pagina) return mostrarDashboard();
+  const url=nombre === "pagos" && busqueda
+    ? `${pagina.url}${pagina.url.includes("?") ? "&" : "?"}buscar=${encodeURIComponent(busqueda)}`
+    : pagina.url;
   $("dashboardView").hidden=true;
   $("dashboardView").classList.remove("is-active");
   $("pageView").hidden=false;
   $("pageView").classList.add("is-active");
+  $("pageView").dataset.page=nombre;
   $("pageTitle").innerText=pagina.titulo;
   $("pageDescription").innerText=pagina.descripcion;
   const frame=$("pageFrame");
@@ -1542,9 +1583,9 @@ function abrirPaginaPanel(nombre){
     });
     frame.dataset.menuOculto="1";
   }
-  if(frame.dataset.src !== pagina.url){
-    frame.dataset.src=pagina.url;
-    frame.src=pagina.url;
+  if(frame.dataset.src !== url){
+    frame.dataset.src=url;
+    frame.src=url;
   }
   document.querySelectorAll(".ui-nav a[data-page]").forEach((link)=>link.classList.toggle("is-current",link.dataset.page === nombre));
   history.replaceState(null,"",`#${nombre}`);

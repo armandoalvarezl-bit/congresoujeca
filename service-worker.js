@@ -1,4 +1,4 @@
-const CACHE_NAME = "ujeca-congreso-open-v16";
+const CACHE_NAME = "ujeca-congreso-open-v26";
 const MAINTENANCE_MODE = false;
 const LOCK_PAGE = "evento-cancelado.html";
 
@@ -11,8 +11,12 @@ const APP_SHELL = [
   "home.html",
   "cpanel.html",
   "form.html",
+  "recibo-inscripcion.js?v=20261029-3",
+  "vendor/qrcode.js",
+  "PERMISO ADOLESCENTE.docx",
   "consulta-deuda.html",
   "pasarelapago.html",
+  "pagos.css?v=20261029-4",
   "Basedatos.html",
   "live.html",
   "contacto.html",

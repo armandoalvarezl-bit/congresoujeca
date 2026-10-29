@@ -2,6 +2,30 @@ const SPREADSHEET_ID = "1cyrexQcgmskJm6RFCzWfsRcjrBVPj3RCjoU-cAkGTjM";
 const HOJA_INSCRIPCIONES = "Inscripciones2026";
 const HOJA_PAGOS = "PagosIndividuales2026_CORRECTO";
 const HOJA_COMPROBANTES = "ComprobantesPago2026_CORRECTO";
+const PRECIO_INSCRIPCION = 250000;
+// Números confirmados por la organización. QR oficial de Nequi: agregar su URL cuando se suministre.
+const CUENTAS_NEQUI_POR_LIDER = [
+  { clave: "katherine bermudez", titular: "Katherine Bermudez", numero: "3194480759", qrOficial: "" },
+  { clave: "melania angulo", titular: "Melania Angulo", numero: "3216818450", qrOficial: "" },
+  { clave: "edinson banquet", titular: "Edinson Banquet", numero: "3114285949", qrOficial: "" },
+  { clave: "camila urango", titular: "Camila Urango", numero: "3126344615", qrOficial: "" },
+  { clave: "andres miranda", titular: "Andres Miranda", numero: "", qrOficial: "" }
+];
+
+function crearOrdenPagoInscripcion_(datos, codigo) {
+  const lider = String(datos.LiderAsignado || "");
+  const clave = lider.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const cuenta = CUENTAS_NEQUI_POR_LIDER.find(item => clave.includes(item.clave));
+  const total = obtenerValorTotalParticipante_(datos);
+  return {
+    codigo: String(codigo), nombre: String(datos.Nombre || ""), documento: String(datos.Documento || ""),
+    zona: String(datos.ZonaAsignada || "Zona general"), lider: lider,
+    fecha: new Date().toISOString(), valorInscripcion: PRECIO_INSCRIPCION,
+    valorCamisa: total - PRECIO_INSCRIPCION, total: total, estado: "Pendiente de pago",
+    nequi: cuenta ? { titular: cuenta.titular, numero: cuenta.numero, qrOficial: cuenta.qrOficial } : null,
+    permisoMenor: Number(datos.Edad) > 0 && Number(datos.Edad) < 18
+  };
+}
 
 function coincideParticipante_(persona, pago) {
   const doc = String(persona.Documento || "").trim();
@@ -51,7 +75,9 @@ const COLUMNAS_INSCRIPCIONES = [
   "SeguimientoNota",
   "SeguimientoFecha",
   "SeguimientoActualizado",
-  "ValorTotal"
+  "ValorTotal",
+  "PermisoDescargado",
+  "TienePermiso"
 ];
 
 const COLUMNAS_PAGOS = [
@@ -82,7 +108,8 @@ const COLUMNAS_PAGOS = [
   "ComprobanteTipo",
   "ComprobanteData",
   "ComprobanteURL",
-  "SaldoPosterior"
+  "SaldoPosterior",
+  "EstadoPago", "ValorAbonoOriginal", "MotivoAnulacion", "AnuladoPor", "FechaAnulacion"
 ];
 
 const COLUMNAS_COMPROBANTES = [
@@ -104,7 +131,8 @@ const COLUMNAS_COMPROBANTES = [
   "SaldoPosterior",
   "ReferenciaPago",
   "EstadoComprobante",
-  "ArchivoSugerido"
+  "ArchivoSugerido",
+  "EstadoPago", "ValorAbonoOriginal", "MotivoAnulacion", "AnuladoPor", "FechaAnulacion"
 ];
 
 function doGet(e) {
@@ -169,6 +197,10 @@ function atenderPost_(e) {
     return responderJson_(actualizarPago_(datos));
   }
 
+  if (accion === "anularPago") {
+    return responderJson_(anularPago_(datos));
+  }
+
   if (accion === "actualizarInscripcion") {
     return responderJson_(actualizarInscripcion_(datos));
   }
@@ -193,6 +225,13 @@ function atenderPost_(e) {
 }
 
 function registrarInscripcion_(datos) {
+  const edad = Number(datos.Edad);
+  if (!Number.isInteger(edad) || edad < 1 || edad > 120) {
+    return { resultado: "error", error: "Indica una edad valida entre 1 y 120 años" };
+  }
+  if (edad > 0 && edad < 18 && (datos.PermisoDescargado !== "Si" || datos.TienePermiso !== "Si")) {
+    return { resultado: "error", error: "Para inscribir un menor debes descargar el permiso y confirmar que lo presentaras firmado por su representante" };
+  }
   const hoja = obtenerHoja_(datos.hoja || datos.HojaDestino || HOJA_INSCRIPCIONES);
   datos.ValorTotal = obtenerValorTotalParticipante_(Object.assign({}, datos, { ValorTotal: 0 }));
   const codigo = datos.Codigo || crearCodigo_(hoja.getLastRow());
@@ -204,7 +243,7 @@ function registrarInscripcion_(datos) {
 
   hoja.appendRow(fila);
   const correoEnviado = enviarCorreoInscripcion_(datos, codigo);
-  return { resultado: "ok", codigo: codigo, correoEnviado: correoEnviado };
+  return { resultado: "ok", codigo: codigo, correoEnviado: correoEnviado, ordenPago: crearOrdenPagoInscripcion_(datos, codigo) };
 }
 
 function enviarCorreoInscripcion_(datos, codigo) {
@@ -214,8 +253,12 @@ function enviarCorreoInscripcion_(datos, codigo) {
   const nombre = datos.Nombre || "campista";
   const lider = datos.LiderAsignado || "Coordinacion General Zona 6";
   const zona = datos.ZonaAsignada || "Zona general";
-  const valorCamisa = String(datos.DeseaCamisa || "").toLowerCase() === "si" ? Number(datos.ValorCamisa || 0) : 0;
-  const valorTotal = Math.max(500000 + valorCamisa, 0);
+  const valorTotal = obtenerValorTotalParticipante_(datos);
+  const valorCamisa = valorTotal - PRECIO_INSCRIPCION;
+  const orden = crearOrdenPagoInscripcion_(datos, codigo);
+  const instruccionesNequi = orden.nequi && orden.nequi.numero
+    ? `Nequi del líder asignado: ${orden.nequi.numero}. Responsable: ${orden.nequi.titular}. Usa el código ${codigo} como referencia y envía el soporte a tu líder.`
+    : `Coordina el pago con tu líder asignado. Su cuenta Nequi todavía no está configurada.`;
   const asunto = "Preinscripcion recibida - Congreso Trascendentales 2026";
   const resumenPago = "$" + valorTotal.toLocaleString("es-CO");
   const camisetaTexto = valorCamisa ? "Incluye camiseta seleccionada" : "No incluye camiseta";
@@ -265,7 +308,8 @@ function enviarCorreoInscripcion_(datos, codigo) {
             <div style="border-radius:18px;background:linear-gradient(90deg,#4b0003,#220000);padding:22px;color:white">
               <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72);font-weight:800">Valor a pagar</div>
               <div style="margin-top:8px;font-size:32px;line-height:1;font-weight:900">${resumenPago}</div>
-              <p style="margin:12px 0 0;color:rgba(255,255,255,.82);font-size:14px;line-height:1.45">El pago debe realizarse con el lider asignado. El lider autorizado registrara el pago en el portal. Si haces abonos, conserva cada comprobante.</p>
+              <p style="margin:12px 0 0;color:rgba(255,255,255,.82);font-size:14px;line-height:1.45">${escaparHtmlCorreo_(instruccionesNequi)}</p>
+              <p style="margin:12px 0 0;color:rgba(255,255,255,.82);font-size:13px;line-height:1.45">Orden de pago pendiente. Este documento no acredita un pago realizado. Tu líder confirmará la recepción del dinero.</p>
             </div>
           </div>
 
@@ -289,6 +333,8 @@ Zona asignada: ${zona}
 Líder de pago: ${lider}
 ${camisetaTexto}
 Valor total a pagar: ${resumenPago}
+${instruccionesNequi}
+Orden de pago pendiente. Este documento no acredita un pago realizado.
 
 Guarde este correo como soporte de preinscripcion. Su cupo queda confirmado como inscrito cuando su lider de zona registre el pago en el portal autorizado. Si tiene alguna pregunta, puede responder a este mensaje o comunicarse con la organizacion.
 
@@ -392,6 +438,11 @@ function actualizarPago_(datos) {
     return { resultado: "error", error: "No se encontro el pago para actualizar" };
   }
 
+  const existente = listarPagos_(HOJA_PAGOS).find(p => String(p.IdPago) === idPago);
+  if (existente && existente.EstadoPago === "Anulado") {
+    return { resultado: "error", error: "Un pago anulado no se puede editar" };
+  }
+
   const encabezados = obtenerEncabezadosActuales_(hoja, COLUMNAS_PAGOS);
   const datosPago = normalizarDatosPago_(datos, idPago);
   const fila = encabezados.map((columna) => datosPago[columna] || "");
@@ -401,6 +452,50 @@ function actualizarPago_(datos) {
   const correoEnviado = enviarCorreoEstadoCuentaPorPago_(datosPago);
   return { resultado: "ok", IdPago: idPago, correoEnviado: correoEnviado,
     pago: listarPagos_(HOJA_PAGOS).find(p => p.IdPago === idPago) };
+}
+
+// doPost ejecuta esta operación bajo el bloqueo común de pagos.
+function anularPago_(datos) {
+  const id = String(datos.IdPago || "").trim();
+  const motivo = String(datos.MotivoAnulacion || "").trim();
+  const responsable = String(datos.AnuladoPor || "").trim();
+  if (!id || motivo.length < 5 || !responsable) {
+    return { resultado: "error", error: "Indica el pago, un motivo de al menos 5 caracteres y el responsable" };
+  }
+  const hoja = obtenerHojaPagos_(HOJA_PAGOS);
+  const filaIndex = buscarFilaPagoPorIdPago_(hoja, id);
+  if (filaIndex < 0) return { resultado: "error", error: "Pago no encontrado" };
+  const encabezados = obtenerEncabezadosActuales_(hoja, COLUMNAS_PAGOS);
+  const fila = hoja.getRange(filaIndex, 1, 1, encabezados.length).getValues()[0];
+  const pago = {};
+  encabezados.forEach((columna, i) => pago[columna] = fila[i]);
+  // Un reintento conserva el importe, fecha y responsable originales.
+  const auditoria = pago.EstadoPago === "Anulado" ? {
+    EstadoPago: "Anulado", ValorAbono: 0, ValorAbonoOriginal: pago.ValorAbonoOriginal,
+    MotivoAnulacion: pago.MotivoAnulacion, AnuladoPor: pago.AnuladoPor, FechaAnulacion: pago.FechaAnulacion
+  } : {
+    EstadoPago: "Anulado", ValorAbono: 0, ValorAbonoOriginal: Number(pago.ValorAbono || 0),
+    MotivoAnulacion: motivo, AnuladoPor: responsable, FechaAnulacion: new Date()
+  };
+  Object.assign(pago, auditoria);
+  hoja.getRange(filaIndex, 1, 1, encabezados.length).setValues([encabezados.map(columna => pago[columna] ?? "")]);
+  const comprobantes = obtenerHojaComprobantes_(HOJA_COMPROBANTES);
+  const columnasComp = obtenerEncabezadosActuales_(comprobantes, COLUMNAS_COMPROBANTES);
+  const filasComp = comprobantes.getDataRange().getValues();
+  const indiceId = columnasComp.indexOf("IdPago");
+  const indiceComp = columnasComp.indexOf("IdComprobante");
+  for (let i = 1; i < filasComp.length; i++) {
+    if (String(filasComp[i][indiceId] || "").trim() !== id && String(filasComp[i][indiceComp] || "").trim() !== id) continue;
+    const valores = filasComp[i];
+    Object.entries({...auditoria, EstadoComprobante: "Anulado"}).forEach(([columna, valor]) => {
+      const index = columnasComp.indexOf(columna);
+      if (index >= 0) valores[index] = valor;
+    });
+    comprobantes.getRange(i + 1, 1, 1, columnasComp.length).setValues([valores]);
+  }
+  const respuesta = {};
+  Object.keys(pago).forEach(columna => respuesta[columna] = serializarValorHoja_(pago[columna]));
+  return { resultado: "ok", IdPago: id, pago: respuesta };
 }
 
 function buscarFilaPagoPorIdPago_(hoja, idPago) {
@@ -543,7 +638,7 @@ function obtenerValorTotalParticipante_(participante) {
   const valorCamisa = deseaCamisa
     ? (["XXL", "2XL", "3XL", "XXXL", "4XL", "5XL"].indexOf(talla) >= 0 ? 45000 : 35000)
     : 0;
-  return Math.max(500000 + valorCamisa, 0);
+  return Math.max(PRECIO_INSCRIPCION + valorCamisa, 0);
 }
 
 function enviarCorreoEstadoCuenta_(participante, resumen, motivo) {
@@ -976,14 +1071,19 @@ function normalizarDatosPago_(datos, idPago) {
     ComprobanteTipo: datos.ComprobanteTipo || "",
     ComprobanteData: comprobanteData,
     ComprobanteURL: comprobanteData,
-    SaldoPosterior: datos.SaldoPosterior || ""
+    SaldoPosterior: datos.SaldoPosterior || "",
+    EstadoPago: datos.EstadoPago || "Activo",
+    ValorAbonoOriginal: datos.ValorAbonoOriginal ?? "",
+    MotivoAnulacion: datos.MotivoAnulacion || "",
+    AnuladoPor: datos.AnuladoPor || "",
+    FechaAnulacion: datos.FechaAnulacion || ""
   };
 }
 
 function normalizarDatosComprobantePago_(datosPago) {
   const idComprobante = datosPago.IdPago || crearIdPago_();
   const saldo = Number(datosPago.SaldoPosterior || 0);
-  const estado = saldo === 0 ? "Pago completo" : "Abono registrado";
+  const estado = datosPago.EstadoPago === "Anulado" ? "Anulado" : saldo === 0 ? "Pago completo" : "Abono registrado";
   return {
     IdComprobante: idComprobante,
     IdPago: datosPago.IdPago || "",
@@ -1003,7 +1103,12 @@ function normalizarDatosComprobantePago_(datosPago) {
     SaldoPosterior: datosPago.SaldoPosterior || "",
     ReferenciaPago: datosPago.ReferenciaPago || "",
     EstadoComprobante: estado,
-    ArchivoSugerido: "comprobante-" + idComprobante + "-" + (datosPago.Documento || "pago") + ".png"
+    ArchivoSugerido: "comprobante-" + idComprobante + "-" + (datosPago.Documento || "pago") + ".png",
+    EstadoPago: datosPago.EstadoPago || "Activo",
+    ValorAbonoOriginal: datosPago.ValorAbonoOriginal ?? "",
+    MotivoAnulacion: datosPago.MotivoAnulacion || "",
+    AnuladoPor: datosPago.AnuladoPor || "",
+    FechaAnulacion: datosPago.FechaAnulacion || ""
   };
 }
 

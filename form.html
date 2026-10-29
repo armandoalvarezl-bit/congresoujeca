@@ -1252,7 +1252,7 @@ button[type="submit"]{
 <h3>Datos personales</h3>
 <input name="Nombre" placeholder="Nombre completo" required>
 <input name="Documento" placeholder="Documento de identidad" required>
-<input name="Edad" type="number" placeholder="Edad" required>
+<input name="Edad" type="number" min="1" max="120" step="1" placeholder="Edad" required>
 
 <select name="Sexo" required>
 <option value="">Sexo</option>
@@ -1279,10 +1279,11 @@ button[type="submit"]{
 <!-- Sección para permiso de menores -->
 <div id="permisoSection" style="display:none;grid-column:1/-1;margin-top:8px;padding:12px;border-radius:12px;background:#fff8f7;border:1px solid rgba(199,57,47,.08);">
     <p style="margin:0 0 8px;color:#5f3a36;font-weight:700">Si eres menor de edad, debes descargar y presentar un permiso firmado por tu representante.</p>
-    <p style="margin:0 0 8px">Descarga el permiso oficial: <a href="PERMISO ADOLESCENTE.docx" download>Descargar permiso</a></p>
+    <button id="btnDescargarPermisoMenor" type="button">Descargar permiso obligatorio</button>
+    <p id="estadoDescargaPermiso" role="status">Primero descarga el permiso para poder continuar con la inscripción.</p>
     <label style="display:flex;align-items:center;gap:8px;font-weight:600;color:#6b2b28;font-size:0.95rem;">
-        <input type="checkbox" id="tienePermiso" name="TienePermiso" style="width:18px;height:18px;flex:none;margin:0"> 
-        Declaro que tengo el permiso firmado y lo presentaré al momento del evento.
+        <input type="checkbox" id="tienePermiso" name="TienePermiso" value="Si" disabled style="width:20px;height:20px;flex:none;margin:0"> 
+        Confirmo que descargué el permiso y lo presentaré firmado por mi representante al momento del evento.
     </label>
 </div>
 
@@ -1491,6 +1492,11 @@ Mientras el lider no registre el pago en el portal, tu informacion queda guardad
 <p class="modal-subtitle">Estimado campista, recibimos tus datos. Apareceras como inscrito cuando tu lider de zona registre el pago.</p>
 <p id="modalMensaje"></p>
 <div id="ticketPago" class="ticket-pago" style="display:none;"></div>
+<div id="recordatorioPermisoMenor" hidden style="padding:16px;margin-top:14px;border:2px solid #9d0208;border-radius:12px;background:#fff8f5;text-align:left;">
+  <strong>Permiso obligatorio para menores</strong>
+  <p>Guarda el archivo descargado, pide la firma de tu representante y presenta el permiso al ingresar al evento.</p>
+  <a href="PERMISO ADOLESCENTE.docx" download>Volver a descargar el permiso oficial</a>
+</div>
 </div>
 <div class="modal-aviso-actions">
 <button class="btn-primario" onclick="cerrarModal()"><i class="bi bi-check2" aria-hidden="true"></i>Cerrar</button>
@@ -1511,6 +1517,8 @@ Mientras el lider no registre el pago en el portal, tu informacion queda guardad
 </div>
 </div>
 <script src="api-config.js"></script>
+<script src="vendor/qrcode.js"></script>
+<script src="recibo-inscripcion.js?v=20261029-3"></script>
 <script>
 const url=window.UJECA_API.registro;
 let datosFormulario=null;
@@ -1622,20 +1630,69 @@ window.addEventListener("load",()=>{
     configurarAsignacionZona();
 });
 
+let permisoMenorDescargado=false;
+function esMenorInscripcion(edad){
+    return Number(edad)>0 && Number(edad)<18;
+}
+
+function actualizarPermisoMenor(reiniciar=false){
+    const menor=esMenorInscripcion(document.querySelector('[name="Edad"]').value);
+    const check=document.getElementById('tienePermiso');
+    if(reiniciar || !menor){
+        permisoMenorDescargado=false;
+        check.checked=false;
+        document.getElementById('estadoDescargaPermiso').textContent='Primero descarga el permiso para poder continuar con la inscripción.';
+    }
+    document.getElementById('permisoSection').style.display=menor ? 'block' : 'none';
+    check.disabled=!menor || !permisoMenorDescargado;
+    check.required=menor;
+}
+
+async function descargarPermisoMenor(){
+    const boton=document.getElementById('btnDescargarPermisoMenor');
+    const estado=document.getElementById('estadoDescargaPermiso');
+    boton.disabled=true;
+    estado.textContent='Preparando el permiso oficial…';
+    try{
+        const respuesta=await fetch('PERMISO ADOLESCENTE.docx',{cache:'no-store'});
+        if(!respuesta.ok) throw new Error('No se pudo descargar el permiso. Reintenta antes de continuar.');
+        const archivo=await respuesta.blob();
+        const cabecera=new Uint8Array(await archivo.slice(0,4).arrayBuffer());
+        if(!archivo.size || cabecera[0] !== 0x50 || cabecera[1] !== 0x4b || cabecera[2] !== 0x03 || cabecera[3] !== 0x04) throw new Error('El archivo del permiso no está disponible. Reintenta la descarga.');
+        const enlace=document.createElement('a');
+        const enlaceArchivo=URL.createObjectURL(archivo);
+        enlace.href=enlaceArchivo;
+        enlace.download='PERMISO ADOLESCENTE.docx';
+        document.body.appendChild(enlace);
+        enlace.click();
+        enlace.remove();
+        setTimeout(()=>URL.revokeObjectURL(enlaceArchivo),60000);
+        permisoMenorDescargado=esMenorInscripcion(document.querySelector('[name="Edad"]').value);
+        actualizarPermisoMenor();
+        estado.textContent='Descarga iniciada. Guarda el archivo y marca la confirmación para continuar. Recuerda presentarlo firmado.';
+    }catch(error){
+        permisoMenorDescargado=false;
+        document.getElementById('tienePermiso').checked=false;
+        actualizarPermisoMenor();
+        estado.textContent=error.message || 'No se pudo descargar el permiso. Revisa la conexión y vuelve a intentar.';
+    }finally{boton.disabled=false;}
+}
+
+function validarPermisoMenor(datos){
+    return !esMenorInscripcion(datos.Edad) || (permisoMenorDescargado && document.getElementById('tienePermiso').checked);
+}
+
 function configurarPermisoMenor(){
     const edadInput=document.querySelector('[name="Edad"]');
     if(!edadInput) return;
-    const togglePermiso=()=>{
-        const edad=Number(edadInput.value) || 0;
-        const permisoSection=document.getElementById('permisoSection');
-        console.debug('configurarPermisoMenor: edad=', edad, 'permisoSectionExists=', !!permisoSection);
-        if(permisoSection){
-            permisoSection.style.display= edad>0 && edad<18 ? 'block' : 'none';
-        }
-    };
-    edadInput.addEventListener('input',togglePermiso);
-    edadInput.addEventListener('change',togglePermiso);
-    togglePermiso();
+    if(!edadInput.dataset.permisoConfigurado){
+        document.getElementById('btnDescargarPermisoMenor').addEventListener('click',descargarPermisoMenor);
+        edadInput.addEventListener('input',()=>actualizarPermisoMenor(true));
+        edadInput.addEventListener('change',()=>actualizarPermisoMenor());
+        document.getElementById('formulario').addEventListener('reset',()=>setTimeout(()=>actualizarPermisoMenor(true),0));
+        edadInput.dataset.permisoConfigurado='1';
+    }
+    actualizarPermisoMenor();
 }
 
 // Inicializar control de permiso para menores
@@ -1908,15 +1965,11 @@ function prepararEnvio(){
         mostrarAvisoGeneral("Faltan datos de camiseta","Si deseas camiseta, selecciona corte, talla y color antes de enviar.");
         return;
     }
-    // Validación para menores de edad: debe confirmar permiso firmado
-    const edadNum = Number(datos.Edad || 0);
-    if(edadNum > 0 && edadNum < 18){
-        const tienePermiso = document.getElementById('tienePermiso') ? document.getElementById('tienePermiso').checked : false;
-        if(!tienePermiso){
-            mostrarAvisoGeneral("Permiso requerido","Si eres menor de edad, debes descargar y presentar un permiso firmado por tu representante. Marca la casilla para confirmar.");
-            return;
-        }
+    if(!validarPermisoMenor(datos)){
+        mostrarAvisoGeneral("Permiso obligatorio","Descarga el permiso oficial y confirma que lo presentarás firmado por tu representante para continuar.");
+        return;
     }
+    datos.PermisoDescargado=esMenorInscripcion(datos.Edad) ? 'Si' : 'No aplica';
     if(!validarCorreo(datos.Correo)){
         mostrarAvisoGeneral("Correo no válido","Ingresa un correo electrónico válido antes de enviar el formulario.");
         return;
@@ -1955,6 +2008,8 @@ function mostrarConfirmacion(datos){
         Nombre:"Nombre",
         Documento:"Documento",
         Edad:"Edad",
+        PermisoDescargado:"Permiso descargado",
+        TienePermiso:"Compromiso de presentar permiso firmado",
         Sexo:"Sexo",
         Telefono:"Telefono",
         Correo:"Correo",
@@ -2036,11 +2091,17 @@ function mostrarModalCarga(activo){
 
 function limpiarFormulario(){
     document.getElementById("formulario").reset();
+    actualizarPermisoMenor(true);
     configurarCamiseta();
     actualizarZonaYLider();
 }
 
 async function enviarInscripcion(){
+    if(!validarPermisoMenor(datosFormulario)){
+        document.getElementById("modalConfirmacion").style.display="none";
+        mostrarAvisoGeneral("Permiso obligatorio","Descarga el permiso oficial y confirma que lo presentarás firmado antes de enviar la inscripción.");
+        return;
+    }
     document.getElementById("modalConfirmacion").style.display="none";
     mostrarModalCarga(true);
     try{
@@ -2061,13 +2122,21 @@ async function enviarInscripcion(){
             if(!r.ok) throw new Error("Respuesta no valida del servidor");
         }
 
-        if(!r.ok){
+        if(!r.ok || j.resultado !== "ok"){
             throw new Error(j.error || "No se pudo registrar en la base remota");
         }
 
         actualizarModalResultado(false);
+        document.getElementById('recordatorioPermisoMenor').hidden=!esMenorInscripcion(datosFormulario.Edad);
         document.getElementById("modalMensaje").innerHTML="Código: "+(j.codigo || "Pendiente de asignación");
         mostrarResumenPago(datosFormulario, j.codigo || "");
+        if(window.ReciboUJECA){
+            try{
+                const orden=j.ordenPago || window.ReciboUJECA.crearOrdenDesdeInscripcion(datosFormulario,j.codigo);
+                window.ReciboUJECA.emitir(orden,document.getElementById("ticketPago"));
+            }
+            catch{document.getElementById("modalMensaje").textContent="Inscripción registrada. Código: "+(j.codigo || "")+". No se pudo generar la descarga del recibo; conserva el código y consulta el correo de confirmación.";}
+        }
         mostrarModalCarga(false);
         document.getElementById("modal").style.display="flex";
         document.getElementById("Estado").innerHTML=j.correoEnviado
@@ -2076,6 +2145,8 @@ async function enviarInscripcion(){
         limpiarFormulario();
         cargarCupos();
     }catch(error){
+        document.getElementById('recordatorioPermisoMenor').hidden=true;
+        window.ReciboUJECA?.limpiar();
         mostrarModalCarga(false);
         actualizarModalResultado(true);
         document.getElementById("modalMensaje").innerHTML="No se pudo completar la inscripción. Error: "+error.message;
@@ -2108,6 +2179,7 @@ function actualizarModalResultado(esError){
 
 function mostrarResumenPago(datos, codigo){
     const ticket=document.getElementById("ticketPago");
+    ticket.classList.remove('con-orden');
     if(datos && datos.LiderAsignado){
         const pagos = calcularPagos(datos);
         ticket.style.display="block";
@@ -2132,6 +2204,36 @@ function mostrarResumenPago(datos, codigo){
 function cerrarModal(){
     document.getElementById("modal").style.display="none";
 }
+
+// Datos ficticios únicamente al abrir explícitamente form.html?ejemplo=1.
+window.addEventListener('load',()=>{
+    if(new URLSearchParams(location.search).get('ejemplo') !== '1') return;
+    const form=document.getElementById('formulario');
+    const ejemplo={
+        Nombre:'PRUEBA - Juan David Ejemplo',Documento:'PRUEBA-'+Date.now(),Edad:'23',
+        Sexo:'Masculino',Telefono:'0000000000',Correo:'prueba@example.invalid',
+        Pais:'Colombia',Departamento:'Antioquia',Municipio:'El Bagre',TipoZona:'Urbana',
+        Iglesia:'Cristo Viene',Pastor:'Pastor de ejemplo',tipo:'Joven',
+        Emergencia_nombre:'Contacto de ejemplo',Emergencia_telefono:'0000000000',
+        Alergias:'Ninguna (dato de ejemplo)',DeseaCamisa:'Si',TipoCamiseta:'Hombre',
+        TallaCamisa:'M',ColorCamisa:'Blanco',
+        Observaciones:'REGISTRO DE PRUEBA. Datos ficticios para comprobar inscripción y recibo.'
+    };
+    for(const [nombre,valor] of Object.entries(ejemplo)){
+        const campo=form.elements.namedItem(nombre);
+        if(campo) campo.value=valor;
+    }
+    configurarCamiseta();
+    actualizarPreviewCamisetas();
+    actualizarZonaYLider();
+    actualizarPermisoMenor(true);
+    validarCorreoCampo(document.getElementById('Correo'));
+    const aviso=document.createElement('div');
+    aviso.setAttribute('role','status');
+    aviso.style.cssText='grid-column:1/-1;padding:16px;border:1px solid #e8c584;border-radius:12px;background:#fff6e3;color:#654514;line-height:1.5;margin-bottom:12px;';
+    aviso.textContent='Ejemplo listo: adulto de 23 años, camiseta M y total de $285.000. Cambia el correo y los teléfonos si quieres probar con tus datos. El correo de ejemplo no recibe mensajes. Al confirmar el envío se guardará un registro de prueba en la base real; no se envía automáticamente.';
+    form.prepend(aviso);
+});
 </script>
 
 </body>
